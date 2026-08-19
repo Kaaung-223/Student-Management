@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+
+<BorderPane
+        xmlns="http://javafx.com/javafx/25"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.student_management_system.Controller.Admin.AdminDashboardController"
+        minWidth="900"
+        minHeight="600"
+        maxWidth="Infinity"
+        maxHeight="Infinity"
+        style="-fx-background-color: #f0f4f8;">
+
+    <!-- ========================================================= -->
+    <!-- LEFT SIDEBAR (modernized) -->
+    <!-- ========================================================= -->
+
+    <left>
+        <VBox
+                prefWidth="240"
+                minWidth="200"
+                maxWidth="260"
+                fillWidth="true"
+                spacing="6"
+                style="-fx-background-color: linear-gradient(to bottom, #1a2332, #0f1622); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);">
+            <padding>
+                <Insets top="28" right="16" bottom="20" left="16"/>
+            </padding>
+
+            <VBox spacing="4" style="-fx-padding: 0 4 18 4;">
+                <Label text="STUDENT" style="-fx-text-fill: #ffffff; -fx-font-size: 22px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';"/>
+                <Label text="MANAGEMENT SYSTEM" style="-fx-text-fill: #7a8ba3; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 0.5;"/>
+            </VBox>
+
+            <Label text="MAIN MENU" style="-fx-text-fill: #586b86; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 8 0 6 5; -fx-letter-spacing: 0.5;"/>
+
+            <VBox spacing="3" VBox.vgrow="ALWAYS">
+                <Button fx:id="btnDashboard" text="⌂   Dashboard" onAction="#refreshDashboard" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnStudents" text="♙   Students" onAction="#openStudents" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnTeachers" text="♟   Teachers" onAction="#openTeachers" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnStaff" text="♟   Staff" onAction="#openStaff" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnClasses" text="▣   Classes" onAction="#openClasses" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnSubjects" text="▤   Subjects" onAction="#openSubjects" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnExams" text="✎   Exams" onAction="#openExams" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnGrades" text="▥   Grades / Results" onAction="#openGrades" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnAttendance" text="✓   Attendance" onAction="#openAttendance" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnLeave" text="✉   Leave Requests" onAction="#openLeaveRequests" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnAnnouncements" text="⚑   Announcements" onAction="#openAnnouncements" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                <Button fx:id="btnProfile" text="⚙   Profile" onAction="#openProfile" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: transparent; -fx-text-fill: #a8b9d0; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+            </VBox>
+
+            <Button fx:id="btnLogout" text="⇥   Logout" onAction="#logout" maxWidth="Infinity" prefHeight="42" minHeight="42" style="-fx-background-color: #2a3a55; -fx-text-fill: #ff8a8a; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 0 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+        </VBox>
+    </left>
+
+    <!-- ========================================================= -->
+    <!-- CENTER -->
+    <!-- ========================================================= -->
+
+    <center>
+        <StackPane fx:id="contentPane" maxWidth="Infinity" maxHeight="Infinity">
+
+            <!-- ================================================= -->
+            <!-- DASHBOARD SCROLLPANE -->
+            <!-- ================================================= -->
+
+            <ScrollPane
+                    fx:id="dashboardScrollPane"
+                    fitToWidth="true"
+                    fitToHeight="false"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED"
+                    pannable="true"
+                    maxWidth="Infinity"
+                    maxHeight="Infinity"
+                    style="-fx-background-color: transparent; -fx-background-insets: 0; -fx-border-color: transparent;">
+
+                <VBox spacing="20" fillWidth="true" maxWidth="Infinity" style="-fx-background-color: #f0f4f8;">
+                    <padding>
+                        <Insets top="28" right="32" bottom="32" left="32"/>
+                    </padding>
+
+                    <!-- HEADER -->
+                    <HBox alignment="CENTER_LEFT" spacing="20" maxWidth="Infinity">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Dashboard" style="-fx-text-fill: #1e2a3a; -fx-font-size: 28px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';"/>
+                            <Label text="Welcome back to your administration panel" style="-fx-text-fill: #7a8ba3; -fx-font-size: 14px; -fx-font-family: 'Segoe UI';"/>
+                        </VBox>
+                        <VBox alignment="CENTER_RIGHT" spacing="3">
+                            <Label text="ADMINISTRATOR" style="-fx-text-fill: #7a8ba3; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 0.5;"/>
+                            <Label fx:id="lblAdminName" text="Administrator" style="-fx-text-fill: #1e2a3a; -fx-font-size: 14px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- STATISTICS CARDS -->
+                    <GridPane hgap="18" vgap="18" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="25" hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints percentWidth="25" hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints percentWidth="25" hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints percentWidth="25" hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+                        <!-- Students -->
+                        <VBox GridPane.columnIndex="0" minHeight="145" maxWidth="Infinity" spacing="8"
+                              style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 4);">
+                            <Label text="TOTAL STUDENTS" style="-fx-text-fill: #7a8ba3; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 0.5;"/>
+                            <Label fx:id="lblTotalStudents" text="0" style="-fx-text-fill: #1e2a3a; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Active students" style="-fx-text-fill: #9aabbc; -fx-font-size: 11px;"/>
+                        </VBox>
+                        <!-- Teachers -->
+                        <VBox GridPane.columnIndex="1" minHeight="145" maxWidth="Infinity" spacing="8"
+                              style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 4);">
+                            <Label text="TOTAL TEACHERS" style="-fx-text-fill: #7a8ba3; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 0.5;"/>
+                            <Label fx:id="lblTotalTeachers" text="0" style="-fx-text-fill: #1e2a3a; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Active teachers" style="-fx-text-fill: #9aabbc; -fx-font-size: 11px;"/>
+                        </VBox>
+                        <!-- Classes -->
+                        <VBox GridPane.columnIndex="2" minHeight="145" maxWidth="Infinity" spacing="8"
+                              style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 4);">
+                            <Label text="TOTAL CLASSES" style="-fx-text-fill: #7a8ba3; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 0.5;"/>
+                            <Label fx:id="lblTotalClasses" text="0" style="-fx-text-fill: #1e2a3a; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Active classes" style="-fx-text-fill: #9aabbc; -fx-font-size: 11px;"/>
+                        </VBox>
+                        <!-- Subjects -->
+                        <VBox GridPane.columnIndex="3" minHeight="145" maxWidth="Infinity" spacing="8"
+                              style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 4);">
+                            <Label text="TOTAL SUBJECTS" style="-fx-text-fill: #7a8ba3; -fx-font-size: 10px; -fx-font-weight: bold; -fx-letter-spacing: 0.5;"/>
+                            <Label fx:id="lblTotalSubjects" text="0" style="-fx-text-fill: #1e2a3a; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Available subjects" style="-fx-text-fill: #9aabbc; -fx-font-size: 11px;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <!-- ========================================= -->
+                    <!-- SECOND LINE: CHARTS (Attendance & Exams)  -->
+                    <!-- ========================================= -->
+                    <GridPane hgap="18" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS" fillWidth="true"/>
+                        </columnConstraints>
+
+                        <!-- Attendance Chart -->
+                        <VBox GridPane.columnIndex="0" minHeight="280" maxWidth="Infinity" spacing="15"
+                              style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 4);">
+                            <HBox alignment="CENTER_LEFT" spacing="15">
+                                <Label text="Attendance Overview" style="-fx-text-fill: #1e2a3a; -fx-font-size: 17px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <ComboBox fx:id="attendancePeriodCombo" prefWidth="130"
+                                          style="-fx-background-color: #f0f4f8; -fx-background-radius: 8; -fx-font-size: 12px; -fx-padding: 4 8; -fx-font-family: 'Segoe UI';"/>
+                            </HBox>
+                            <BarChart fx:id="attendanceChart" title="" legendVisible="false" animated="false"
+                                      prefHeight="200" maxWidth="Infinity" style="-fx-background-color: white;">
+                                <xAxis>
+                                    <CategoryAxis label="Status" style="-fx-font-size: 12px;"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Count" style="-fx-font-size: 12px;"/>
+                                </yAxis>
+                            </BarChart>
+                        </VBox>
+
+                        <!-- Exam Results Chart -->
+                        <VBox GridPane.columnIndex="1" minHeight="280" maxWidth="Infinity" spacing="15"
+                              style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 4);">
+                            <HBox alignment="CENTER_LEFT" spacing="15">
+                                <Label text="Exam Results" style="-fx-text-fill: #1e2a3a; -fx-font-size: 17px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <ComboBox fx:id="examCombo" prefWidth="180"
+                                          style="-fx-background-color: #f0f4f8; -fx-background-radius: 8; -fx-font-size: 12px; -fx-padding: 4 8; -fx-font-family: 'Segoe UI';"/>
+                            </HBox>
+                            <PieChart fx:id="examChart" title="" legendVisible="true" animated="false"
+                                      prefHeight="200" maxWidth="Infinity" style="-fx-background-color: white;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <!-- ========================================= -->
+                    <!-- BATCH STUDENTS (formerly Recent Students)  -->
+                    <!-- ========================================= -->
+                    <VBox spacing="12" maxWidth="Infinity"
+                          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 4);">
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                                <Label text="Batch Students" style="-fx-text-fill: #1e2a3a; -fx-font-size: 17px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';"/>
+                                <Label text="Students grouped by batch / class" style="-fx-text-fill: #7a8ba3; -fx-font-size: 11px;"/>
+                            </VBox>
+                            <ComboBox fx:id="batchCombo" prefWidth="180"
+                                      style="-fx-background-color: #f0f4f8; -fx-background-radius: 8; -fx-font-size: 12px; -fx-padding: 4 8; -fx-font-family: 'Segoe UI';"/>
+                            <Button text="⟳  Refresh" onAction="#refreshDashboard" prefHeight="34"
+                                    style="-fx-background-color: #e8edf5; -fx-text-fill: #4a6fa5; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 0 15; -fx-cursor: hand; -fx-font-family: 'Segoe UI';"/>
+                        </HBox>
+                        <TableView fx:id="studentTable" prefHeight="190" minHeight="150" maxWidth="Infinity"
+                                   style="-fx-background-color: white; -fx-border-color: transparent;">
+                            <columns>
+                                <TableColumn fx:id="studentCodeColumn" text="Student Code" prefWidth="180"/>
+                                <TableColumn fx:id="studentNameColumn" text="Student Name" prefWidth="280"/>
+                                <TableColumn fx:id="studentEmailColumn" text="Email" prefWidth="350"/>
+                                <TableColumn fx:id="studentStatusColumn" text="Status" prefWidth="160"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- ========================================= -->
+                    <!-- PENDING LEAVE REQUESTS (with DatePicker)   -->
+                    <!-- ========================================= -->
+                    <VBox spacing="12" maxWidth="Infinity"
+                          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 4);">
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                                <Label text="Pending Leave Requests" style="-fx-text-fill: #1e2a3a; -fx-font-size: 17px; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';"/>
+                                <Label text="Students waiting for approval" style="-fx-text-fill: #7a8ba3; -fx-font-size: 11px;"/>
+                            </VBox>
+                            <DatePicker fx:id="leaveDatePicker" promptText="Select date"
+                                        style="-fx-background-color: #f0f4f8; -fx-background-radius: 8; -fx-font-size: 12px; -fx-padding: 4 8; -fx-font-family: 'Segoe UI';"/>
+                        </HBox>
+                        <TableView fx:id="leaveTable" prefHeight="190" minHeight="150" maxWidth="Infinity"
+                                   style="-fx-background-color: white; -fx-border-color: transparent;">
+                            <columns>
+                                <TableColumn fx:id="leaveStudentColumn" text="Student" prefWidth="280"/>
+                                <TableColumn fx:id="leaveFromColumn" text="Leave From" prefWidth="190"/>
+                                <TableColumn fx:id="leaveToColumn" text="Leave To" prefWidth="190"/>
+                                <TableColumn fx:id="leaveStatusColumn" text="Status" prefWidth="180"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <Region minHeight="15" prefHeight="15"/>
+                </VBox>
+            </ScrollPane>
+
+            <!-- ================================================= -->
+            <!-- OTHER PAGE CONTAINER -->
+            <!-- ================================================= -->
+            <AnchorPane fx:id="adminPane" visible="false" managed="false" maxWidth="Infinity" maxHeight="Infinity"/>
+        </StackPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Admin.StudentController">
+
+    <VBox spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <padding>
+            <Insets top="15" right="15" bottom="15" left="15"/>
+        </padding>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="Search by name, code, email..." HBox.hgrow="ALWAYS"/>
+            <Button text="Search" onAction="#handleSearch"/>
+            <Button text="Refresh" onAction="#handleRefresh"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Add Student" onAction="#handleAddStudent" styleClass="action-button"/>
+        </HBox>
+
+        <TableView fx:id="studentTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn text="Student Code" fx:id="colCode" prefWidth="120"/>
+                <TableColumn text="Name" fx:id="colName" prefWidth="180"/>
+                <TableColumn text="Email" fx:id="colEmail" prefWidth="200"/>
+                <TableColumn text="Phone" fx:id="colPhone" prefWidth="120"/>
+                <TableColumn text="Age" fx:id="colAge" prefWidth="60"/>
+                <TableColumn text="Gender" fx:id="colGender" prefWidth="80"/>
+                <TableColumn text="Address" fx:id="colAddress" prefWidth="200"/>
+                <TableColumn text="Class" fx:id="colClass" prefWidth="150"/>
+                <TableColumn text="Admission Date" fx:id="colAdmissionDate" prefWidth="120"/>
+                <TableColumn text="Status" fx:id="colStatus" prefWidth="80"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+
+        <HBox spacing="10">
+            <Label text="Total Students: " />
+            <Label fx:id="lblTotalStudents" text="0" />
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Edit" onAction="#handleEditStudent"/>
+            <Button text="Delete" onAction="#handleDeleteStudent" styleClass="danger-button"/>
+        </HBox>
+    </VBox>
+</AnchorPane>
