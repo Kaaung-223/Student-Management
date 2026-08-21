@@ -1,62 +1,45 @@
 package com.example.student_management_system.Controller.Admin;
 
-import com.example.student_management_system.Controller.DataBase.AdminDashboardDAO;
-import com.example.student_management_system.Controller.DataBase.AdminDashboardDAO.AttendanceData;
-import com.example.student_management_system.Controller.DataBase.AdminDashboardDAO.ExamResultData;
+import com.example.student_management_system.Controller.DAO.AdminDAO;
+import com.example.student_management_system.Controller.DAO.AttendanceDAO;
+import com.example.student_management_system.Controller.DAO.ClassDAO;
+import com.example.student_management_system.Controller.DAO.ExamDAO;
+import com.example.student_management_system.Controller.DAO.LeaveDAO;
+import com.example.student_management_system.Controller.DAO.StudentDao;
+import com.example.student_management_system.Controller.DAO.SubjectDAO;
+import com.example.student_management_system.Controller.DAO.TeacherDAO;
+import com.example.student_management_system.Controller.Model.Admin;
+import com.example.student_management_system.Controller.Model.AttendanceSummary;
+import com.example.student_management_system.Controller.Model.Batch;
+import com.example.student_management_system.Controller.Model.ExamOption;
+import com.example.student_management_system.Controller.Model.ExamResultSummary;
+import com.example.student_management_system.Controller.Model.LeaveRequest;
+import com.example.student_management_system.Controller.Model.Student;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.event.ActionEvent;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-
-import javafx.scene.Parent;
-import javafx.scene.Node;
-
+import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
-import java.io.IOException;
+import java.net.URL;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.ResourceBundle;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+public class AdminDashboardController implements Initializable {
 
-public class AdminDashboardController {
-
-    // =========================================================
-    // DAO
-    // =========================================================
-
-    private final AdminDashboardDAO dashboardDAO =
-            new AdminDashboardDAO();
-
-
-    // =========================================================
-    // MAIN
-    // =========================================================
-
-    @FXML
-    private StackPane contentPane;
-
-    @FXML
-    private AnchorPane adminPane;
-
-
-    // =========================================================
-    // SIDEBAR BUTTONS
-    // =========================================================
-
+    // ---- Sidebar ----
     @FXML private Button btnDashboard;
     @FXML private Button btnStudents;
     @FXML private Button btnTeachers;
@@ -70,795 +53,350 @@ public class AdminDashboardController {
     @FXML private Button btnProfile;
     @FXML private Button btnLogout;
 
+    // ---- Layout ----
+    @FXML private StackPane contentPane;
+    @FXML private ScrollPane dashboardScrollPane;
+    @FXML private AnchorPane adminPane;
 
-    // =========================================================
-    // DASHBOARD LABELS
-    // =========================================================
-
+    // ---- Header ----
     @FXML private Label lblAdminName;
 
+    // ---- Stat cards ----
     @FXML private Label lblTotalStudents;
     @FXML private Label lblTotalTeachers;
     @FXML private Label lblTotalClasses;
     @FXML private Label lblTotalSubjects;
 
+    // ---- Attendance chart ----
+    @FXML private ComboBox<String> cmbAttendancePeriod;
+    @FXML private ComboBox<Batch> cmbAttendanceBatch;
+    @FXML private PieChart attendancePieChart;
 
-    // =========================================================
-    // ATTENDANCE
-    // =========================================================
+    // ---- Exam chart ----
+    @FXML private ComboBox<ExamOption> cmbExam;
+    @FXML private PieChart examPieChart;
+
+    // ---- Students by batch ----
+    @FXML private ComboBox<Batch> cmbStudentsBatch;
+    @FXML private TableView<Student> studentTable;
+    @FXML private TableColumn<Student, String> studentCodeColumn;
+    @FXML private TableColumn<Student, String> studentNameColumn;
+    @FXML private TableColumn<Student, String> studentEmailColumn;
+    @FXML private TableColumn<Student, String> studentBatchColumn;
+    @FXML private TableColumn<Student, String> studentStatusColumn;
+
+    // ---- Leave table ----
+    @FXML private ComboBox<Batch> cmbLeaveBatch;
+    @FXML private TableView<LeaveRequest> leaveTable;
+    @FXML private TableColumn<LeaveRequest, String> leaveStudentColumn;
+    @FXML private TableColumn<LeaveRequest, String> leaveBatchColumn;
+    @FXML private TableColumn<LeaveRequest, String> leaveFromColumn;
+    @FXML private TableColumn<LeaveRequest, String> leaveToColumn;
+    @FXML private TableColumn<LeaveRequest, String> leaveStatusColumn;
+
+    // ---- DAOs ----
+    private final AdminDAO adminDAO = new AdminDAO();
+    private final StudentDao studentDAO = new StudentDao();
+    private final TeacherDAO teacherDAO = new TeacherDAO();
+    private final ClassDAO classDAO = new ClassDAO();
+    private final SubjectDAO subjectDAO = new SubjectDAO();
+    private final AttendanceDAO attendanceDAO = new AttendanceDAO();
+    private final ExamDAO examDAO = new ExamDAO();
+    private final LeaveDAO leaveDAO = new LeaveDAO();
+
+    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy");
+
+    // "All Batches" sentinel used in both batch combo boxes
+    // "All Batches" / "All Exams" sentinels used across the various dropdowns
+    private static final Batch ALL_BATCHES = new Batch(-1, "All Batches");
+    private static final ExamOption ALL_EXAMS = new ExamOption(-1, "All Exams");
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        setupTableColumns();
+        setupComboBoxes();
+        refreshDashboard();
+    }
+
+    private void setupTableColumns() {
+        studentCodeColumn.setCellValueFactory(new PropertyValueFactory<>("studentCode"));
+        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        studentEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        studentBatchColumn.setCellValueFactory(new PropertyValueFactory<>("batchName"));
+        studentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        leaveStudentColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        leaveBatchColumn.setCellValueFactory(new PropertyValueFactory<>("batchName"));
+        leaveStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        leaveFromColumn.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(
+                        cellData.getValue().getLeaveFrom() != null
+                                ? cellData.getValue().getLeaveFrom().format(DATE_FMT) : ""));
+        leaveToColumn.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(
+                        cellData.getValue().getLeaveTo() != null
+                                ? cellData.getValue().getLeaveTo().format(DATE_FMT) : ""));
+    }
+
+    private void setupComboBoxes() {
+        // Attendance period options
+        cmbAttendancePeriod.setItems(FXCollections.observableArrayList(
+                "This Week", "This Month", "This Year", "All Time"));
+        cmbAttendancePeriod.getSelectionModel().select("This Month");
+        cmbAttendancePeriod.setOnAction(e -> loadAttendanceChart());
+
+        // Batches for attendance filter
+        List<Batch> batches = classDAO.getAllBatches();
+        ObservableList<Batch> attendanceBatchItems = FXCollections.observableArrayList();
+        attendanceBatchItems.add(ALL_BATCHES);
+        attendanceBatchItems.addAll(batches);
+        cmbAttendanceBatch.setItems(attendanceBatchItems);
+        cmbAttendanceBatch.getSelectionModel().select(ALL_BATCHES);
+        cmbAttendanceBatch.setOnAction(e -> loadAttendanceChart());
+
+        // Batches for "Students by Batch" table
+        ObservableList<Batch> studentBatchItems = FXCollections.observableArrayList();
+        studentBatchItems.add(ALL_BATCHES);
+        studentBatchItems.addAll(batches);
+        cmbStudentsBatch.setItems(studentBatchItems);
+        cmbStudentsBatch.getSelectionModel().select(ALL_BATCHES);
+        cmbStudentsBatch.setOnAction(e -> loadStudentsByBatch());
+
+        // Batches for "Pending Leave Requests" filter
+        ObservableList<Batch> leaveBatchItems = FXCollections.observableArrayList();
+        leaveBatchItems.add(ALL_BATCHES);
+        leaveBatchItems.addAll(batches);
+        cmbLeaveBatch.setItems(leaveBatchItems);
+        cmbLeaveBatch.getSelectionModel().select(ALL_BATCHES);
+        cmbLeaveBatch.setOnAction(e -> loadLeaveTable());
+
+        // Exams
+        List<ExamOption> exams = examDAO.getAllExams();
+        ObservableList<ExamOption> examItems = FXCollections.observableArrayList();
+        examItems.add(ALL_EXAMS);
+        examItems.addAll(exams);
+        cmbExam.setItems(examItems);
+        cmbExam.getSelectionModel().select(ALL_EXAMS);
+        cmbExam.setOnAction(e -> loadExamChart());
+    }
+
+    // ===================================================================
+    // ADMIN SESSION
+    // ===================================================================
+
+    /**
+     * Call this from your LoginController right after a successful login, e.g.:
+     *   AdminDashboardController controller = loader.getController();
+     *   controller.setLoggedInAdmin(adminId);
+     * This looks the admin up and fills in the "Kaung Min Khant" placeholder name.
+     */
+    public void setLoggedInAdmin(int adminId) {
+        Admin admin = adminDAO.getAdminById(adminId);
+        if (admin != null) {
+            lblAdminName.setText(admin.getFullName());
+        }
+    }
+
+    /** Alternative entry point if your session tracks username instead of an id. */
+    public void setLoggedInAdmin(String username) {
+        Admin admin = adminDAO.getAdminByUsername(username);
+        if (admin != null) {
+            lblAdminName.setText(admin.getFullName());
+        }
+    }
+
+    // ===================================================================
+    // DASHBOARD REFRESH
+    // ===================================================================
 
     @FXML
-    private PieChart attendancePieChart;
+    public void refreshDashboard(ActionEvent event) {
+        refreshDashboard();
+    }
 
-    @FXML
-    private ComboBox<String> cmbAttendancePeriod;
-
-    @FXML
-    private ComboBox<ClassItem> cmbAttendanceBatch;
-
-
-    // =========================================================
-    // EXAM
-    // =========================================================
-
-    @FXML
-    private PieChart examPieChart;
-
-    @FXML
-    private ComboBox<ExamItem> cmbExam;
-
-
-    // =========================================================
-    // TABLES
-    // =========================================================
-
-    @FXML private TableView<?> studentTable;
-
-    @FXML private TableColumn<?, ?> studentCodeColumn;
-    @FXML private TableColumn<?, ?> studentNameColumn;
-    @FXML private TableColumn<?, ?> studentEmailColumn;
-    @FXML private TableColumn<?, ?> studentStatusColumn;
-
-    @FXML private TableView<?> leaveTable;
-
-    @FXML private TableColumn<?, ?> leaveStudentColumn;
-    @FXML private TableColumn<?, ?> leaveFromColumn;
-    @FXML private TableColumn<?, ?> leaveToColumn;
-    @FXML private TableColumn<?, ?> leaveStatusColumn;
-
-
-    // =========================================================
-    // INITIALIZE
-    // =========================================================
-
-    @FXML
-    public void initialize() {
-
-        loadAdminName();
-
-        loadStatistics();
-
-        setupAttendanceFilters();
-
-        setupExamFilter();
-
+    public void refreshDashboard() {
+        loadStatCards();
         loadAttendanceChart();
-
         loadExamChart();
-
-        setDashboardActive();
+        loadStudentsByBatch();
+        loadLeaveTable();
     }
 
-
-    // =========================================================
-    // ADMIN NAME
-    // =========================================================
-
-    private void loadAdminName() {
-
-        if (lblAdminName != null) {
-
-            lblAdminName.setText(
-                    dashboardDAO.getAdminName()
-            );
-        }
+    private void loadStatCards() {
+        lblTotalStudents.setText(String.valueOf(studentDAO.getTotalStudents()));
+        lblTotalTeachers.setText(String.valueOf(teacherDAO.getTotalTeachers()));
+        lblTotalClasses.setText(String.valueOf(classDAO.getTotalClasses()));
+        lblTotalSubjects.setText(String.valueOf(subjectDAO.getTotalSubjects()));
     }
-
-
-    // =========================================================
-    // STATISTICS
-    // =========================================================
-
-    private void loadStatistics() {
-
-        if (lblTotalStudents != null) {
-
-            lblTotalStudents.setText(
-                    String.valueOf(
-                            dashboardDAO.getTotalStudents()
-                    )
-            );
-        }
-
-
-        if (lblTotalTeachers != null) {
-
-            lblTotalTeachers.setText(
-                    String.valueOf(
-                            dashboardDAO.getTotalTeachers()
-                    )
-            );
-        }
-
-
-        if (lblTotalClasses != null) {
-
-            lblTotalClasses.setText(
-                    String.valueOf(
-                            dashboardDAO.getTotalClasses()
-                    )
-            );
-        }
-
-
-        if (lblTotalSubjects != null) {
-
-            lblTotalSubjects.setText(
-                    String.valueOf(
-                            dashboardDAO.getTotalSubjects()
-                    )
-            );
-        }
-    }
-
-
-    // =========================================================
-    // ATTENDANCE FILTER
-    // =========================================================
-
-    private void setupAttendanceFilters() {
-
-        cmbAttendancePeriod.setItems(
-                FXCollections.observableArrayList(
-                        "TODAY",
-                        "WEEK",
-                        "MONTH",
-                        "YEAR"
-                )
-        );
-
-        cmbAttendancePeriod.setValue("TODAY");
-
-
-        cmbAttendancePeriod.setOnAction(e ->
-                loadAttendanceChart()
-        );
-
-
-        loadBatches();
-    }
-
-
-    // =========================================================
-    // LOAD BATCHES
-    // =========================================================
-
-    private void loadBatches() {
-
-        ObservableList<ClassItem> list =
-                FXCollections.observableArrayList();
-
-        list.add(
-                new ClassItem(
-                        0,
-                        "All Batches"
-                )
-        );
-
-
-        try (
-                ResultSet rs =
-                        dashboardDAO.getClasses()
-        ) {
-
-            while (rs.next()) {
-
-                list.add(
-                        new ClassItem(
-                                rs.getInt("class_id"),
-                                rs.getString("class_name")
-                        )
-                );
-            }
-
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
-
-
-        cmbAttendanceBatch.setItems(list);
-
-        cmbAttendanceBatch.setValue(
-                list.get(0)
-        );
-
-
-        cmbAttendanceBatch.setOnAction(e ->
-                loadAttendanceChart()
-        );
-    }
-
-
-    // =========================================================
-    // ATTENDANCE PIE CHART
-    // =========================================================
 
     private void loadAttendanceChart() {
+        String period = cmbAttendancePeriod.getValue();
+        Batch batch = cmbAttendanceBatch.getValue();
+        int batchId = (batch == null) ? -1 : batch.getId();
 
-        if (attendancePieChart == null) {
-            return;
-        }
+        AttendanceSummary summary = attendanceDAO.getAttendanceSummary(period, batchId);
 
+        int present = summary.getPresentCount();
+        int absent = summary.getAbsentCount();
+        int late = summary.getLateCount();
 
-        String period =
-                cmbAttendancePeriod.getValue();
-
-        if (period == null) {
-            period = "TODAY";
-        }
-
-
-        int classId = 0;
-
-        if (cmbAttendanceBatch.getValue() != null) {
-
-            classId =
-                    cmbAttendanceBatch
-                            .getValue()
-                            .getClassId();
-        }
-
-
-        AttendanceData data =
-                dashboardDAO.getAttendance(
-                        period,
-                        classId
-                );
-
-
-        ObservableList<PieChart.Data> chartData =
-                FXCollections.observableArrayList();
-
-
-        if (data.getPresent() > 0) {
-
-            chartData.add(
-                    new PieChart.Data(
-                            "Present (" +
-                                    data.getPresent() +
-                                    ")",
-                            data.getPresent()
-                    )
+        ObservableList<PieChart.Data> data;
+        if (present + absent + late == 0) {
+            // No attendance records match this filter — show a single placeholder
+            // slice instead of a broken/degenerate chart with three zero-value wedges.
+            data = FXCollections.observableArrayList(new PieChart.Data("No Data", 1));
+        } else {
+            data = FXCollections.observableArrayList(
+                    new PieChart.Data("Present", present),
+                    new PieChart.Data("Absent", absent),
+                    new PieChart.Data("Late", late)
             );
         }
-
-
-        if (data.getAbsent() > 0) {
-
-            chartData.add(
-                    new PieChart.Data(
-                            "Absent (" +
-                                    data.getAbsent() +
-                                    ")",
-                            data.getAbsent()
-                    )
-            );
-        }
-
-
-        if (data.getLate() > 0) {
-
-            chartData.add(
-                    new PieChart.Data(
-                            "Late (" +
-                                    data.getLate() +
-                                    ")",
-                            data.getLate()
-                    )
-            );
-        }
-
-
-        if (chartData.isEmpty()) {
-
-            chartData.add(
-                    new PieChart.Data(
-                            "No attendance data",
-                            1
-                    )
-            );
-        }
-
-
-        attendancePieChart
-                .setData(chartData);
-
-        attendancePieChart
-                .setTitle("");
-
-        attendancePieChart
-                .setLegendVisible(true);
-
-        attendancePieChart
-                .setLabelsVisible(true);
+        attendancePieChart.setData(data);
+        attendancePieChart.setTitle(null);
+        styleNoDataSliceIfPresent(attendancePieChart);
     }
-
-
-    // =========================================================
-    // EXAM FILTER
-    // =========================================================
-
-    private void setupExamFilter() {
-
-        loadExams();
-
-        cmbExam.setOnAction(e ->
-                loadExamChart()
-        );
-    }
-
-
-    // =========================================================
-    // LOAD EXAMS
-    // =========================================================
-
-    private void loadExams() {
-
-        ObservableList<ExamItem> list =
-                FXCollections.observableArrayList();
-
-
-        list.add(
-                new ExamItem(
-                        0,
-                        "All Exams"
-                )
-        );
-
-
-        try (
-                ResultSet rs =
-                        dashboardDAO.getExams()
-        ) {
-
-            while (rs.next()) {
-
-                list.add(
-                        new ExamItem(
-                                rs.getInt("exam_id"),
-                                rs.getString("exam_name")
-                        )
-                );
-            }
-
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
-
-
-        cmbExam.setItems(list);
-
-        cmbExam.setValue(list.get(0));
-    }
-
-
-    // =========================================================
-    // EXAM PIE CHART
-    // =========================================================
 
     private void loadExamChart() {
-
-        if (examPieChart == null) {
+        ExamOption exam = cmbExam.getValue();
+        if (exam == null) {
+            examPieChart.setData(FXCollections.observableArrayList(new PieChart.Data("No Exam Selected", 1)));
+            examPieChart.setTitle(null);
+            styleNoDataSliceIfPresent(examPieChart);
             return;
         }
+        ExamResultSummary summary = examDAO.getExamResultSummary(exam.getId());
 
+        int pass = summary.getPassCount();
+        int fail = summary.getFailCount();
 
-        int examId = 0;
-
-
-        if (cmbExam.getValue() != null) {
-
-            examId =
-                    cmbExam
-                            .getValue()
-                            .getExamId();
-        }
-
-
-        ExamResultData data =
-                dashboardDAO.getExamResults(
-                        examId
-                );
-
-
-        ObservableList<PieChart.Data> chartData =
-                FXCollections.observableArrayList();
-
-
-        if (data.getPass() > 0) {
-
-            chartData.add(
-                    new PieChart.Data(
-                            "PASS (" +
-                                    data.getPass() +
-                                    ")",
-                            data.getPass()
-                    )
+        ObservableList<PieChart.Data> data;
+        if (pass + fail == 0) {
+            // No grades recorded yet for this exam — show a placeholder slice instead
+            // of two zero-value wedges (which JavaFX can't render as a proper circle).
+            data = FXCollections.observableArrayList(new PieChart.Data("No Grades Yet", 1));
+        } else {
+            data = FXCollections.observableArrayList(
+                    new PieChart.Data("Pass", pass),
+                    new PieChart.Data("Fail", fail)
             );
         }
-
-
-        if (data.getFail() > 0) {
-
-            chartData.add(
-                    new PieChart.Data(
-                            "FAIL (" +
-                                    data.getFail() +
-                                    ")",
-                            data.getFail()
-                    )
-            );
-        }
-
-
-        if (chartData.isEmpty()) {
-
-            chartData.add(
-                    new PieChart.Data(
-                            "No exam data",
-                            1
-                    )
-            );
-        }
-
-
-        examPieChart.setData(
-                chartData
-        );
-
-        examPieChart.setTitle("");
-
-        examPieChart.setLegendVisible(true);
-
-        examPieChart.setLabelsVisible(true);
+        examPieChart.setData(data);
+        examPieChart.setTitle(null);
+        styleNoDataSliceIfPresent(examPieChart);
     }
 
-
-    // =========================================================
-    // REFRESH
-    // =========================================================
-
-    @FXML
-    public void refreshDashboard() {
-
-        loadAdminName();
-
-        loadStatistics();
-
-        loadAttendanceChart();
-
-        loadExamChart();
-
-        setDashboardActive();
-    }
-
-
-    // =========================================================
-    // ACTIVE DASHBOARD BUTTON
-    // =========================================================
-
-    private void setDashboardActive() {
-
-        resetButtonStyles();
-
-        if (btnDashboard != null) {
-
-            btnDashboard.setStyle(
-                    "-fx-background-color: #344563;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-font-size: 13px;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-alignment: CENTER_LEFT;" +
-                            "-fx-padding: 0 14;" +
-                            "-fx-background-radius: 8;" +
-                            "-fx-cursor: hand;"
-            );
-        }
-    }
-
-
-    // =========================================================
-    // RESET BUTTON
-    // =========================================================
-
-    private void resetButtonStyles() {
-
-        Button[] buttons = {
-
-                btnDashboard,
-                btnStudents,
-                btnTeachers,
-                btnClasses,
-                btnSubjects,
-                btnExams,
-                btnGrades,
-                btnAttendance,
-                btnLeave,
-                btnAnnouncements,
-                btnProfile
-        };
-
-
-        for (Button button : buttons) {
-
-            if (button != null) {
-
-                button.setStyle(
-                        "-fx-background-color: transparent;" +
-                                "-fx-text-fill: #b2bdcf;" +
-                                "-fx-font-size: 13px;" +
-                                "-fx-alignment: CENTER_LEFT;" +
-                                "-fx-padding: 0 14;" +
-                                "-fx-background-radius: 8;" +
-                                "-fx-cursor: hand;"
-                );
+    /** Colors any "No Data"-style placeholder slice a neutral gray so it doesn't pick up a random palette color. */
+    /** Colors any "No Data"-style placeholder slice a neutral gray so it doesn't pick up a random palette color. */
+    private void styleNoDataSliceIfPresent(PieChart chart) {
+        for (PieChart.Data d : chart.getData()) {
+            if (d.getName() != null && d.getName().startsWith("No ")) {
+                if (d.getNode() != null) {
+                    d.getNode().setStyle("-fx-pie-color: #cfd6e3;");
+                } else {
+                    d.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                        if (newNode != null) {
+                            newNode.setStyle("-fx-pie-color: #cfd6e3;");
+                        }
+                    });
+                }
             }
         }
     }
 
+    private void loadStudentsByBatch() {
+        Batch batch = cmbStudentsBatch.getValue();
+        int batchId = (batch == null) ? -1 : batch.getId();
 
-    // =========================================================
-    // OPEN STUDENTS
-    // =========================================================
+        List<Student> students = studentDAO.getStudentsByBatch(batchId);
+        studentTable.setItems(FXCollections.observableArrayList(students));
+    }
+
+    private void loadLeaveTable() {
+        Batch batch = cmbLeaveBatch.getValue();
+        int batchId = (batch == null) ? -1 : batch.getId();
+
+        List<LeaveRequest> pending = leaveDAO.getPendingLeaveRequestsByBatch(batchId);
+        leaveTable.setItems(FXCollections.observableArrayList(pending));
+    }
+
+    // ===================================================================
+    // SIDEBAR NAVIGATION — wire these to your existing page-loading logic
+    // (e.g. swapping adminPane's content, or loading another FXML into it)
+    // ===================================================================
 
     @FXML
     public void openStudents(ActionEvent event) {
-
-        setActiveButton(btnStudents);
-
-        // မင်းရဲ့ existing Students page loading code ကို
-        // ဒီနေရာမှာထားပါ။
+        showAdminPane();
+        // TODO: load Students.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN TEACHERS
-    // =========================================================
 
     @FXML
     public void openTeachers(ActionEvent event) {
-
-        setActiveButton(btnTeachers);
+        showAdminPane();
+        // TODO: load Teachers.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN CLASSES
-    // =========================================================
 
     @FXML
     public void openClasses(ActionEvent event) {
-
-        setActiveButton(btnClasses);
+        showAdminPane();
+        // TODO: load Classes.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN SUBJECTS
-    // =========================================================
 
     @FXML
     public void openSubjects(ActionEvent event) {
-
-        setActiveButton(btnSubjects);
+        showAdminPane();
+        // TODO: load Subjects.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN EXAMS
-    // =========================================================
 
     @FXML
     public void openExams(ActionEvent event) {
-
-        setActiveButton(btnExams);
+        showAdminPane();
+        // TODO: load Exams.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN GRADES
-    // =========================================================
 
     @FXML
     public void openGrades(ActionEvent event) {
-
-        setActiveButton(btnGrades);
+        showAdminPane();
+        // TODO: load Grades.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN ATTENDANCE
-    // =========================================================
 
     @FXML
     public void openAttendance(ActionEvent event) {
-
-        setActiveButton(btnAttendance);
+        showAdminPane();
+        // TODO: load Attendance.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN LEAVE
-    // =========================================================
 
     @FXML
     public void openLeaveRequests(ActionEvent event) {
-
-        setActiveButton(btnLeave);
+        showAdminPane();
+        // TODO: load LeaveRequests.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN ANNOUNCEMENTS
-    // =========================================================
 
     @FXML
     public void openAnnouncements(ActionEvent event) {
-
-        setActiveButton(btnAnnouncements);
+        showAdminPane();
+        // TODO: load Announcements.fxml into adminPane
     }
-
-
-    // =========================================================
-    // OPEN PROFILE
-    // =========================================================
 
     @FXML
     public void openProfile(ActionEvent event) {
-
-        setActiveButton(btnProfile);
+        showAdminPane();
+        // TODO: load Profile.fxml into adminPane
     }
-
-
-    // =========================================================
-    // ACTIVE BUTTON
-    // =========================================================
-
-    private void setActiveButton(Button button) {
-
-        resetButtonStyles();
-
-        if (button != null) {
-
-            button.setStyle(
-                    "-fx-background-color: #344563;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-font-size: 13px;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-alignment: CENTER_LEFT;" +
-                            "-fx-padding: 0 14;" +
-                            "-fx-background-radius: 8;" +
-                            "-fx-cursor: hand;"
-            );
-        }
-    }
-
-
-    // =========================================================
-    // LOGOUT
-    // =========================================================
 
     @FXML
     public void logout(ActionEvent event) {
-
-        try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/com/example/student_management_system/Login.fxml"
-                            )
-                    );
-
-            Parent root =
-                    loader.load();
-
-            Node source =
-                    (Node) event.getSource();
-
-            javafx.stage.Stage stage =
-                    (javafx.stage.Stage)
-                            source.getScene().getWindow();
-
-            stage.getScene().setRoot(root);
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
+        // TODO: clear session, navigate back to login screen
     }
 
-
-    // =========================================================
-    // CLASS ITEM
-    // =========================================================
-
-    public static class ClassItem {
-
-        private final int classId;
-
-        private final String className;
-
-
-        public ClassItem(
-                int classId,
-                String className
-        ) {
-
-            this.classId = classId;
-
-            this.className = className;
-        }
-
-
-        public int getClassId() {
-
-            return classId;
-        }
-
-
-        @Override
-        public String toString() {
-
-            return className;
-        }
+    private void showAdminPane() {
+        dashboardScrollPane.setVisible(false);
+        adminPane.setVisible(true);
     }
 
-
-    // =========================================================
-    // EXAM ITEM
-    // =========================================================
-
-    public static class ExamItem {
-
-        private final int examId;
-
-        private final String examName;
-
-
-        public ExamItem(
-                int examId,
-                String examName
-        ) {
-
-            this.examId = examId;
-
-            this.examName = examName;
-        }
-
-
-        public int getExamId() {
-
-            return examId;
-        }
-
-
-        @Override
-        public String toString() {
-
-            return examName;
-        }
+    private void showDashboard() {
+        adminPane.setVisible(false);
+        dashboardScrollPane.setVisible(true);
     }
 }

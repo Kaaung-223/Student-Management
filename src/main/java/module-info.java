@@ -18,7 +18,10 @@ module com.example.student_management_system {
 
     // FXMLLoader can access your controllers
     opens com.example.student_management_system.Controller to javafx.fxml;
-
-    exports com.example.student_management_system.Controller.Admin;
     opens com.example.student_management_system.Controller.Admin to javafx.fxml;
+    opens com.example.student_management_system.Controller.Model to javafx.base;   // <-- add this
+
+
+    exports com.example.student_management_system.Controller.Model;
+
 }

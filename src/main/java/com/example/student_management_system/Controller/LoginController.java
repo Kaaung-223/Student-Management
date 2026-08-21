@@ -1,6 +1,6 @@
 package com.example.student_management_system.Controller;
 
-import com.example.student_management_system.Controller.DataBase.DataBase_Connection;
+import com.example.student_management_system.Controller.DAO.DBConnention;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -126,7 +126,7 @@ public class LoginController {
         try {
 
             Connection con =
-                    DataBase_Connection.getConnection();
+                    DBConnention.getConnection();
 
             if (con == null) {
 
