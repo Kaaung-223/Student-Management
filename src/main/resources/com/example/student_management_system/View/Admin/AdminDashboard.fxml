@@ -17,283 +17,231 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="Infinity" maxWidth="Infinity" minHeight="650" minWidth="1000"
+<BorderPane minHeight="650" minWidth="1000"
             style="-fx-background-color: #f6f8fc;"
             xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.student_management_system.Controller.Admin.AdminDashboardController">
 
     <left>
-        <VBox maxWidth="270" minWidth="230" prefWidth="250" spacing="6"
+        <VBox maxWidth="260" minWidth="235" prefWidth="250" spacing="6"
               style="-fx-background-color: linear-gradient(to bottom, #111827, #1e293b);">
-
             <padding>
-                <Insets bottom="20" left="16" right="16" top="24"/>
+                <Insets bottom="20" left="16" right="16" top="25"/>
             </padding>
 
-            <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-padding: 0 5 25 5;">
-                <StackPane minHeight="42" minWidth="42" prefHeight="42" prefWidth="42"
+            <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-padding: 0 4 25 4;">
+                <StackPane minHeight="43" minWidth="43" prefHeight="43" prefWidth="43"
                            style="-fx-background-color: #4f46e5; -fx-background-radius: 13;">
-                    <Label style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"
-                           text="S"/>
+                    <Label style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" text="S"/>
                 </StackPane>
-
                 <VBox spacing="2">
-                    <Label style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;"
-                           text="StudentHub"/>
-                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 9px; -fx-font-weight: bold;"
-                           text="MANAGEMENT SYSTEM"/>
+                    <Label style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="StudentHub"/>
+                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 9px; -fx-font-weight: bold;" text="MANAGEMENT SYSTEM"/>
                 </VBox>
             </HBox>
 
-            <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 3 8 8 8;"
-                   text="MAIN MENU"/>
+            <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 8 8 8;" text="MAIN MENU"/>
 
             <VBox spacing="5" VBox.vgrow="ALWAYS">
-                <Button fx:id="btnDashboard" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#refreshDashboard"
-                        style="-fx-background-color: #4f46e5; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnDashboard" maxWidth="Infinity" minHeight="44" onAction="#refreshDashboard"
+                        style="-fx-background-color: #4f46e5; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Dashboard"/>
 
-                <Button fx:id="btnStudents" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openStudents"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnStudents" maxWidth="Infinity" minHeight="44" onAction="#openStudents"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Students"/>
 
-                <Button fx:id="btnTeachers" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openTeachers"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnTeachers" maxWidth="Infinity" minHeight="44" onAction="#openTeachers"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Teachers"/>
 
-                <Button fx:id="btnClasses" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openClasses"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnClasses" maxWidth="Infinity" minHeight="44" onAction="#openClasses"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Classes"/>
 
-                <Button fx:id="btnSubjects" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openSubjects"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnSubjects" maxWidth="Infinity" minHeight="44" onAction="#openSubjects"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Subjects"/>
 
-                <Button fx:id="btnExams" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openExams"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnExams" maxWidth="Infinity" minHeight="44" onAction="#openExams"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Exams"/>
 
-                <Button fx:id="btnGrades" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openGrades"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnGrades" maxWidth="Infinity" minHeight="44" onAction="#openGrades"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Grades / Results"/>
 
-                <Button fx:id="btnAttendance" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openAttendance"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnAttendance" maxWidth="Infinity" minHeight="44" onAction="#openAttendance"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Attendance"/>
 
-                <Button fx:id="btnLeave" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openLeaveRequests"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnLeave" maxWidth="Infinity" minHeight="44" onAction="#openLeaveRequests"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Leave Requests"/>
 
-                <Button fx:id="btnAnnouncements" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openAnnouncements"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnAnnouncements" maxWidth="Infinity" minHeight="44" onAction="#openAnnouncements"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Announcements"/>
 
-                <Button fx:id="btnProfile" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#openProfile"
-                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
+                <Button fx:id="btnProfile" maxWidth="Infinity" minHeight="44" onAction="#openProfile"
+                        style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-text-fill: #cbd5e1; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
                         text="Profile"/>
             </VBox>
 
-            <VBox spacing="10" style="-fx-padding: 15 0 0 0; -fx-border-color: #334155 transparent transparent transparent;">
-                <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8;"
-                       text="ACCOUNT"/>
-
-                <Button fx:id="btnLogout" maxWidth="Infinity" minHeight="44" prefHeight="44"
-                        onAction="#logout"
-                        style="-fx-background-color: #312e3f; -fx-background-radius: 10; -fx-text-fill: #fda4af; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 0 15; -fx-cursor: hand;"
-                        text="Logout"/>
-            </VBox>
+            <Button fx:id="btnLogout" maxWidth="Infinity" minHeight="44" onAction="#logout"
+                    style="-fx-background-color: #312e3f; -fx-background-radius: 10; -fx-text-fill: #fda4af; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 0 16; -fx-cursor: hand;"
+                    text="Logout"/>
         </VBox>
     </left>
 
     <center>
-        <StackPane fx:id="contentPane" maxHeight="Infinity" maxWidth="Infinity">
+        <StackPane fx:id="contentPane">
 
-            <ScrollPane fx:id="dashboardScrollPane" fitToWidth="true" hbarPolicy="NEVER" pannable="true"
-                        style="-fx-background: #f6f8fc; -fx-background-color: #f6f8fc; -fx-border-color: transparent;"
-                        vbarPolicy="AS_NEEDED">
+            <ScrollPane fx:id="dashboardScrollPane" fitToWidth="true" hbarPolicy="NEVER"
+                        style="-fx-background: #f6f8fc; -fx-background-color: #f6f8fc; -fx-border-color: transparent;">
 
                 <content>
                     <VBox maxWidth="Infinity" spacing="24" style="-fx-background-color: #f6f8fc;">
                         <padding>
-                            <Insets bottom="36" left="34" right="34" top="30"/>
+                            <Insets bottom="35" left="34" right="34" top="30"/>
                         </padding>
 
-                        <HBox alignment="CENTER_LEFT" spacing="20">
-                            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-text-fill: #0f172a; -fx-font-size: 29px; -fx-font-weight: bold;"
-                                       text="Dashboard"/>
-                                <Label style="-fx-text-fill: #64748b; -fx-font-size: 13px;"
-                                       text="Welcome back. Here is what is happening today."/>
+                        <HBox alignment="CENTER_LEFT">
+                            <VBox HBox.hgrow="ALWAYS" spacing="5">
+                                <Label style="-fx-text-fill: #0f172a; -fx-font-size: 29px; -fx-font-weight: bold;" text="Dashboard"/>
+                                <Label style="-fx-text-fill: #64748b; -fx-font-size: 13px;" text="Overview of your student management system"/>
                             </VBox>
 
-                            <HBox alignment="CENTER_LEFT" spacing="12"
-                                  style="-fx-background-color: white; -fx-background-radius: 13; -fx-padding: 10 14; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 14, 0, 0, 3);">
-                                <StackPane minHeight="34" minWidth="34" prefHeight="34" prefWidth="34"
-                                           style="-fx-background-color: #e0e7ff; -fx-background-radius: 17;">
-                                    <Label style="-fx-text-fill: #4338ca; -fx-font-size: 14px; -fx-font-weight: bold;"
-                                           text="A"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10"
+                                  style="-fx-background-color: white; -fx-background-radius: 13; -fx-padding: 10 14; -fx-border-color: #e9edf5; -fx-border-radius: 13;">
+                                <StackPane minHeight="33" minWidth="33" style="-fx-background-color: #e0e7ff; -fx-background-radius: 17;">
+                                    <Label style="-fx-text-fill: #4f46e5; -fx-font-size: 14px; -fx-font-weight: bold;" text="A"/>
                                 </StackPane>
                                 <VBox spacing="2">
-                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 9px; -fx-font-weight: bold;"
-                                           text="ADMINISTRATOR"/>
-                                    <Label fx:id="lblAdminName"
-                                           style="-fx-text-fill: #1e293b; -fx-font-size: 13px; -fx-font-weight: bold;"
-                                           text="Administrator"/>
+                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 9px; -fx-font-weight: bold;" text="ADMINISTRATOR"/>
+                                    <Label fx:id="lblAdminName" style="-fx-text-fill: #1e293b; -fx-font-size: 13px; -fx-font-weight: bold;" text="Administrator"/>
                                 </VBox>
                             </HBox>
                         </HBox>
 
-                        <GridPane hgap="18" maxWidth="Infinity" vgap="18">
+                        <GridPane hgap="18" vgap="18">
                             <columnConstraints>
-                                <ColumnConstraints fillWidth="true" hgrow="ALWAYS" percentWidth="25"/>
-                                <ColumnConstraints fillWidth="true" hgrow="ALWAYS" percentWidth="25"/>
-                                <ColumnConstraints fillWidth="true" hgrow="ALWAYS" percentWidth="25"/>
-                                <ColumnConstraints fillWidth="true" hgrow="ALWAYS" percentWidth="25"/>
+                                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
                             </columnConstraints>
 
-                            <HBox alignment="CENTER_LEFT" maxWidth="Infinity" minHeight="126" spacing="14"
-                                  style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #e9edf5; -fx-border-radius: 16;"
-                                  GridPane.columnIndex="0">
-                                <StackPane minHeight="48" minWidth="48" prefHeight="48" prefWidth="48"
-                                           style="-fx-background-color: #e0e7ff; -fx-background-radius: 14;">
-                                    <Label style="-fx-text-fill: #4f46e5; -fx-font-size: 19px; -fx-font-weight: bold;"
-                                           text="S"/>
-                                </StackPane>
-                                <VBox spacing="5">
-                                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                           text="TOTAL STUDENTS"/>
-                                    <Label fx:id="lblTotalStudents"
-                                           style="-fx-text-fill: #0f172a; -fx-font-size: 27px; -fx-font-weight: bold;"
-                                           text="0"/>
-                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;"
-                                           text="Active students"/>
-                                </VBox>
-                            </HBox>
+                            <VBox minHeight="122" spacing="6" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 19; -fx-border-color: #e9edf5; -fx-border-radius: 16;" GridPane.columnIndex="0">
+                                <Label style="-fx-text-fill: #4f46e5; -fx-font-size: 10px; -fx-font-weight: bold;" text="TOTAL STUDENTS"/>
+                                <Label fx:id="lblTotalStudents" style="-fx-text-fill: #0f172a; -fx-font-size: 29px; -fx-font-weight: bold;" text="0"/>
+                                <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;" text="Active students"/>
+                            </VBox>
 
-                            <HBox alignment="CENTER_LEFT" maxWidth="Infinity" minHeight="126" spacing="14"
-                                  style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #e9edf5; -fx-border-radius: 16;"
-                                  GridPane.columnIndex="1">
-                                <StackPane minHeight="48" minWidth="48" prefHeight="48" prefWidth="48"
-                                           style="-fx-background-color: #dcfce7; -fx-background-radius: 14;">
-                                    <Label style="-fx-text-fill: #16a34a; -fx-font-size: 19px; -fx-font-weight: bold;"
-                                           text="T"/>
-                                </StackPane>
-                                <VBox spacing="5">
-                                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                           text="TOTAL TEACHERS"/>
-                                    <Label fx:id="lblTotalTeachers"
-                                           style="-fx-text-fill: #0f172a; -fx-font-size: 27px; -fx-font-weight: bold;"
-                                           text="0"/>
-                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;"
-                                           text="Active teachers"/>
-                                </VBox>
-                            </HBox>
+                            <VBox minHeight="122" spacing="6" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 19; -fx-border-color: #e9edf5; -fx-border-radius: 16;" GridPane.columnIndex="1">
+                                <Label style="-fx-text-fill: #16a34a; -fx-font-size: 10px; -fx-font-weight: bold;" text="TOTAL TEACHERS"/>
+                                <Label fx:id="lblTotalTeachers" style="-fx-text-fill: #0f172a; -fx-font-size: 29px; -fx-font-weight: bold;" text="0"/>
+                                <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;" text="Active teachers"/>
+                            </VBox>
 
-                            <HBox alignment="CENTER_LEFT" maxWidth="Infinity" minHeight="126" spacing="14"
-                                  style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #e9edf5; -fx-border-radius: 16;"
-                                  GridPane.columnIndex="2">
-                                <StackPane minHeight="48" minWidth="48" prefHeight="48" prefWidth="48"
-                                           style="-fx-background-color: #fef3c7; -fx-background-radius: 14;">
-                                    <Label style="-fx-text-fill: #d97706; -fx-font-size: 19px; -fx-font-weight: bold;"
-                                           text="C"/>
-                                </StackPane>
-                                <VBox spacing="5">
-                                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                           text="TOTAL CLASSES"/>
-                                    <Label fx:id="lblTotalClasses"
-                                           style="-fx-text-fill: #0f172a; -fx-font-size: 27px; -fx-font-weight: bold;"
-                                           text="0"/>
-                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;"
-                                           text="Active batches"/>
-                                </VBox>
-                            </HBox>
+                            <VBox minHeight="122" spacing="6" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 19; -fx-border-color: #e9edf5; -fx-border-radius: 16;" GridPane.columnIndex="2">
+                                <Label style="-fx-text-fill: #d97706; -fx-font-size: 10px; -fx-font-weight: bold;" text="TOTAL CLASSES"/>
+                                <Label fx:id="lblTotalClasses" style="-fx-text-fill: #0f172a; -fx-font-size: 29px; -fx-font-weight: bold;" text="0"/>
+                                <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;" text="Active batches"/>
+                            </VBox>
 
-                            <HBox alignment="CENTER_LEFT" maxWidth="Infinity" minHeight="126" spacing="14"
-                                  style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #e9edf5; -fx-border-radius: 16;"
-                                  GridPane.columnIndex="3">
-                                <StackPane minHeight="48" minWidth="48" prefHeight="48" prefWidth="48"
-                                           style="-fx-background-color: #fce7f3; -fx-background-radius: 14;">
-                                    <Label style="-fx-text-fill: #db2777; -fx-font-size: 19px; -fx-font-weight: bold;"
-                                           text="B"/>
-                                </StackPane>
-                                <VBox spacing="5">
-                                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                           text="TOTAL SUBJECTS"/>
-                                    <Label fx:id="lblTotalSubjects"
-                                           style="-fx-text-fill: #0f172a; -fx-font-size: 27px; -fx-font-weight: bold;"
-                                           text="0"/>
-                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;"
-                                           text="Available subjects"/>
-                                </VBox>
-                            </HBox>
+                            <VBox minHeight="122" spacing="6" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 19; -fx-border-color: #e9edf5; -fx-border-radius: 16;" GridPane.columnIndex="3">
+                                <Label style="-fx-text-fill: #db2777; -fx-font-size: 10px; -fx-font-weight: bold;" text="TOTAL SUBJECTS"/>
+                                <Label fx:id="lblTotalSubjects" style="-fx-text-fill: #0f172a; -fx-font-size: 29px; -fx-font-weight: bold;" text="0"/>
+                                <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 10px;" text="Available subjects"/>
+                            </VBox>
                         </GridPane>
 
-                        <GridPane hgap="20" maxWidth="Infinity">
+                        <GridPane hgap="20">
                             <columnConstraints>
-                                <ColumnConstraints fillWidth="true" hgrow="ALWAYS" percentWidth="50"/>
-                                <ColumnConstraints fillWidth="true" hgrow="ALWAYS" percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
                             </columnConstraints>
 
-                            <VBox maxWidth="Infinity" minHeight="430" spacing="17"
+                            <!-- Replace BOTH Attendance Overview and Exam Results VBox cards with this code -->
+
+                            <VBox minHeight="445" spacing="16"
                                   style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-border-color: #e9edf5; -fx-border-radius: 18;"
                                   GridPane.columnIndex="0">
 
-                                <HBox alignment="CENTER_LEFT">
-                                    <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                        <Label style="-fx-text-fill: #0f172a; -fx-font-size: 18px; -fx-font-weight: bold;"
-                                               text="Attendance Overview"/>
-                                        <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"
-                                               text="Attendance performance by batch"/>
-                                    </VBox>
-                                    <Label style="-fx-text-fill: #4f46e5; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-color: #eef2ff; -fx-background-radius: 10; -fx-padding: 6 10;"
-                                           text="LIVE DATA"/>
-                                </HBox>
+                                <VBox spacing="4">
+                                    <Label style="-fx-text-fill: #0f172a; -fx-font-size: 18px; -fx-font-weight: bold;"
+                                           text="Attendance Overview"/>
+                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"
+                                           text="Attendance performance by batch"/>
+                                </VBox>
 
                                 <HBox spacing="10">
                                     <ComboBox fx:id="cmbAttendancePeriod" prefHeight="38" prefWidth="145"
                                               promptText="Period"
                                               style="-fx-background-color: #f8fafc; -fx-background-radius: 9; -fx-border-color: #e2e8f0; -fx-border-radius: 9;"/>
-                                    <ComboBox fx:id="cmbAttendanceBatch" prefHeight="38"
-                                              promptText="Batch"
+
+                                    <ComboBox fx:id="cmbAttendanceBatch" prefHeight="38" promptText="Batch"
                                               style="-fx-background-color: #f8fafc; -fx-background-radius: 9; -fx-border-color: #e2e8f0; -fx-border-radius: 9;"
                                               HBox.hgrow="ALWAYS"/>
                                 </HBox>
 
-                                <StackPane minHeight="315" prefHeight="315" VBox.vgrow="ALWAYS">
-                                    <PieChart fx:id="attendancePieChart" animated="true" labelsVisible="true"
-                                              legendSide="BOTTOM" minHeight="315" prefHeight="315"
-                                              startAngle="90"
-                                              style="-fx-font-size: 11px;"/>
-                                </StackPane>
+                                <PieChart fx:id="attendancePieChart"
+                                          animated="true"
+                                          labelsVisible="true"
+                                          legendVisible="false"
+                                          minHeight="220"
+                                          prefHeight="220"
+                                          startAngle="90"
+                                          VBox.vgrow="ALWAYS"/>
+
+                                <HBox spacing="10"
+                                      style="-fx-background-color: #f8fafc; -fx-background-radius: 12; -fx-padding: 12;">
+
+                                    <HBox alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+                                        <StackPane minHeight="10" minWidth="10"
+                                                   style="-fx-background-color: #22c55e; -fx-background-radius: 10;"/>
+                                        <VBox spacing="2">
+                                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 9px; -fx-font-weight: bold;" text="PRESENT"/>
+                                            <Label fx:id="lblPresentCount" style="-fx-text-fill: #0f172a; -fx-font-size: 17px; -fx-font-weight: bold;" text="0"/>
+                                        </VBox>
+                                    </HBox>
+
+                                    <Region prefWidth="1" style="-fx-background-color: #e2e8f0;"/>
+
+                                    <HBox alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+                                        <StackPane minHeight="10" minWidth="10"
+                                                   style="-fx-background-color: #f43f5e; -fx-background-radius: 10;"/>
+                                        <VBox spacing="2">
+                                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 9px; -fx-font-weight: bold;" text="ABSENT"/>
+                                            <Label fx:id="lblAbsentCount" style="-fx-text-fill: #0f172a; -fx-font-size: 17px; -fx-font-weight: bold;" text="0"/>
+                                        </VBox>
+                                    </HBox>
+
+                                    <Region prefWidth="1" style="-fx-background-color: #e2e8f0;"/>
+
+                                    <HBox alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+                                        <StackPane minHeight="10" minWidth="10"
+                                                   style="-fx-background-color: #f59e0b; -fx-background-radius: 10;"/>
+                                        <VBox spacing="2">
+                                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 9px; -fx-font-weight: bold;" text="LATE"/>
+                                            <Label fx:id="lblLateCount" style="-fx-text-fill: #0f172a; -fx-font-size: 17px; -fx-font-weight: bold;" text="0"/>
+                                        </VBox>
+                                    </HBox>
+                                </HBox>
                             </VBox>
 
-                            <VBox maxWidth="Infinity" minHeight="430" spacing="17"
+                            <VBox minHeight="445" spacing="16"
                                   style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-border-color: #e9edf5; -fx-border-radius: 18;"
                                   GridPane.columnIndex="1">
 
-                                <HBox alignment="CENTER_LEFT">
-                                    <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                        <Label style="-fx-text-fill: #0f172a; -fx-font-size: 18px; -fx-font-weight: bold;"
-                                               text="Exam Results"/>
-                                        <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"
-                                               text="Pass and fail performance by exam"/>
-                                    </VBox>
-                                    <Label style="-fx-text-fill: #059669; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-color: #ecfdf5; -fx-background-radius: 10; -fx-padding: 6 10;"
-                                           text="RESULTS"/>
-                                </HBox>
+                                <VBox spacing="4">
+                                    <Label style="-fx-text-fill: #0f172a; -fx-font-size: 18px; -fx-font-weight: bold;"
+                                           text="Exam Results"/>
+                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"
+                                           text="Pass and fail performance by exam"/>
+                                </VBox>
 
                                 <HBox spacing="10">
                                     <ComboBox fx:id="cmbExam" maxWidth="Infinity" prefHeight="38"
@@ -302,30 +250,49 @@
                                               HBox.hgrow="ALWAYS"/>
                                 </HBox>
 
-                                <StackPane minHeight="315" prefHeight="315" VBox.vgrow="ALWAYS">
-                                    <PieChart fx:id="examPieChart" animated="true" labelsVisible="true"
-                                              legendSide="BOTTOM" minHeight="315" prefHeight="315"
-                                              startAngle="90"
-                                              style="-fx-font-size: 11px;"/>
-                                </StackPane>
+                                <PieChart fx:id="examPieChart"
+                                          animated="true"
+                                          labelsVisible="true"
+                                          legendVisible="false"
+                                          minHeight="220"
+                                          prefHeight="220"
+                                          startAngle="90"
+                                          VBox.vgrow="ALWAYS"/>
+
+                                <HBox spacing="12"
+                                      style="-fx-background-color: #f8fafc; -fx-background-radius: 12; -fx-padding: 12;">
+
+                                    <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
+                                        <StackPane minHeight="12" minWidth="12"
+                                                   style="-fx-background-color: #22c55e; -fx-background-radius: 10;"/>
+                                        <VBox spacing="2">
+                                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold;" text="PASS"/>
+                                            <Label fx:id="lblPassCount" style="-fx-text-fill: #0f172a; -fx-font-size: 20px; -fx-font-weight: bold;" text="0"/>
+                                        </VBox>
+                                    </HBox>
+
+                                    <Region prefWidth="1" style="-fx-background-color: #e2e8f0;"/>
+
+                                    <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
+                                        <StackPane minHeight="12" minWidth="12"
+                                                   style="-fx-background-color: #f43f5e; -fx-background-radius: 10;"/>
+                                        <VBox spacing="2">
+                                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: bold;" text="FAIL"/>
+                                            <Label fx:id="lblFailCount" style="-fx-text-fill: #0f172a; -fx-font-size: 20px; -fx-font-weight: bold;" text="0"/>
+                                        </VBox>
+                                    </HBox>
+                                </HBox>
                             </VBox>
                         </GridPane>
 
-                        <VBox maxWidth="Infinity" spacing="16"
-                              style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-border-color: #e9edf5; -fx-border-radius: 18;">
-
+                        <VBox spacing="16" style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-border-color: #e9edf5; -fx-border-radius: 18;">
                             <HBox alignment="CENTER_LEFT" spacing="12">
-                                <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-text-fill: #0f172a; -fx-font-size: 18px; -fx-font-weight: bold;"
-                                           text="Students by Batch"/>
-                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"
-                                           text="Browse and monitor your enrolled students"/>
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label style="-fx-text-fill: #0f172a; -fx-font-size: 18px; -fx-font-weight: bold;" text="Students by Batch"/>
+                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;" text="Browse and monitor your enrolled students"/>
                                 </VBox>
-
-                                <ComboBox fx:id="cmbStudentsBatch" prefHeight="38" prefWidth="210"
-                                          promptText="All Batches"
+                                <ComboBox fx:id="cmbStudentsBatch" prefHeight="38" prefWidth="210" promptText="All Batches"
                                           style="-fx-background-color: #f8fafc; -fx-background-radius: 9; -fx-border-color: #e2e8f0; -fx-border-radius: 9;"/>
-
                                 <Button onAction="#refreshDashboard" prefHeight="38"
                                         style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 0 16; -fx-cursor: hand;"
                                         text="Refresh"/>
@@ -343,19 +310,13 @@
                             </TableView>
                         </VBox>
 
-                        <VBox maxWidth="Infinity" spacing="16"
-                              style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-border-color: #e9edf5; -fx-border-radius: 18;">
-
-                            <HBox alignment="CENTER_LEFT" spacing="12">
-                                <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                    <Label style="-fx-text-fill: #0f172a; -fx-font-size: 18px; -fx-font-weight: bold;"
-                                           text="Pending Leave Requests"/>
-                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"
-                                           text="Students waiting for approval"/>
+                        <VBox spacing="16" style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-border-color: #e9edf5; -fx-border-radius: 18;">
+                            <HBox alignment="CENTER_LEFT">
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label style="-fx-text-fill: #0f172a; -fx-font-size: 18px; -fx-font-weight: bold;" text="Pending Leave Requests"/>
+                                    <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;" text="Students waiting for approval"/>
                                 </VBox>
-
-                                <ComboBox fx:id="cmbLeaveBatch" prefHeight="38" prefWidth="210"
-                                          promptText="All Batches"
+                                <ComboBox fx:id="cmbLeaveBatch" prefHeight="38" prefWidth="210" promptText="All Batches"
                                           style="-fx-background-color: #f8fafc; -fx-background-radius: 9; -fx-border-color: #e2e8f0; -fx-border-radius: 9;"/>
                             </HBox>
 
@@ -371,12 +332,12 @@
                             </TableView>
                         </VBox>
 
-                        <Region minHeight="10" prefHeight="10"/>
+                        <Region minHeight="10"/>
                     </VBox>
                 </content>
             </ScrollPane>
 
-            <AnchorPane fx:id="adminPane" maxHeight="Infinity" maxWidth="Infinity" visible="false"/>
+            <AnchorPane fx:id="adminPane" visible="false"/>
         </StackPane>
     </center>
 </BorderPane>
