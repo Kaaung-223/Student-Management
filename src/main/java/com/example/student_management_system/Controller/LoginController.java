@@ -1,5 +1,6 @@
 package com.example.student_management_system.Controller;
 
+import com.example.student_management_system.Controller.Admin.AdminDashboardController;
 import com.example.student_management_system.Controller.DAO.DBConnention;
 
 import javafx.event.ActionEvent;
@@ -8,7 +9,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -17,252 +22,118 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class LoginController {
-    @FXML
-    private Button btnLogin;
 
-    @FXML
-    private TextField txtUsername;
+    @FXML private Button btnLogin;
+    @FXML private TextField txtUsername;
+    @FXML private PasswordField passwordField;
+    @FXML private TextField visiblePasswordField;
+    @FXML private StackPane eyeToggle;
+    @FXML private Label eyeLabel;
 
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private TextField visiblePasswordField;
-
-    @FXML
-    private Button btnEye;
+    @FXML private StackPane messageOverlay;
+    @FXML private Label lblWelcomeMessage;
+    @FXML private Button btnMessageAction;
 
     private boolean showPassword = false;
-
-
-    // =========================================================
-    // INITIALIZE
-    // =========================================================
+    private Runnable messageAction;
 
     @FXML
     public void initialize() {
+        visiblePasswordField.textProperty()
+                .bindBidirectional(passwordField.textProperty());
 
-        visiblePasswordField.textProperty().bindBidirectional(passwordField.textProperty());
         visiblePasswordField.setVisible(false);
         visiblePasswordField.setManaged(false);
+
+        messageOverlay.setVisible(false);
+        messageOverlay.setManaged(false);
     }
-
-
-    // =========================================================
-    // TOGGLE PASSWORD
-    // =========================================================
 
     @FXML
     private void togglePassword() {
-
         showPassword = !showPassword;
 
-        if (showPassword) {
+        passwordField.setVisible(!showPassword);
+        passwordField.setManaged(!showPassword);
 
-            passwordField.setVisible(false);
-            passwordField.setManaged(false);
+        visiblePasswordField.setVisible(showPassword);
+        visiblePasswordField.setManaged(showPassword);
 
-            visiblePasswordField.setVisible(true);
-            visiblePasswordField.setManaged(true);
-
-            btnEye.setText("🙈");
-
-        } else {
-
-            visiblePasswordField.setVisible(false);
-            visiblePasswordField.setManaged(false);
-
-            passwordField.setVisible(true);
-            passwordField.setManaged(true);
-
-            btnEye.setText("👁");
-        }
+        eyeLabel.setText(showPassword ? "🙈" : "👁");
     }
-
-
-    // =========================================================
-    // LOGIN
-    // =========================================================
 
     @FXML
     private void login(ActionEvent event) {
-
         String username = txtUsername.getText().trim();
-
-        String password;
-
-        if (showPassword) {
-            password = visiblePasswordField.getText();
-        } else {
-            password = passwordField.getText();
-        }
-
-
-        // =====================================================
-        // EMPTY CHECK
-        // =====================================================
+        String password = showPassword
+                ? visiblePasswordField.getText()
+                : passwordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
-
-            Alert alert =
-                    new Alert(Alert.AlertType.WARNING);
-
-            alert.setTitle("Warning");
-            alert.setHeaderText(null);
-            alert.setContentText(
-                    "Please enter username and password"
-            );
-
-            alert.showAndWait();
-
+            showMessage("Please enter your username and password.", null);
             return;
         }
 
+        String sql = "SELECT * FROM users " +
+                "WHERE username=? AND password=? AND status='ACTIVE'";
 
-        // =====================================================
-        // DATABASE
-        // =====================================================
-
-        try {
-
-            Connection con =
-                    DBConnention.getConnection();
-
+        try (
+                Connection con = DBConnention.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)
+        ) {
             if (con == null) {
-
-                Alert alert =
-                        new Alert(Alert.AlertType.ERROR);
-
-                alert.setTitle("Database Error");
-                alert.setHeaderText(null);
-                alert.setContentText(
-                        "Database Connection Failed"
-                );
-
-                alert.showAndWait();
-
+                showMessage("Database connection unavailable.", null);
                 return;
             }
-
-
-            String sql =
-                    "SELECT * FROM users " +
-                            "WHERE username=? " +
-                            "AND password=? " +
-                            "AND status='ACTIVE'";
-
-
-            PreparedStatement ps =
-                    con.prepareStatement(sql);
 
             ps.setString(1, username);
             ps.setString(2, password);
 
-
-            ResultSet rs =
-                    ps.executeQuery();
-
-
-            // =================================================
-            // LOGIN SUCCESS
-            // =================================================
-
-            if (rs.next()) {
-
-                String role =
-                        rs.getString("role");
-
-
-                // =============================================
-                // ADMIN
-                // =============================================
-
-                if (role.equals("ADMIN")) {
-                    Alert alert=new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Welcome Admin");
-                    alert.setContentText("Welcome Admin");
-                    alert.showAndWait();
-                    openAdminDashboard();
-
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    showMessage("Incorrect username or password.", null);
+                    return;
                 }
 
+                String role = rs.getString("role");
 
-                // =============================================
-                // TEACHER
-                // =============================================
-
-                else if (role.equals("TEACHER")) {
-
-                    Alert alert =
-                            new Alert(
-                                    Alert.AlertType.INFORMATION
-                            );
-
-                    alert.setTitle("Teacher Login");
-                    alert.setHeaderText(null);
-                    alert.setContentText(
-                            "Teacher Login"
-                    );
-
-                    alert.showAndWait();
-
-                    // Teacher dashboard later
+                if ("ADMIN".equalsIgnoreCase(role)) {
+                    showMessage("Welcome back, " + username + "!", () -> openAdminDashboard(username));
+                } else if ("TEACHER".equalsIgnoreCase(role)) {
+                    showMessage("Welcome back, " + username + "!", null); // add teacher dashboard later
+                } else {
+                    showMessage("Role not supported.", null);
                 }
-
-            } else {
-
-                // =================================================
-                // LOGIN FAILED
-                // =================================================
-
-                Alert alert =
-                        new Alert(
-                                Alert.AlertType.ERROR
-                        );
-
-                alert.setTitle("Login Failed");
-                alert.setHeaderText(null);
-                alert.setContentText(
-                        "Incorrect Username or Password"
-                );
-
-                alert.showAndWait();
             }
 
-
-            rs.close();
-            ps.close();
-            con.close();
-
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
-            Alert alert =
-                    new Alert(
-                            Alert.AlertType.ERROR
-                    );
-
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText(
-                    e.getMessage()
-            );
-
-            alert.showAndWait();
+            showMessage("Check database connection.", null);
         }
     }
 
+    private void showMessage(String message, Runnable action) {
+        lblWelcomeMessage.setText(message);
+        messageAction = action;
 
-    // =========================================================
-    // OPEN ADMIN DASHBOARD
-    // =========================================================
+        messageOverlay.setManaged(true);
+        messageOverlay.setVisible(true);
+    }
 
-    private void openAdminDashboard() {
+    @FXML
+    private void handleMessageAction() {
+        messageOverlay.setVisible(false);
+        messageOverlay.setManaged(false);
 
+        if (messageAction != null) {
+            Runnable action = messageAction;
+            messageAction = null;
+            action.run();
+        }
+    }
+
+    private void openAdminDashboard(String username) {
         try {
-
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource(
                             "/com/example/student_management_system/View/Admin/AdminDashboard.fxml"
@@ -271,9 +142,11 @@ public class LoginController {
 
             Parent root = loader.load();
 
+            AdminDashboardController controller = loader.getController();
+            controller.setLoggedInAdmin(username);
+
             Stage stage = (Stage) txtUsername.getScene().getWindow();
 
-            // Get the full visible screen area (excludes taskbar/dock)
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
             Scene scene = new Scene(
@@ -283,43 +156,45 @@ public class LoginController {
             );
 
             stage.setScene(scene);
-
             stage.setX(screenBounds.getMinX());
             stage.setY(screenBounds.getMinY());
             stage.setWidth(screenBounds.getWidth());
             stage.setHeight(screenBounds.getHeight());
-
             stage.setResizable(true);
             stage.setMaximized(true);
-
             stage.show();
 
         } catch (Exception e) {
-
             e.printStackTrace();
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Dashboard Error");
-            alert.setHeaderText("Cannot Open Admin Dashboard");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+            showMessage("Unable to open dashboard.", null);
         }
     }
+
     @FXML
     private void handleLoginPress() {
-        // Darker background and slight shrink when pressed
-        btnLogin.setStyle("-fx-background-color: #1E4ED8; -fx-text-fill: white; " +
-                "-fx-background-radius: 10; -fx-font-size: 16; -fx-font-weight: bold; " +
-                "-fx-scale-x: 0.98; -fx-scale-y: 0.98; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);");
+        btnLogin.setStyle(
+                "-fx-background-color: #3730a3; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-background-radius: 10; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-cursor: hand; " +
+                        "-fx-scale-x: 0.98; " +
+                        "-fx-scale-y: 0.98;"
+        );
     }
 
     @FXML
     private void handleLoginRelease() {
-        // Restore original style
-        btnLogin.setStyle("-fx-background-color: #2563EB; -fx-text-fill: white; " +
-                "-fx-background-radius: 10; -fx-font-size: 16; -fx-font-weight: bold; " +
-                "-fx-scale-x: 1.0; -fx-scale-y: 1.0; " +
-                "-fx-effect: null;");
+        btnLogin.setStyle(
+                "-fx-background-color: #4f46e5; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-background-radius: 10; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-cursor: hand; " +
+                        "-fx-scale-x: 1; " +
+                        "-fx-scale-y: 1;"
+        );
     }
 }
