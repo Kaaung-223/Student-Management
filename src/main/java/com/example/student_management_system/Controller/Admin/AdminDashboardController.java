@@ -1,105 +1,125 @@
 package com.example.student_management_system.Controller.Admin;
 
-import com.example.student_management_system.Controller.DAO.AdminDAO;
-import com.example.student_management_system.Controller.DAO.AttendanceDAO;
-import com.example.student_management_system.Controller.DAO.ClassDAO;
-import com.example.student_management_system.Controller.DAO.ExamDAO;
-import com.example.student_management_system.Controller.DAO.LeaveDAO;
-import com.example.student_management_system.Controller.DAO.StudentDao;
-import com.example.student_management_system.Controller.DAO.SubjectDAO;
-import com.example.student_management_system.Controller.DAO.TeacherDAO;
-import com.example.student_management_system.Controller.Model.Admin;
-import com.example.student_management_system.Controller.Model.AttendanceSummary;
-import com.example.student_management_system.Controller.Model.Batch;
-import com.example.student_management_system.Controller.Model.ExamOption;
-import com.example.student_management_system.Controller.Model.ExamResultSummary;
-import com.example.student_management_system.Controller.Model.LeaveRequest;
-import com.example.student_management_system.Controller.Model.Student;
+import com.example.student_management_system.Controller.DAO.*;
+import com.example.student_management_system.Controller.Model.*;
 
+import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AdminDashboardController implements Initializable {
 
-    @FXML private Button btnDashboard;
-    @FXML private Button btnStudents;
-    @FXML private Button btnTeachers;
-    @FXML private Button btnClasses;
-    @FXML private Button btnSubjects;
-    @FXML private Button btnExams;
-    @FXML private Button btnGrades;
-    @FXML private Button btnAttendance;
-    @FXML private Button btnLeave;
-    @FXML private Button btnAnnouncements;
-    @FXML private Button btnProfile;
-    @FXML private Button btnLogout;
+    @FXML
+    private Button btnDashboard,
+            btnStudents,
+            btnTeachers,
+            btnClasses,
+            btnSubjects,
+            btnExams,
+            btnGrades,
+            btnAttendance,
+            btnLeave,
+            btnAnnouncements,
+            btnProfile,
+            btnLogout;
 
-    @FXML private StackPane contentPane;
-    @FXML private ScrollPane dashboardScrollPane;
-    @FXML private AnchorPane adminPane;
+    @FXML
+    private StackPane contentPane;
 
-    @FXML private Label lblAdminName;
+    @FXML
+    private ScrollPane dashboardScrollPane;
 
-    @FXML private Label lblTotalStudents;
-    @FXML private Label lblTotalTeachers;
-    @FXML private Label lblTotalClasses;
-    @FXML private Label lblTotalSubjects;
+    @FXML
+    private AnchorPane adminPane;
 
-    @FXML private ComboBox<String> cmbAttendancePeriod;
-    @FXML private ComboBox<Batch> cmbAttendanceBatch;
-    @FXML private PieChart attendancePieChart;
+    @FXML
+    private Label lblAdminName,
+            lblTotalStudents,
+            lblTotalTeachers,
+            lblTotalClasses,
+            lblTotalSubjects,
+            lblPassCount,
+            lblFailCount,
+            lblPresentCount,
+            lblAbsentCount,
+            lblLateCount,
+            lblDashboardWelcome;
 
-    @FXML private ComboBox<ExamOption> cmbExam;
-    @FXML private PieChart examPieChart;
-    @FXML private Label lblPassCount;
-    @FXML private Label lblFailCount;
+    @FXML
+    private VBox welcomeToast;
 
-    @FXML private ComboBox<Batch> cmbStudentsBatch;
-    @FXML private TableView<Student> studentTable;
-    @FXML private TableColumn<Student, String> studentCodeColumn;
-    @FXML private TableColumn<Student, String> studentNameColumn;
-    @FXML private TableColumn<Student, String> studentEmailColumn;
-    @FXML private TableColumn<Student, String> studentBatchColumn;
-    @FXML private TableColumn<Student, String> studentStatusColumn;
+    @FXML
+    private ComboBox<String> cmbAttendancePeriod;
 
-    @FXML private ComboBox<Batch> cmbLeaveBatch;
-    @FXML private TableView<LeaveRequest> leaveTable;
-    @FXML private TableColumn<LeaveRequest, String> leaveStudentColumn;
-    @FXML private TableColumn<LeaveRequest, String> leaveBatchColumn;
-    @FXML private TableColumn<LeaveRequest, String> leaveFromColumn;
-    @FXML private TableColumn<LeaveRequest, String> leaveToColumn;
-    @FXML private TableColumn<LeaveRequest, String> leaveStatusColumn;
-    // Add these fields in AdminDashboardController.java
+    @FXML
+    private ComboBox<Batch> cmbAttendanceBatch,
+            cmbStudentsBatch,
+            cmbLeaveBatch;
 
-    @FXML private Label lblPresentCount;
-    @FXML private Label lblAbsentCount;
-    @FXML private Label lblLateCount;
+    @FXML
+    private ComboBox<ExamOption> cmbExam;
+
+    @FXML
+    private PieChart attendancePieChart,
+            examPieChart;
+
+    @FXML
+    private TableView<Student> studentTable;
+
+    @FXML
+    private TableColumn<Student, String> studentCodeColumn,
+            studentNameColumn,
+            studentEmailColumn,
+            studentBatchColumn,
+            studentStatusColumn;
+
+    @FXML
+    private TableView<LeaveRequest> leaveTable;
+
+    @FXML
+    private TableColumn<LeaveRequest, String> leaveStudentColumn,
+            leaveBatchColumn,
+            leaveFromColumn,
+            leaveToColumn,
+            leaveStatusColumn;
+
+
+    // =========================================================
+    // DAO
+    // =========================================================
+
     private final AdminDAO adminDAO = new AdminDAO();
+
     private final StudentDao studentDAO = new StudentDao();
+
     private final TeacherDAO teacherDAO = new TeacherDAO();
+
     private final ClassDAO classDAO = new ClassDAO();
+
     private final SubjectDAO subjectDAO = new SubjectDAO();
+
     private final AttendanceDAO attendanceDAO = new AttendanceDAO();
+
     private final ExamDAO examDAO = new ExamDAO();
+
     private final LeaveDAO leaveDAO = new LeaveDAO();
+
+
+    // =========================================================
+    // CONSTANTS
+    // =========================================================
 
     private static final DateTimeFormatter DATE_FMT =
             DateTimeFormatter.ofPattern("dd MMM yyyy");
@@ -110,34 +130,65 @@ public class AdminDashboardController implements Initializable {
     private static final ExamOption ALL_EXAMS =
             new ExamOption(-1, "All Exams");
 
-    private static final String ACTIVE_MENU_STYLE =
-            "-fx-background-color: #4f46e5; " +
-                    "-fx-background-radius: 10; " +
-                    "-fx-text-fill: white; " +
-                    "-fx-font-size: 13px; " +
-                    "-fx-font-weight: bold; " +
-                    "-fx-alignment: CENTER_LEFT; " +
-                    "-fx-padding: 0 16; " +
-                    "-fx-cursor: hand;";
 
-    private static final String NORMAL_MENU_STYLE =
-            "-fx-background-color: transparent; " +
-                    "-fx-background-radius: 10; " +
-                    "-fx-text-fill: #cbd5e1; " +
-                    "-fx-font-size: 13px; " +
-                    "-fx-alignment: CENTER_LEFT; " +
-                    "-fx-padding: 0 16; " +
-                    "-fx-cursor: hand;";
+    private static final String ACTIVE =
+            "-fx-background-color:#4f46e5;" +
+                    "-fx-background-radius:10;" +
+                    "-fx-text-fill:white;" +
+                    "-fx-font-size:13px;" +
+                    "-fx-font-weight:bold;" +
+                    "-fx-alignment:CENTER_LEFT;" +
+                    "-fx-padding:0 16;" +
+                    "-fx-cursor:hand;";
+
+
+    private static final String NORMAL =
+            "-fx-background-color:transparent;" +
+                    "-fx-text-fill:#cbd5e1;" +
+                    "-fx-font-size:13px;" +
+                    "-fx-alignment:CENTER_LEFT;" +
+                    "-fx-padding:0 16;" +
+                    "-fx-cursor:hand;";
+
+
+    // =========================================================
+    // WELCOME TOAST TIMER
+    // =========================================================
+
+    private PauseTransition welcomeTimer;
+
+
+    // =========================================================
+    // INITIALIZE
+    // =========================================================
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL u, ResourceBundle r) {
+
         setupTableColumns();
+
         setupComboBoxes();
+
+        studentTable.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY
+        );
+
+        leaveTable.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY
+        );
+
         setActiveButton(btnDashboard);
+
         refreshDashboard();
     }
 
+
+    // =========================================================
+    // TABLE COLUMNS
+    // =========================================================
+
     private void setupTableColumns() {
+
         studentCodeColumn.setCellValueFactory(
                 new PropertyValueFactory<>("studentCode")
         );
@@ -158,6 +209,7 @@ public class AdminDashboardController implements Initializable {
                 new PropertyValueFactory<>("status")
         );
 
+
         leaveStudentColumn.setCellValueFactory(
                 new PropertyValueFactory<>("studentName")
         );
@@ -170,24 +222,36 @@ public class AdminDashboardController implements Initializable {
                 new PropertyValueFactory<>("status")
         );
 
-        leaveFromColumn.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(
-                        cellData.getValue().getLeaveFrom() != null
-                                ? cellData.getValue().getLeaveFrom().format(DATE_FMT)
-                                : ""
+
+        leaveFromColumn.setCellValueFactory(
+                x -> new SimpleStringProperty(
+                        x.getValue().getLeaveFrom() == null
+                                ? ""
+                                : x.getValue()
+                                .getLeaveFrom()
+                                .format(DATE_FMT)
                 )
         );
 
-        leaveToColumn.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(
-                        cellData.getValue().getLeaveTo() != null
-                                ? cellData.getValue().getLeaveTo().format(DATE_FMT)
-                                : ""
+
+        leaveToColumn.setCellValueFactory(
+                x -> new SimpleStringProperty(
+                        x.getValue().getLeaveTo() == null
+                                ? ""
+                                : x.getValue()
+                                .getLeaveTo()
+                                .format(DATE_FMT)
                 )
         );
     }
 
+
+    // =========================================================
+    // COMBO BOXES
+    // =========================================================
+
     private void setupComboBoxes() {
+
         cmbAttendancePeriod.setItems(
                 FXCollections.observableArrayList(
                         "This Week",
@@ -197,332 +261,667 @@ public class AdminDashboardController implements Initializable {
                 )
         );
 
-        cmbAttendancePeriod.getSelectionModel().select("This Month");
-        cmbAttendancePeriod.setOnAction(event -> loadAttendanceChart());
+        cmbAttendancePeriod.setValue("This Month");
 
-        List<Batch> batches = classDAO.getAllBatches();
+        cmbAttendancePeriod.setOnAction(
+                e -> loadAttendanceChart()
+        );
 
-        ObservableList<Batch> attendanceBatchItems =
-                FXCollections.observableArrayList();
 
-        attendanceBatchItems.add(ALL_BATCHES);
-        attendanceBatchItems.addAll(batches);
+        List<Batch> b = classDAO.getAllBatches();
 
-        cmbAttendanceBatch.setItems(attendanceBatchItems);
-        cmbAttendanceBatch.getSelectionModel().select(ALL_BATCHES);
-        cmbAttendanceBatch.setOnAction(event -> loadAttendanceChart());
 
-        ObservableList<Batch> studentBatchItems =
-                FXCollections.observableArrayList();
+        cmbAttendanceBatch.setItems(
+                FXCollections.observableArrayList()
+        );
 
-        studentBatchItems.add(ALL_BATCHES);
-        studentBatchItems.addAll(batches);
+        cmbAttendanceBatch.getItems().add(
+                ALL_BATCHES
+        );
 
-        cmbStudentsBatch.setItems(studentBatchItems);
-        cmbStudentsBatch.getSelectionModel().select(ALL_BATCHES);
-        cmbStudentsBatch.setOnAction(event -> loadStudentsByBatch());
+        cmbAttendanceBatch.getItems().addAll(b);
 
-        ObservableList<Batch> leaveBatchItems =
-                FXCollections.observableArrayList();
+        cmbAttendanceBatch.setValue(
+                ALL_BATCHES
+        );
 
-        leaveBatchItems.add(ALL_BATCHES);
-        leaveBatchItems.addAll(batches);
+        cmbAttendanceBatch.setOnAction(
+                e -> loadAttendanceChart()
+        );
 
-        cmbLeaveBatch.setItems(leaveBatchItems);
-        cmbLeaveBatch.getSelectionModel().select(ALL_BATCHES);
-        cmbLeaveBatch.setOnAction(event -> loadLeaveTable());
 
-        List<ExamOption> exams = examDAO.getAllExams();
+        for (ComboBox<Batch> box :
+                List.of(
+                        cmbStudentsBatch,
+                        cmbLeaveBatch
+                )) {
 
-        ObservableList<ExamOption> examItems =
-                FXCollections.observableArrayList();
+            box.setItems(
+                    FXCollections.observableArrayList()
+            );
 
-        examItems.add(ALL_EXAMS);
-        examItems.addAll(exams);
+            box.getItems().add(
+                    ALL_BATCHES
+            );
 
-        cmbExam.setItems(examItems);
-        cmbExam.getSelectionModel().select(ALL_EXAMS);
-        cmbExam.setOnAction(event -> loadExamChart());
+            box.getItems().addAll(b);
+
+            box.setValue(
+                    ALL_BATCHES
+            );
+        }
+
+
+        cmbStudentsBatch.setOnAction(
+                e -> loadStudentsByBatch()
+        );
+
+        cmbLeaveBatch.setOnAction(
+                e -> loadLeaveTable()
+        );
+
+
+        cmbExam.setItems(
+                FXCollections.observableArrayList()
+        );
+
+        cmbExam.getItems().add(
+                ALL_EXAMS
+        );
+
+        cmbExam.getItems().addAll(
+                examDAO.getAllExams()
+        );
+
+        cmbExam.setValue(
+                ALL_EXAMS
+        );
+
+        cmbExam.setOnAction(
+                e -> loadExamChart()
+        );
     }
 
-    public void setLoggedInAdmin(int adminId) {
-        Admin admin = adminDAO.getAdminById(adminId);
 
-        if (admin != null) {
-            lblAdminName.setText(admin.getFullName());
+    // =========================================================
+    // SET LOGGED IN ADMIN - ID
+    // =========================================================
+
+    public void setLoggedInAdmin(int id) {
+
+        Admin a = adminDAO.getAdminById(id);
+
+        if (a != null) {
+
+            lblAdminName.setText(
+                    a.getFullName()
+            );
+
+            showWelcomeToast(
+                    a.getFullName()
+            );
         }
     }
+
+
+    // =========================================================
+    // SET LOGGED IN ADMIN - USERNAME
+    // =========================================================
 
     public void setLoggedInAdmin(String username) {
-        Admin admin = adminDAO.getAdminByUsername(username);
 
-        if (admin != null) {
-            lblAdminName.setText(admin.getFullName());
-        }
+        Admin a =
+                adminDAO.getAdminByUsername(username);
+
+        String name =
+                a == null
+                        ? username
+                        : a.getFullName();
+
+
+        lblAdminName.setText(name);
+
+        showWelcomeToast(name);
     }
 
+
+    // =========================================================
+    // WELCOME TOAST
+    // =========================================================
+
+    private void showWelcomeToast(String name) {
+
+        if (name == null || name.trim().isEmpty()) {
+            name = "Administrator";
+        }
+
+
+        // Welcome message
+
+        lblDashboardWelcome.setText(
+                "Welcome, " + name +
+                        ". You are signed in successfully."
+        );
+
+
+        // Show toast
+
+        welcomeToast.setManaged(true);
+
+        welcomeToast.setVisible(true);
+
+
+        // Stop previous timer if there is one
+
+        if (welcomeTimer != null) {
+            welcomeTimer.stop();
+        }
+
+
+        // 5 seconds timer
+
+        welcomeTimer =
+                new PauseTransition(
+                        Duration.seconds(5)
+                );
+
+
+        welcomeTimer.setOnFinished(e -> {
+
+            welcomeToast.setVisible(false);
+
+            welcomeToast.setManaged(false);
+
+        });
+
+
+        welcomeTimer.play();
+    }
+
+
+    // =========================================================
+    // REFRESH DASHBOARD BUTTON
+    // =========================================================
+
     @FXML
-    public void refreshDashboard(ActionEvent event) {
+    public void refreshDashboard(ActionEvent e) {
+
         showDashboard();
+
         setActiveButton(btnDashboard);
+
         refreshDashboard();
     }
 
+
+    // =========================================================
+    // REFRESH DASHBOARD
+    // =========================================================
+
     public void refreshDashboard() {
+
         loadStatCards();
+
         loadAttendanceChart();
+
         loadExamChart();
+
         loadStudentsByBatch();
+
         loadLeaveTable();
     }
 
+
+    // =========================================================
+    // STAT CARDS
+    // =========================================================
+
     private void loadStatCards() {
+
         lblTotalStudents.setText(
-                String.valueOf(studentDAO.getTotalStudents())
+                "" + studentDAO.getTotalStudents()
         );
 
         lblTotalTeachers.setText(
-                String.valueOf(teacherDAO.getTotalTeachers())
+                "" + teacherDAO.getTotalTeachers()
         );
 
         lblTotalClasses.setText(
-                String.valueOf(classDAO.getTotalClasses())
+                "" + classDAO.getTotalClasses()
         );
 
         lblTotalSubjects.setText(
-                String.valueOf(subjectDAO.getTotalSubjects())
+                "" + subjectDAO.getTotalSubjects()
         );
     }
 
+
+    // =========================================================
+    // ATTENDANCE CHART
+    // =========================================================
+
     private void loadAttendanceChart() {
-        String period = cmbAttendancePeriod.getValue();
-        Batch batch = cmbAttendanceBatch.getValue();
 
-        int batchId = batch == null ? -1 : batch.getId();
+        Batch b =
+                cmbAttendanceBatch.getValue();
 
-        AttendanceSummary summary =
-                attendanceDAO.getAttendanceSummary(period, batchId);
 
-        int present = summary.getPresentCount();
-        int absent = summary.getAbsentCount();
-        int late = summary.getLateCount();
+        AttendanceSummary s =
+                attendanceDAO.getAttendanceSummary(
+                        cmbAttendancePeriod.getValue(),
+                        b == null ? -1 : b.getId()
+                );
 
-        ObservableList<PieChart.Data> data;
 
-        if (present + absent + late == 0) {
-            data = FXCollections.observableArrayList(
-                    new PieChart.Data("No Data", 1)
-            );
-        } else {
-            data = FXCollections.observableArrayList(
-                    new PieChart.Data("Present", present),
-                    new PieChart.Data("Absent", absent),
-                    new PieChart.Data("Late", late)
-            );
-        }
+        int p = s.getPresentCount();
 
-        attendancePieChart.setData(data);
-        attendancePieChart.setTitle(null);
-        // Add these lines inside loadAttendanceChart(), after present, absent, and late are declared
+        int a = s.getAbsentCount();
 
-        lblPresentCount.setText(String.valueOf(present));
-        lblAbsentCount.setText(String.valueOf(absent));
-        lblLateCount.setText(String.valueOf(late));
-        styleNoDataSliceIfPresent(attendancePieChart);
-    }
+        int l = s.getLateCount();
 
-    private void loadExamChart() {
-        ExamOption exam = cmbExam.getValue();
 
-        if (exam == null) {
-            lblPassCount.setText("0");
-            lblFailCount.setText("0");
+        lblPresentCount.setText(
+                "" + p
+        );
 
-            examPieChart.setData(
+        lblAbsentCount.setText(
+                "" + a
+        );
+
+        lblLateCount.setText(
+                "" + l
+        );
+
+
+        if (p + a + l == 0) {
+
+            attendancePieChart.setData(
                     FXCollections.observableArrayList(
-                            new PieChart.Data("No Exam Selected", 1)
+                            new PieChart.Data(
+                                    "No Data",
+                                    1
+                            )
                     )
             );
 
-            examPieChart.setTitle(null);
-            styleNoDataSliceIfPresent(examPieChart);
-            return;
-        }
-
-        ExamResultSummary summary =
-                examDAO.getExamResultSummary(exam.getId());
-
-        int pass = summary.getPassCount();
-        int fail = summary.getFailCount();
-
-        lblPassCount.setText(String.valueOf(pass));
-        lblFailCount.setText(String.valueOf(fail));
-
-        ObservableList<PieChart.Data> data;
-
-        if (pass + fail == 0) {
-            data = FXCollections.observableArrayList(
-                    new PieChart.Data("No Grades Yet", 1)
-            );
         } else {
-            data = FXCollections.observableArrayList(
-                    new PieChart.Data("Pass", pass),
-                    new PieChart.Data("Fail", fail)
+
+            attendancePieChart.setData(
+                    FXCollections.observableArrayList(
+                            new PieChart.Data(
+                                    "Present",
+                                    p
+                            ),
+
+                            new PieChart.Data(
+                                    "Absent",
+                                    a
+                            ),
+
+                            new PieChart.Data(
+                                    "Late",
+                                    l
+                            )
+                    )
             );
         }
 
-        examPieChart.setData(data);
-        examPieChart.setTitle(null);
 
-        styleNoDataSliceIfPresent(examPieChart);
+        styleNoData(
+                attendancePieChart
+        );
     }
 
-    private void styleNoDataSliceIfPresent(PieChart chart) {
-        for (PieChart.Data data : chart.getData()) {
-            if (data.getName() != null && data.getName().startsWith("No ")) {
-                if (data.getNode() != null) {
-                    data.getNode().setStyle("-fx-pie-color: #cbd5e1;");
-                } else {
-                    data.nodeProperty().addListener((obs, oldNode, newNode) -> {
-                        if (newNode != null) {
-                            newNode.setStyle("-fx-pie-color: #cbd5e1;");
+
+    // =========================================================
+    // EXAM CHART
+    // =========================================================
+
+    private void loadExamChart() {
+
+        ExamOption e =
+                cmbExam.getValue();
+
+
+        ExamResultSummary s =
+                examDAO.getExamResultSummary(
+                        e == null
+                                ? -1
+                                : e.getId()
+                );
+
+
+        int p =
+                s.getPassCount();
+
+        int f =
+                s.getFailCount();
+
+
+        lblPassCount.setText(
+                "" + p
+        );
+
+        lblFailCount.setText(
+                "" + f
+        );
+
+
+        if (p + f == 0) {
+
+            examPieChart.setData(
+                    FXCollections.observableArrayList(
+                            new PieChart.Data(
+                                    "No Grades Yet",
+                                    1
+                            )
+                    )
+            );
+
+        } else {
+
+            examPieChart.setData(
+                    FXCollections.observableArrayList(
+                            new PieChart.Data(
+                                    "Pass",
+                                    p
+                            ),
+
+                            new PieChart.Data(
+                                    "Fail",
+                                    f
+                            )
+                    )
+            );
+        }
+
+
+        styleNoData(
+                examPieChart
+        );
+    }
+
+
+    // =========================================================
+    // NO DATA PIE STYLE
+    // =========================================================
+
+    private void styleNoData(PieChart c) {
+
+        for (PieChart.Data d : c.getData()) {
+
+            if (d.getName().startsWith("No ")) {
+
+                d.nodeProperty().addListener(
+                        (o, n, x) -> {
+
+                            if (x != null) {
+
+                                x.setStyle(
+                                        "-fx-pie-color:#cbd5e1;"
+                                );
+                            }
                         }
-                    });
-                }
+                );
             }
         }
     }
+
+
+    // =========================================================
+    // STUDENTS
+    // =========================================================
 
     private void loadStudentsByBatch() {
-        Batch batch = cmbStudentsBatch.getValue();
-        int batchId = batch == null ? -1 : batch.getId();
 
-        List<Student> students =
-                studentDAO.getStudentsByBatch(batchId);
+        Batch b =
+                cmbStudentsBatch.getValue();
+
 
         studentTable.setItems(
-                FXCollections.observableArrayList(students)
+                FXCollections.observableArrayList(
+                        studentDAO.getStudentsByBatch(
+                                b == null
+                                        ? -1
+                                        : b.getId()
+                        )
+                )
         );
     }
+
+
+    // =========================================================
+    // LEAVE TABLE
+    // =========================================================
 
     private void loadLeaveTable() {
-        Batch batch = cmbLeaveBatch.getValue();
-        int batchId = batch == null ? -1 : batch.getId();
 
-        List<LeaveRequest> pending =
-                leaveDAO.getPendingLeaveRequestsByBatch(batchId);
+        Batch b =
+                cmbLeaveBatch.getValue();
+
 
         leaveTable.setItems(
-                FXCollections.observableArrayList(pending)
+                FXCollections.observableArrayList(
+                        leaveDAO.getPendingLeaveRequestsByBatch(
+                                b == null
+                                        ? -1
+                                        : b.getId()
+                        )
+                )
         );
     }
 
-    private void setActiveButton(Button selectedButton) {
-        Button[] menuButtons = {
-                btnDashboard,
-                btnStudents,
-                btnTeachers,
-                btnClasses,
-                btnSubjects,
-                btnExams,
-                btnGrades,
-                btnAttendance,
-                btnLeave,
-                btnAnnouncements,
-                btnProfile
-        };
 
-        for (Button button : menuButtons) {
-            if (button == selectedButton) {
-                button.setStyle(ACTIVE_MENU_STYLE);
-            } else {
-                button.setStyle(NORMAL_MENU_STYLE);
-            }
+    // =========================================================
+    // ACTIVE MENU
+    // =========================================================
+
+    private void setActiveButton(Button selected) {
+
+        for (Button b :
+                List.of(
+                        btnDashboard,
+                        btnStudents,
+                        btnTeachers,
+                        btnClasses,
+                        btnSubjects,
+                        btnExams,
+                        btnGrades,
+                        btnAttendance,
+                        btnLeave,
+                        btnAnnouncements,
+                        btnProfile
+                )) {
+
+            b.setStyle(
+                    b == selected
+                            ? ACTIVE
+                            : NORMAL
+            );
         }
     }
 
-    @FXML
-    public void openStudents(ActionEvent event) {
-        setActiveButton(btnStudents);
-        showAdminPane();
-        // TODO: load Students.fxml into adminPane
-    }
 
-    @FXML
-    public void openTeachers(ActionEvent event) {
-        setActiveButton(btnTeachers);
-        showAdminPane();
-        // TODO: load Teachers.fxml into adminPane
-    }
-
-    @FXML
-    public void openClasses(ActionEvent event) {
-        setActiveButton(btnClasses);
-        showAdminPane();
-        // TODO: load Classes.fxml into adminPane
-    }
-
-    @FXML
-    public void openSubjects(ActionEvent event) {
-        setActiveButton(btnSubjects);
-        showAdminPane();
-        // TODO: load Subjects.fxml into adminPane
-    }
-
-    @FXML
-    public void openExams(ActionEvent event) {
-        setActiveButton(btnExams);
-        showAdminPane();
-        // TODO: load Exams.fxml into adminPane
-    }
-
-    @FXML
-    public void openGrades(ActionEvent event) {
-        setActiveButton(btnGrades);
-        showAdminPane();
-        // TODO: load Grades.fxml into adminPane
-    }
-
-    @FXML
-    public void openAttendance(ActionEvent event) {
-        setActiveButton(btnAttendance);
-        showAdminPane();
-        // TODO: load Attendance.fxml into adminPane
-    }
-
-    @FXML
-    public void openLeaveRequests(ActionEvent event) {
-        setActiveButton(btnLeave);
-        showAdminPane();
-        // TODO: load LeaveRequests.fxml into adminPane
-    }
-
-    @FXML
-    public void openAnnouncements(ActionEvent event) {
-        setActiveButton(btnAnnouncements);
-        showAdminPane();
-        // TODO: load Announcements.fxml into adminPane
-    }
-
-    @FXML
-    public void openProfile(ActionEvent event) {
-        setActiveButton(btnProfile);
-        showAdminPane();
-        // TODO: load Profile.fxml into adminPane
-    }
-
-    @FXML
-    public void logout(ActionEvent event) {
-        // TODO: clear session and navigate back to login screen
-    }
+    // =========================================================
+    // SHOW ADMIN PAGE
+    // =========================================================
 
     private void showAdminPane() {
+
         dashboardScrollPane.setVisible(false);
+
         adminPane.setVisible(true);
     }
 
+
+    // =========================================================
+    // SHOW DASHBOARD
+    // =========================================================
+
     private void showDashboard() {
+
         adminPane.setVisible(false);
+
         dashboardScrollPane.setVisible(true);
+    }
+
+
+    // =========================================================
+    // STUDENTS
+    // =========================================================
+
+    @FXML
+    public void openStudents(ActionEvent e) {
+
+        setActiveButton(
+                btnStudents
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // TEACHERS
+    // =========================================================
+
+    @FXML
+    public void openTeachers(ActionEvent e) {
+
+        setActiveButton(
+                btnTeachers
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // CLASSES
+    // =========================================================
+
+    @FXML
+    public void openClasses(ActionEvent e) {
+
+        setActiveButton(
+                btnClasses
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // SUBJECTS
+    // =========================================================
+
+    @FXML
+    public void openSubjects(ActionEvent e) {
+
+        setActiveButton(
+                btnSubjects
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // EXAMS
+    // =========================================================
+
+    @FXML
+    public void openExams(ActionEvent e) {
+
+        setActiveButton(
+                btnExams
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // GRADES
+    // =========================================================
+
+    @FXML
+    public void openGrades(ActionEvent e) {
+
+        setActiveButton(
+                btnGrades
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // ATTENDANCE
+    // =========================================================
+
+    @FXML
+    public void openAttendance(ActionEvent e) {
+
+        setActiveButton(
+                btnAttendance
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // LEAVE
+    // =========================================================
+
+    @FXML
+    public void openLeaveRequests(ActionEvent e) {
+
+        setActiveButton(
+                btnLeave
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // ANNOUNCEMENTS
+    // =========================================================
+
+    @FXML
+    public void openAnnouncements(ActionEvent e) {
+
+        setActiveButton(
+                btnAnnouncements
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // PROFILE
+    // =========================================================
+
+    @FXML
+    public void openProfile(ActionEvent e) {
+
+        setActiveButton(
+                btnProfile
+        );
+
+        showAdminPane();
+    }
+
+
+    // =========================================================
+    // LOGOUT
+    // =========================================================
+
+    @FXML
+    public void logout(ActionEvent e) {
+
     }
 }
