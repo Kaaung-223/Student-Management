@@ -1,5 +1,7 @@
 package com.example.student_management_system.Controller.DAO;
 
+import com.example.student_management_system.Controller.Model.PerformancePeriod;
+import com.example.student_management_system.Controller.Model.StudentPerformance;
 import com.example.student_management_system.Controller.Model.StudentProfile;
 
 import java.sql.*;
@@ -58,5 +60,159 @@ public class StudentProfileDAO {
         s.setFailCount(r.getInt("fail_count"));
         s.setLatestResult(r.getString("latest_result"));
         return s;
+    }
+    public List<PerformancePeriod> getPerformancePeriods(int studentId) {
+        List<PerformancePeriod> periods = new ArrayList<>();
+
+        periods.add(new PerformancePeriod("All Academic Year", null, null));
+
+        String sql =
+                "SELECT DISTINCT attendance_year, attendance_month, month_name " +
+                        "FROM ( " +
+                        "   SELECT YEAR(attendance_date) AS attendance_year, " +
+                        "          MONTH(attendance_date) AS attendance_month, " +
+                        "          DATE_FORMAT(attendance_date, '%M %Y') AS month_name " +
+                        "   FROM attendance " +
+                        "   WHERE student_id=? " +
+                        "   UNION " +
+                        "   SELECT YEAR(e.exam_date), MONTH(e.exam_date), " +
+                        "          DATE_FORMAT(e.exam_date, '%M %Y') " +
+                        "   FROM grades g " +
+                        "   JOIN exams e ON e.exam_id=g.exam_id " +
+                        "   WHERE g.student_id=? AND e.exam_date IS NOT NULL " +
+                        ") AS periods " +
+                        "ORDER BY attendance_year DESC, attendance_month DESC";
+
+        try (
+                Connection con = DBConnention.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)
+        ) {
+            ps.setInt(1, studentId);
+            ps.setInt(2, studentId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    periods.add(new PerformancePeriod(
+                            rs.getString("month_name"),
+                            rs.getInt("attendance_year"),
+                            rs.getInt("attendance_month")
+                    ));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return periods;
+    }
+
+    public StudentPerformance getStudentPerformance(
+            int studentId,
+            Integer year,
+            Integer month
+    ) {
+        int present = 0;
+        int absent = 0;
+        int late = 0;
+        double gpa = 0.0;
+
+        String attendanceSql =
+                "SELECT " +
+                        "COALESCE(SUM(status='Present'), 0) AS present_count, " +
+                        "COALESCE(SUM(status='Absent'), 0) AS absent_count, " +
+                        "COALESCE(SUM(status='Late'), 0) AS late_count " +
+                        "FROM attendance " +
+                        "WHERE student_id=? " +
+                        "AND (? IS NULL OR YEAR(attendance_date)=?) " +
+                        "AND (? IS NULL OR MONTH(attendance_date)=?)";
+
+        String gpaSql =
+                "SELECT COALESCE(AVG(CASE " +
+                        "WHEN percentage >= 90 THEN 4.0 " +
+                        "WHEN percentage >= 80 THEN 3.5 " +
+                        "WHEN percentage >= 70 THEN 3.0 " +
+                        "WHEN percentage >= 60 THEN 2.5 " +
+                        "WHEN percentage >= 50 THEN 2.0 " +
+                        "ELSE 0.0 END), 0) AS gpa " +
+                        "FROM grades g " +
+                        "JOIN exams e ON e.exam_id=g.exam_id " +
+                        "WHERE g.student_id=? " +
+                        "AND (? IS NULL OR YEAR(e.exam_date)=?) " +
+                        "AND (? IS NULL OR MONTH(e.exam_date)=?)";
+
+        try (Connection con = DBConnention.getConnection()) {
+
+            try (PreparedStatement ps = con.prepareStatement(attendanceSql)) {
+                ps.setInt(1, studentId);
+
+                if (year == null) {
+                    ps.setNull(2, java.sql.Types.INTEGER);
+                    ps.setNull(3, java.sql.Types.INTEGER);
+                } else {
+                    ps.setInt(2, year);
+                    ps.setInt(3, year);
+                }
+
+                if (month == null) {
+                    ps.setNull(4, java.sql.Types.INTEGER);
+                    ps.setNull(5, java.sql.Types.INTEGER);
+                } else {
+                    ps.setInt(4, month);
+                    ps.setInt(5, month);
+                }
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        present = rs.getInt("present_count");
+                        absent = rs.getInt("absent_count");
+                        late = rs.getInt("late_count");
+                    }
+                }
+            }
+
+            try (PreparedStatement ps = con.prepareStatement(gpaSql)) {
+                ps.setInt(1, studentId);
+
+                if (year == null) {
+                    ps.setNull(2, java.sql.Types.INTEGER);
+                    ps.setNull(3, java.sql.Types.INTEGER);
+                } else {
+                    ps.setInt(2, year);
+                    ps.setInt(3, year);
+                }
+
+                if (month == null) {
+                    ps.setNull(4, java.sql.Types.INTEGER);
+                    ps.setNull(5, java.sql.Types.INTEGER);
+                } else {
+                    ps.setInt(4, month);
+                    ps.setInt(5, month);
+                }
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        gpa = rs.getDouble("gpa");
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int totalAttendance = present + absent + late;
+
+        double attendanceRate = totalAttendance == 0
+                ? 0.0
+                : (present * 100.0) / totalAttendance;
+
+        return new StudentPerformance(
+                present,
+                absent,
+                late,
+                attendanceRate,
+                gpa
+        );
     }
 }

@@ -3,6 +3,7 @@ package com.example.student_management_system.Controller.Admin;
 import com.example.student_management_system.Controller.DAO.DBConnention;
 import com.example.student_management_system.Controller.DAO.StudentProfileDAO;
 import com.example.student_management_system.Controller.Model.BatchFilter;
+import com.example.student_management_system.Controller.Model.PerformancePeriod;
 import com.example.student_management_system.Controller.Model.StudentProfile;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
@@ -16,8 +17,16 @@ import java.net.URL;
 import java.sql.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import com.example.student_management_system.Controller.Model.PerformancePeriod;
+import com.example.student_management_system.Controller.Model.StudentPerformance;
 
 public class AdminStudentsController implements Initializable {
+    @FXML private ComboBox<PerformancePeriod> cmbPerformancePeriod;
+    @FXML private Label lblAttendanceRate;
+    @FXML private Label lblGpa;
+    @FXML private Label lblPerformancePeriod;
+
+    private StudentProfile selectedStudent;
     @FXML
     private ComboBox<BatchFilter> cmbBatch;
     @FXML
@@ -43,7 +52,9 @@ public class AdminStudentsController implements Initializable {
         cmbBatch.setOnAction(e -> refreshStudents());
         txtSearch.textProperty().addListener((o, a, b) -> searchAfterTyping());
         studentTable.getSelectionModel().selectedItemProperty().addListener((o, a, b) -> showProfile(b));
+        cmbPerformancePeriod.setOnAction(event -> loadPerformance());
         refreshStudents();
+
     }
 
     private void loadBatches() {
@@ -71,25 +82,78 @@ public class AdminStudentsController implements Initializable {
         else clearProfile();
     }
 
-    private void showProfile(StudentProfile s) {
-        if (s == null) {
+    private void loadPerformance() {
+        if (selectedStudent == null) {
+            return;
+        }
+
+        PerformancePeriod period = cmbPerformancePeriod.getValue();
+
+        if (period == null) {
+            return;
+        }
+
+        StudentPerformance performance =
+                dao.getStudentPerformance(
+                        selectedStudent.getStudentId(),
+                        period.getYear(),
+                        period.getMonth()
+                );
+
+        lblPerformancePeriod.setText("Performance: " + period);
+
+        lblAttendanceRate.setText(
+                String.format("%.1f%%", performance.getAttendanceRate())
+        );
+
+        lblGpa.setText(
+                String.format("%.2f", performance.getGpa())
+        );
+    }
+
+    private void showProfile(StudentProfile student) {
+        if (student == null) {
             clearProfile();
             return;
         }
-        lblAvatar.setText(s.getInitials());
-        lblStudentName.setText(s.getStudentName());
-        lblStudentCode.setText(s.getStudentCode() + "  |  " + s.getStatus());
-        lblBatchName.setText("Batch: " + s.getBatchName());
-        lblContact.setText("Email: " + value(s.getEmail()));
-        lblPhone.setText("Phone: " + value(s.getPhone()));
-        lblAdmission.setText("Admission: " + (s.getAdmissionDate() == null ? "--" : s.getAdmissionDate().format(DATE)));
-        lblPresent.setText("" + s.getPresentCount());
-        lblAbsent.setText("" + s.getAbsentCount());
-        lblLate.setText("" + s.getLateCount());
-        lblPass.setText("" + s.getPassCount());
-        lblFail.setText("" + s.getFailCount());
-        lblLeave.setText("" + s.getLeaveCount());
-        lblLatestResult.setText("Latest exam result: " + value(s.getLatestResult()));
+
+        selectedStudent = student;
+
+        lblAvatar.setText(student.getInitials());
+        lblStudentName.setText(student.getStudentName());
+        lblStudentCode.setText(student.getStudentCode() + "  |  " + student.getStatus());
+
+        lblBatchName.setText("Batch: " + value(student.getBatchName()));
+        lblContact.setText("Email: " + value(student.getEmail()));
+        lblPhone.setText("Phone: " + value(student.getPhone()));
+
+        lblAdmission.setText(
+                "Admission: " +
+                        (student.getAdmissionDate() == null
+                                ? "--"
+                                : student.getAdmissionDate().format(DATE))
+        );
+
+        lblPresent.setText(String.valueOf(student.getPresentCount()));
+        lblAbsent.setText(String.valueOf(student.getAbsentCount()));
+        lblLate.setText(String.valueOf(student.getLateCount()));
+        lblPass.setText(String.valueOf(student.getPassCount()));
+        lblFail.setText(String.valueOf(student.getFailCount()));
+        lblLeave.setText(String.valueOf(student.getLeaveCount()));
+
+        lblLatestResult.setText(
+                "Latest exam result: " + value(student.getLatestResult())
+        );
+
+        cmbPerformancePeriod.setItems(
+                FXCollections.observableArrayList(
+                        dao.getPerformancePeriods(student.getStudentId())
+                )
+        );
+
+        cmbPerformancePeriod.getSelectionModel().selectFirst();
+
+        loadPerformance();
     }
 
     private String value(String v) {
