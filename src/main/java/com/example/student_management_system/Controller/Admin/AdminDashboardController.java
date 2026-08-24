@@ -8,7 +8,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -770,14 +772,26 @@ public class AdminDashboardController implements Initializable {
     // STUDENTS
     // =========================================================
 
-    @FXML
-    public void openStudents(ActionEvent e) {
+    public void openStudents(ActionEvent event) {
+        try {
+            setActiveButton(btnStudents);
+            showAdminPane();
 
-        setActiveButton(
-                btnStudents
-        );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Admin/AdminStudent.fxml"
+            ));
 
-        showAdminPane();
+            Parent studentPage = loader.load();
+
+            AnchorPane.setTopAnchor(studentPage, 0.0);
+            AnchorPane.setRightAnchor(studentPage, 0.0);
+            AnchorPane.setBottomAnchor(studentPage, 0.0);
+            AnchorPane.setLeftAnchor(studentPage, 0.0);
+
+            adminPane.getChildren().setAll(studentPage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
