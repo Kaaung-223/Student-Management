@@ -273,6 +273,23 @@ public class AdminClassController implements Initializable {
                         teachers
                 )
         );
+
+        // ========== FIX: Display teacher name in ComboBox ==========
+        cmbTeacher.setCellFactory(lv -> new ListCell<Teacher>() {
+            @Override
+            protected void updateItem(Teacher teacher, boolean empty) {
+                super.updateItem(teacher, empty);
+                setText(empty || teacher == null ? null : teacher.getTeacherName());
+            }
+        });
+
+        cmbTeacher.setButtonCell(new ListCell<Teacher>() {
+            @Override
+            protected void updateItem(Teacher teacher, boolean empty) {
+                super.updateItem(teacher, empty);
+                setText(empty || teacher == null ? null : teacher.getTeacherName());
+            }
+        });
     }
 
 
