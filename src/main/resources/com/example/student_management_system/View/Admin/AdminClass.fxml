@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.student_management_system.Controller.Admin.AdminClassController"
+        style="-fx-background-color:#f8fafc;">
+
+    <children>
+
+        <VBox
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0"
+                spacing="18">
+
+            <padding>
+                <Insets top="25" right="30" bottom="25" left="30"/>
+            </padding>
+
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <HBox alignment="CENTER_LEFT" spacing="15">
+
+                <VBox HBox.hgrow="ALWAYS">
+
+                    <Label
+                            text="Class Management"
+                            style="-fx-font-size:26px;
+                                   -fx-font-weight:bold;
+                                   -fx-text-fill:#0f172a;"/>
+
+                    <Label
+                            text="Create and manage school classes"
+                            style="-fx-font-size:13px;
+               -fx-text-fill:#64748b;">
+                        <VBox.margin>
+                            <Insets top="5" right="0" bottom="0" left="0"/>
+                        </VBox.margin>
+                    </Label>
+
+                </VBox>
+
+                <Button
+                        fx:id="btnAddClass"
+                        text="+  Create Class"
+                        onAction="#handleCreateClass"
+                        style="-fx-background-color:#4f46e5;
+                               -fx-text-fill:white;
+                               -fx-font-size:14px;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:8;
+                               -fx-padding:11 20;
+                               -fx-cursor:hand;"/>
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- FORM CARD -->
+            <!-- ================================================= -->
+
+            <VBox
+                    fx:id="formCard"
+                    spacing="15"
+                    style="-fx-background-color:white;
+                           -fx-background-radius:12;
+                           -fx-border-color:#e2e8f0;
+                           -fx-border-radius:12;
+                           -fx-padding:20;">
+
+                <Label
+                        fx:id="lblFormTitle"
+                        text="Create New Class"
+                        style="-fx-font-size:18px;
+                               -fx-font-weight:bold;
+                               -fx-text-fill:#0f172a;"/>
+
+                <GridPane
+                        hgap="15"
+                        vgap="12">
+
+                    <columnConstraints>
+
+                        <ColumnConstraints
+                                percentWidth="16"/>
+
+                        <ColumnConstraints
+                                percentWidth="34"/>
+
+                        <ColumnConstraints
+                                percentWidth="16"/>
+
+                        <ColumnConstraints
+                                percentWidth="34"/>
+
+                    </columnConstraints>
+
+
+                    <!-- CLASS NAME -->
+
+                    <Label
+                            text="Class Name"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="0"
+                            style="-fx-font-size:13px;
+                                   -fx-text-fill:#334155;"/>
+
+                    <TextField
+                            fx:id="txtClassName"
+                            promptText="e.g. Batch 2 Java"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="1"
+                            style="-fx-background-color:#f8fafc;
+                                   -fx-border-color:#cbd5e1;
+                                   -fx-border-radius:6;
+                                   -fx-background-radius:6;
+                                   -fx-padding:9;"/>
+
+
+                    <!-- ACADEMIC YEAR -->
+
+                    <Label
+                            text="Academic Year"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="2"
+                            style="-fx-font-size:13px;
+                                   -fx-text-fill:#334155;"/>
+
+                    <TextField
+                            fx:id="txtAcademicYear"
+                            promptText="e.g. 2026"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="3"
+                            style="-fx-background-color:#f8fafc;
+                                   -fx-border-color:#cbd5e1;
+                                   -fx-border-radius:6;
+                                   -fx-background-radius:6;
+                                   -fx-padding:9;"/>
+
+
+                    <!-- ROOM -->
+
+                    <Label
+                            text="Room No"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="0"
+                            style="-fx-font-size:13px;
+                                   -fx-text-fill:#334155;"/>
+
+                    <TextField
+                            fx:id="txtRoomNo"
+                            promptText="e.g. Room 104"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="1"
+                            style="-fx-background-color:#f8fafc;
+                                   -fx-border-color:#cbd5e1;
+                                   -fx-border-radius:6;
+                                   -fx-background-radius:6;
+                                   -fx-padding:9;"/>
+
+
+                    <!-- CLASS TEACHER -->
+
+                    <Label
+                            text="Class Leader"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="2"
+                            style="-fx-font-size:13px;
+                                   -fx-text-fill:#334155;"/>
+
+                    <ComboBox
+                            fx:id="cmbTeacher"
+                            promptText="Select class leader"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="3"
+                            style="-fx-background-color:#f8fafc;
+                                   -fx-border-color:#cbd5e1;
+                                   -fx-border-radius:6;
+                                   -fx-background-radius:6;"/>
+
+
+                    <!-- DURATION -->
+
+                    <Label
+                            text="Duration"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="0"
+                            style="-fx-font-size:13px;
+                                   -fx-text-fill:#334155;"/>
+
+                    <HBox
+                            spacing="8"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="1">
+
+                        <TextField
+                                fx:id="txtDuration"
+                                text="12"
+                                promptText="Months"
+                                prefWidth="120"
+                                style="-fx-background-color:#f8fafc;
+                                       -fx-border-color:#cbd5e1;
+                                       -fx-border-radius:6;
+                                       -fx-background-radius:6;
+                                       -fx-padding:9;"/>
+
+                        <Label
+                                text="months"
+                                alignment="CENTER"
+                                style="-fx-text-fill:#64748b;"/>
+
+                    </HBox>
+
+
+                    <!-- STATUS -->
+
+                    <Label
+                            text="Status"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="2"
+                            style="-fx-font-size:13px;
+                                   -fx-text-fill:#334155;"/>
+
+                    <ComboBox
+                            fx:id="cmbStatus"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="3"
+                            style="-fx-background-color:#f8fafc;
+                                   -fx-border-color:#cbd5e1;
+                                   -fx-border-radius:6;
+                                   -fx-background-radius:6;"/>
+
+                </GridPane>
+
+
+                <!-- FORM BUTTONS -->
+
+                <HBox
+                        alignment="CENTER_RIGHT"
+                        spacing="10">
+
+                    <Button
+                            fx:id="btnCancel"
+                            text="Cancel"
+                            onAction="#handleCancel"
+                            style="-fx-background-color:#e2e8f0;
+                                   -fx-text-fill:#334155;
+                                   -fx-font-weight:bold;
+                                   -fx-background-radius:7;
+                                   -fx-padding:9 18;
+                                   -fx-cursor:hand;"/>
+
+                    <Button
+                            fx:id="btnSave"
+                            text="Save Class"
+                            onAction="#handleSave"
+                            style="-fx-background-color:#16a34a;
+                                   -fx-text-fill:white;
+                                   -fx-font-weight:bold;
+                                   -fx-background-radius:7;
+                                   -fx-padding:9 18;
+                                   -fx-cursor:hand;"/>
+
+                </HBox>
+
+            </VBox>
+
+
+            <!-- ================================================= -->
+            <!-- SEARCH -->
+            <!-- ================================================= -->
+
+            <HBox spacing="10">
+
+                <TextField
+                        fx:id="txtSearch"
+                        promptText="Search class name, year, room or teacher..."
+                        HBox.hgrow="ALWAYS"
+                        style="-fx-background-color:white;
+                               -fx-border-color:#cbd5e1;
+                               -fx-border-radius:8;
+                               -fx-background-radius:8;
+                               -fx-padding:10;"/>
+
+                <Button
+                        text="Search"
+                        onAction="#handleSearch"
+                        style="-fx-background-color:#334155;
+                               -fx-text-fill:white;
+                               -fx-background-radius:8;
+                               -fx-padding:10 18;
+                               -fx-cursor:hand;"/>
+
+                <Button
+                        text="Refresh"
+                        onAction="#handleRefresh"
+                        style="-fx-background-color:#e2e8f0;
+                               -fx-text-fill:#334155;
+                               -fx-background-radius:8;
+                               -fx-padding:10 18;
+                               -fx-cursor:hand;"/>
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- TABLE -->
+            <!-- ================================================= -->
+
+            <VBox
+                    VBox.vgrow="ALWAYS"
+                    style="-fx-background-color:white;
+                           -fx-background-radius:12;
+                           -fx-border-color:#e2e8f0;
+                           -fx-border-radius:12;">
+
+                <TableView
+                        fx:id="classTable"
+                        VBox.vgrow="ALWAYS"
+                        style="-fx-background-color:white;
+                               -fx-border-color:transparent;">
+
+                    <columns>
+
+                        <TableColumn
+                                fx:id="idColumn"
+                                text="ID"
+                                prefWidth="60"/>
+
+                        <TableColumn
+                                fx:id="nameColumn"
+                                text="Class Name"
+                                prefWidth="200"/>
+
+                        <TableColumn
+                                fx:id="yearColumn"
+                                text="Academic Year"
+                                prefWidth="130"/>
+
+                        <TableColumn
+                                fx:id="roomColumn"
+                                text="Room"
+                                prefWidth="120"/>
+
+                        <TableColumn
+                                fx:id="teacherColumn"
+                                text="Class Leader"
+                                prefWidth="180"/>
+
+                        <TableColumn
+                                fx:id="durationColumn"
+                                text="Duration"
+                                prefWidth="100"/>
+
+                        <TableColumn
+                                fx:id="statusColumn"
+                                text="Status"
+                                prefWidth="110"/>
+
+                        <TableColumn
+                                fx:id="actionColumn"
+                                text="Action"
+                                prefWidth="160"/>
+
+                    </columns>
+
+                </TableView>
+
+            </VBox>
+
+        </VBox>
+
+    </children>
+
+</AnchorPane>
