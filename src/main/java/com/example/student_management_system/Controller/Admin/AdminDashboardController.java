@@ -391,51 +391,62 @@ public class AdminDashboardController implements Initializable {
     // WELCOME TOAST
     // =========================================================
 
+    // =========================================================
+// WELCOME TOAST
+// =========================================================
+
     private void showWelcomeToast(String name) {
 
         if (name == null || name.trim().isEmpty()) {
             name = "Administrator";
         }
 
+        // =====================================================
+        // TOAST SIZE
+        // =====================================================
+        // Prevent the welcome message from filling the whole page
+        welcomeToast.setPrefWidth(420);
+        welcomeToast.setMinWidth(420);
+        welcomeToast.setMaxWidth(420);
 
-        // Welcome message
+        welcomeToast.setPrefHeight(125);
+        welcomeToast.setMinHeight(125);
+        welcomeToast.setMaxHeight(125);
 
+        // =====================================================
+        // WELCOME MESSAGE
+        // =====================================================
         lblDashboardWelcome.setText(
                 "Welcome, " + name +
                         ". You are signed in successfully."
         );
 
-
-        // Show toast
-
+        // =====================================================
+        // SHOW TOAST
+        // =====================================================
         welcomeToast.setManaged(true);
-
         welcomeToast.setVisible(true);
 
-
-        // Stop previous timer if there is one
-
+        // =====================================================
+        // STOP PREVIOUS TIMER
+        // =====================================================
         if (welcomeTimer != null) {
             welcomeTimer.stop();
         }
 
-
-        // 5 seconds timer
-
-        welcomeTimer =
-                new PauseTransition(
-                        Duration.seconds(5)
-                );
-
+        // =====================================================
+        // 5 SECONDS TIMER
+        // =====================================================
+        welcomeTimer = new PauseTransition(
+                Duration.seconds(5)
+        );
 
         welcomeTimer.setOnFinished(e -> {
 
             welcomeToast.setVisible(false);
-
             welcomeToast.setManaged(false);
 
         });
-
 
         welcomeTimer.play();
     }
