@@ -801,12 +801,25 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     public void openTeachers(ActionEvent e) {
+        try {
+            setActiveButton(btnTeachers);
+            showAdminPane();
 
-        setActiveButton(
-                btnTeachers
-        );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Admin/AdminTeacher.fxml"
+            ));
 
-        showAdminPane();
+            Parent teacherPage = loader.load();
+
+            AnchorPane.setTopAnchor(teacherPage, 0.0);
+            AnchorPane.setRightAnchor(teacherPage, 0.0);
+            AnchorPane.setBottomAnchor(teacherPage, 0.0);
+            AnchorPane.setLeftAnchor(teacherPage, 0.0);
+
+            adminPane.getChildren().setAll(teacherPage);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
