@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxWidth="Infinity" prefWidth="360" spacing="0" style="-fx-background-color: #f5f7fb;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.student_management_system.Controller.Admin.EditSubjectDialogController">
+
+    <!-- HEADER -->
+    <VBox spacing="4" style="-fx-background-color: white; -fx-padding: 20 24;">
+        <Label style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="Edit Subject" />
+        <Label style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="Update the subject name and code" />
+    </VBox>
+
+    <VBox spacing="14" style="-fx-padding: 20 24;">
+
+        <VBox spacing="4">
+            <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Subject Name *" />
+            <TextField fx:id="txtSubjectName" />
+        </VBox>
+
+        <VBox spacing="4">
+            <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Subject Code" />
+            <TextField fx:id="txtSubjectCode" />
+        </VBox>
+
+        <Label fx:id="lblFormError" style="-fx-text-fill: #e5484d; -fx-font-size: 11px; -fx-font-weight: bold;" visible="false" managed="false" wrapText="true" />
+
+    </VBox>
+
+    <!-- FOOTER -->
+    <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-background-color: white; -fx-padding: 14 24; -fx-border-color: #eef1f6 transparent transparent transparent; -fx-border-width: 1 0 0 0;">
+        <Button fx:id="btnCancel" onAction="#cancel" style="-fx-background-color: #f0f2f6; -fx-text-fill: #344563; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 18; -fx-cursor: hand;" text="Cancel" />
+        <Button fx:id="btnSave" onAction="#save" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 20; -fx-cursor: hand;" text="Save" />
+    </HBox>
+
+</VBox>
