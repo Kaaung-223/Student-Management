@@ -1,8 +1,9 @@
 package com.example.student_management_system.Controller.Model;
 
+import java.math.BigDecimal;
+
 /**
- * Represents a "class" / "batch" (the FXML calls it a Class, dashboard filters call it a Batch —
- * they map to the same `classes` table).
+ * Model used by the admin class screen.
  */
 public class Batch {
 
@@ -11,22 +12,23 @@ public class Batch {
     private String academicYear;
     private String roomNo;
     private int classTeacherId;
-    private String classTeacherName;
     private int durationMonths;
+    private BigDecimal fees;
     private String status;
+    private String classTeacherName;
 
-    public Batch() {}
+    public Batch() {
+    }
 
+    /**
+     * Kept for dashboard/statistics code that only needs a class ID and name.
+     */
     public Batch(int id, String name) {
         this.id = id;
         this.name = name;
+        this.fees = BigDecimal.ZERO;
+        this.status = "ACTIVE";
     }
-
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
 
     public Batch(
             int id,
@@ -34,18 +36,36 @@ public class Batch {
             String academicYear,
             String roomNo,
             int classTeacherId,
-            String classTeacherName,
             int durationMonths,
-            String status
+            BigDecimal fees,
+            String status,
+            String classTeacherName
     ) {
         this.id = id;
         this.name = name;
         this.academicYear = academicYear;
         this.roomNo = roomNo;
         this.classTeacherId = classTeacherId;
-        this.classTeacherName = classTeacherName;
         this.durationMonths = durationMonths;
+        this.fees = fees;
         this.status = status;
+        this.classTeacherName = classTeacherName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getAcademicYear() {
@@ -72,20 +92,20 @@ public class Batch {
         this.classTeacherId = classTeacherId;
     }
 
-    public String getClassTeacherName() {
-        return classTeacherName;
-    }
-
-    public void setClassTeacherName(String classTeacherName) {
-        this.classTeacherName = classTeacherName;
-    }
-
     public int getDurationMonths() {
         return durationMonths;
     }
 
     public void setDurationMonths(int durationMonths) {
         this.durationMonths = durationMonths;
+    }
+
+    public BigDecimal getFees() {
+        return fees;
+    }
+
+    public void setFees(BigDecimal fees) {
+        this.fees = fees;
     }
 
     public String getStatus() {
@@ -96,10 +116,16 @@ public class Batch {
         this.status = status;
     }
 
-    // Important: this is what ComboBox shows by default when no custom cell factory is set.
-    @Override
-    public String toString() {
-        return name;
+    public String getClassTeacherName() {
+        return classTeacherName;
     }
 
+    public void setClassTeacherName(String classTeacherName) {
+        this.classTeacherName = classTeacherName;
+    }
+
+    @Override
+    public String toString() {
+        return name == null ? "" : name;
+    }
 }

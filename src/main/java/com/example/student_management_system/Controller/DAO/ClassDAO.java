@@ -2,353 +2,297 @@ package com.example.student_management_system.Controller.DAO;
 
 import com.example.student_management_system.Controller.Model.Batch;
 
-import java.sql.*;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.student_management_system.Controller.DAO.DBConnention.getConnection;
-
+/**
+ * DAO for the classes table.
+ *
+ * This uses the same connection helper as the rest of the project:
+ * DBConnention (the project currently spells "Connection" this way).
+ */
 public class ClassDAO {
 
-
-    // =========================================================
-    // GET ALL CLASSES
-    // =========================================================
+    /*
+     * The aliases in this SELECT allow the existing Batch model to use
+     * simple property names while matching the actual database columns:
+     *   classes(class_id, class_name, academic_year, room_no,
+     *           class_teacher_id, duration_months, course_fee, class_status)
+     *   teachers(teacher_id, teacher_name)
+     */
+    private static final String SELECT_SQL =
+            "SELECT c.class_id AS id, c.class_name AS name, " +
+                    "c.academic_year, c.room_no, c.class_teacher_id, " +
+                    "c.duration_months, c.course_fee AS fees, " +
+                    "c.class_status AS status, " +
+                    "t.teacher_name AS class_teacher_name " +
+                    "FROM classes c " +
+                    "LEFT JOIN teachers t ON t.teacher_id = c.class_teacher_id ";
 
     public List<Batch> getAllClasses() {
-
-        List<Batch> list = new ArrayList<>();
-
-        String sql = """
-                SELECT
-                    c.class_id,
-                    c.class_name,
-                    c.academic_year,
-                    c.room_no,
-                    c.class_teacher_id,
-                    t.teacher_name,
-                    c.duration_months,
-                    c.class_status
-                FROM classes c
-                LEFT JOIN teachers t
-                    ON c.class_teacher_id = t.teacher_id
-                ORDER BY c.class_id DESC
-                """;
+        String sql = SELECT_SQL + "ORDER BY c.class_id DESC";
+        List<Batch> classes = new ArrayList<>();
 
         try (
-                Connection con = getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()
         ) {
-
-            while (rs.next()) {
-
-                list.add(new Batch(
-                        rs.getInt("class_id"),
-                        rs.getString("class_name"),
-                        rs.getString("academic_year"),
-                        rs.getString("room_no"),
-                        rs.getInt("class_teacher_id"),
-                        rs.getString("teacher_name"),
-                        rs.getInt("duration_months"),
-                        rs.getString("class_status")
-                ));
+            while (resultSet.next()) {
+                classes.add(mapRow(resultSet));
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
-        return list;
+        return classes;
     }
 
-    // =========================================================
-    // GET ALL BATCHES
-    // Used by AdminDashboardController
-    // =========================================================
-
+    /**
+     * Compatibility alias for existing dashboard code.
+     * AdminDashboardController currently calls getAllBatches().
+     */
     public List<Batch> getAllBatches() {
         return getAllClasses();
     }
 
-    // =========================================================
-    // GET CLASS BY ID
-    // =========================================================
-
-    public Batch getClassById(int id) {
-
-        String sql = """
-                SELECT
-                    c.class_id,
-                    c.class_name,
-                    c.academic_year,
-                    c.room_no,
-                    c.class_teacher_id,
-                    t.teacher_name,
-                    c.duration_months,
-                    c.class_status
-                FROM classes c
-                LEFT JOIN teachers t
-                    ON c.class_teacher_id = t.teacher_id
-                WHERE c.class_id = ?
-                """;
-
-        try (
-                Connection con = getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)
-        ) {
-
-            ps.setInt(1, id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-
-                if (rs.next()) {
-
-                    return new Batch(
-                            rs.getInt("class_id"),
-                            rs.getString("class_name"),
-                            rs.getString("academic_year"),
-                            rs.getString("room_no"),
-                            rs.getInt("class_teacher_id"),
-                            rs.getString("teacher_name"),
-                            rs.getInt("duration_months"),
-                            rs.getString("class_status")
-                    );
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    // =========================================================
-    // CREATE CLASS
-    // =========================================================
-
-    public boolean createClass(
-            String className,
-            String academicYear,
-            String roomNo,
-            int teacherId,
-            int durationMonths,
-            String status
-    ) {
-
-        String sql = """
-                INSERT INTO classes
-                (
-                    class_name,
-                    academic_year,
-                    room_no,
-                    class_teacher_id,
-                    duration_months,
-                    class_status
-                )
-                VALUES (?, ?, ?, ?, ?, ?)
-                """;
-
-        try (
-                Connection con = getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)
-        ) {
-
-            ps.setString(1, className);
-            ps.setString(2, academicYear);
-            ps.setString(3, roomNo);
-
-            if (teacherId > 0) {
-                ps.setInt(4, teacherId);
-            } else {
-                ps.setNull(4, Types.INTEGER);
-            }
-
-            ps.setInt(5, durationMonths);
-            ps.setString(6, status);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-
-            return false;
-        }
-    }
-
-    // =========================================================
-    // UPDATE CLASS
-    // =========================================================
-
-    public boolean updateClass(
-            int classId,
-            String className,
-            String academicYear,
-            String roomNo,
-            int teacherId,
-            int durationMonths,
-            String status
-    ) {
-
-        String sql = """
-                UPDATE classes
-                SET
-                    class_name = ?,
-                    academic_year = ?,
-                    room_no = ?,
-                    class_teacher_id = ?,
-                    duration_months = ?,
-                    class_status = ?
-                WHERE class_id = ?
-                """;
-
-        try (
-                Connection con = getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)
-        ) {
-
-            ps.setString(1, className);
-            ps.setString(2, academicYear);
-            ps.setString(3, roomNo);
-
-            if (teacherId > 0) {
-                ps.setInt(4, teacherId);
-            } else {
-                ps.setNull(4, Types.INTEGER);
-            }
-
-            ps.setInt(5, durationMonths);
-            ps.setString(6, status);
-            ps.setInt(7, classId);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-
-            return false;
-        }
-    }
-
-    // =========================================================
-    // DELETE CLASS
-    // =========================================================
-
-    public boolean deleteClass(int classId) {
-
-        String sql = """
-                DELETE FROM classes
-                WHERE class_id = ?
-                """;
-
-        try (
-                Connection con = getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)
-        ) {
-
-            ps.setInt(1, classId);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-
-            return false;
-        }
-    }
-
-    // =========================================================
-    // SEARCH CLASS
-    // =========================================================
-
-    public List<Batch> searchClasses(String keyword) {
-
-        List<Batch> list = new ArrayList<>();
-
-        String sql = """
-                SELECT
-                    c.class_id,
-                    c.class_name,
-                    c.academic_year,
-                    c.room_no,
-                    c.class_teacher_id,
-                    t.teacher_name,
-                    c.duration_months,
-                    c.class_status
-                FROM classes c
-                LEFT JOIN teachers t
-                    ON c.class_teacher_id = t.teacher_id
-                WHERE
-                    c.class_name LIKE ?
-                    OR c.academic_year LIKE ?
-                    OR c.room_no LIKE ?
-                    OR t.teacher_name LIKE ?
-                ORDER BY c.class_id DESC
-                """;
-
-        try (
-                Connection con = getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)
-        ) {
-
-            String search = "%" + keyword + "%";
-
-            ps.setString(1, search);
-            ps.setString(2, search);
-            ps.setString(3, search);
-            ps.setString(4, search);
-
-            try (ResultSet rs = ps.executeQuery()) {
-
-                while (rs.next()) {
-
-                    list.add(new Batch(
-                            rs.getInt("class_id"),
-                            rs.getString("class_name"),
-                            rs.getString("academic_year"),
-                            rs.getString("room_no"),
-                            rs.getInt("class_teacher_id"),
-                            rs.getString("teacher_name"),
-                            rs.getInt("duration_months"),
-                            rs.getString("class_status")
-                    ));
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
-
-    // =========================================================
-    // TOTAL CLASSES
-    // Used by Dashboard
-    // =========================================================
-
+    /**
+     * Used by AdminDashboardController for the total-classes card.
+     */
     public int getTotalClasses() {
-
         String sql = "SELECT COUNT(*) FROM classes";
 
         try (
-                Connection con = getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()
         ) {
+            return resultSet.next() ? resultSet.getInt(1) : 0;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return 0;
+        }
+    }
 
-            if (rs.next()) {
-                return rs.getInt(1);
+    public List<Batch> searchClasses(String keyword) {
+        String sql = SELECT_SQL +
+                "WHERE c.class_name LIKE ? " +
+                "OR c.academic_year LIKE ? " +
+                "OR c.room_no LIKE ? " +
+                "OR COALESCE(t.teacher_name, '') LIKE ? " +
+                "ORDER BY c.class_id DESC";
+
+        String searchValue = "%" + keyword + "%";
+        List<Batch> classes = new ArrayList<>();
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setString(1, searchValue);
+            statement.setString(2, searchValue);
+            statement.setString(3, searchValue);
+            statement.setString(4, searchValue);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    classes.add(mapRow(resultSet));
+                }
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
-        return 0;
+        return classes;
+    }
+
+    public boolean createClass(
+            String name,
+            String academicYear,
+            String roomNo,
+            int teacherId,
+            int durationMonths,
+            BigDecimal fees,
+            String status
+    ) {
+        String sql =
+                "INSERT INTO classes " +
+                        "(class_name, academic_year, room_no, class_teacher_id, " +
+                        "duration_months, course_fee, class_status) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            setClassParameters(
+                    statement,
+                    name,
+                    academicYear,
+                    roomNo,
+                    teacherId,
+                    durationMonths,
+                    fees,
+                    status
+            );
+            return statement.executeUpdate() == 1;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateClass(
+            int id,
+            String name,
+            String academicYear,
+            String roomNo,
+            int teacherId,
+            int durationMonths,
+            BigDecimal fees,
+            String status
+    ) {
+        String sql =
+                "UPDATE classes SET class_name = ?, academic_year = ?, " +
+                        "room_no = ?, class_teacher_id = ?, duration_months = ?, " +
+                        "course_fee = ?, class_status = ? WHERE class_id = ?";
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            setClassParameters(
+                    statement,
+                    name,
+                    academicYear,
+                    roomNo,
+                    teacherId,
+                    durationMonths,
+                    fees,
+                    status
+            );
+            statement.setInt(8, id);
+            return statement.executeUpdate() == 1;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteClass(int id) {
+        String sql = "DELETE FROM classes WHERE class_id = ?";
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setInt(1, id);
+            return statement.executeUpdate() == 1;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return false;
+        }
+    }
+
+    /*
+     * These overloads keep older code compatible. They save a zero fee when
+     * the old controller calls the DAO without a fees argument.
+     */
+    public boolean createClass(
+            String name,
+            String academicYear,
+            String roomNo,
+            int teacherId,
+            int durationMonths,
+            String status
+    ) {
+        return createClass(
+                name,
+                academicYear,
+                roomNo,
+                teacherId,
+                durationMonths,
+                BigDecimal.ZERO,
+                status
+        );
+    }
+
+    public boolean updateClass(
+            int id,
+            String name,
+            String academicYear,
+            String roomNo,
+            int teacherId,
+            int durationMonths,
+            String status
+    ) {
+        return updateClass(
+                id,
+                name,
+                academicYear,
+                roomNo,
+                teacherId,
+                durationMonths,
+                BigDecimal.ZERO,
+                status
+        );
+    }
+
+    private void setClassParameters(
+            PreparedStatement statement,
+            String name,
+            String academicYear,
+            String roomNo,
+            int teacherId,
+            int durationMonths,
+            BigDecimal fees,
+            String status
+    ) throws SQLException {
+        statement.setString(1, name);
+        statement.setString(2, academicYear);
+        statement.setString(3, roomNo);
+
+        if (teacherId > 0) {
+            statement.setInt(4, teacherId);
+        } else {
+            statement.setNull(4, java.sql.Types.INTEGER);
+        }
+
+        statement.setInt(5, durationMonths);
+        statement.setBigDecimal(6, fees);
+        statement.setString(7, status);
+    }
+
+    private Batch mapRow(ResultSet resultSet) throws SQLException {
+        int teacherId = resultSet.getInt("class_teacher_id");
+        if (resultSet.wasNull()) {
+            teacherId = -1;
+        }
+
+        BigDecimal fees = resultSet.getBigDecimal("fees");
+        if (fees == null) {
+            fees = BigDecimal.ZERO;
+        }
+
+        return new Batch(
+                resultSet.getInt("id"),
+                resultSet.getString("name"),
+                resultSet.getString("academic_year"),
+                resultSet.getString("room_no"),
+                teacherId,
+                resultSet.getInt("duration_months"),
+                fees,
+                resultSet.getString("status"),
+                resultSet.getString("class_teacher_name")
+        );
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DBConnention.getConnection();
     }
 }
