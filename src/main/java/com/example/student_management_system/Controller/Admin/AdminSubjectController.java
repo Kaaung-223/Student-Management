@@ -192,12 +192,14 @@ public class AdminSubjectController implements Initializable {
             private final HBox buttons = new HBox(6, editButton, deleteButton);
 
             {
-                editButton.setStyle("-fx-background-color: #edf3ff; -fx-text-fill: #4267d5; " +
-                        "-fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 6; " +
-                        "-fx-padding: 5 10; -fx-cursor: hand;");
-                deleteButton.setStyle("-fx-background-color: #fdeceb; -fx-text-fill: #e5484d; " +
-                        "-fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 6; " +
-                        "-fx-padding: 5 10; -fx-cursor: hand;");
+                editButton.setStyle("-fx-background-color:#4f46e5;" +
+                        "-fx-text-fill:white;" +
+                        "-fx-background-radius:6;" +
+                        "-fx-cursor:hand;");
+                deleteButton.setStyle("-fx-background-color:#dc2626;" +
+                        "-fx-text-fill:white;" +
+                        "-fx-background-radius:6;" +
+                        "-fx-cursor:hand;");
 
                 editButton.setOnAction(e -> {
                     Subject subject = getTableView().getItems().get(getIndex());
