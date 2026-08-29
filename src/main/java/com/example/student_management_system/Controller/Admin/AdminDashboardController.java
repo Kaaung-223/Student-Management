@@ -898,11 +898,25 @@ public class AdminDashboardController implements Initializable {
     @FXML
     public void openExams(ActionEvent e) {
 
-        setActiveButton(
-                btnExams
-        );
+        try {
+            setActiveButton(btnExams);
+            showAdminPane();
 
-        showAdminPane();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Admin/AdminExam.fxml"
+            ));
+
+            Parent examPage = loader.load();
+
+            AnchorPane.setTopAnchor(examPage, 0.0);
+            AnchorPane.setRightAnchor(examPage, 0.0);
+            AnchorPane.setBottomAnchor(examPage, 0.0);
+            AnchorPane.setLeftAnchor(examPage, 0.0);
+
+            adminPane.getChildren().setAll(examPage);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.student_management_system.Controller.Admin.AdminExamController">
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="Infinity" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <content>
+
+            <VBox fillWidth="true" maxWidth="Infinity" spacing="20" style="-fx-background-color: #f5f7fb;">
+
+                <padding>
+                    <Insets bottom="35" left="30" right="30" top="28" />
+                </padding>
+
+                <!-- HEADER -->
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="20">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label style="-fx-text-fill: #172033; -fx-font-size: 28px; -fx-font-weight: bold;" text="Exams" />
+                        <Label style="-fx-text-fill: #8995aa; -fx-font-size: 14px;" text="Create and manage exams for each batch" />
+                    </VBox>
+                    <Button onAction="#handleCreateExam" prefHeight="42" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 20; -fx-cursor: hand;" text="+  New Exam" />
+                </HBox>
+
+                <HBox spacing="20">
+
+                    <!-- ====================================== -->
+                    <!-- FORM -->
+                    <!-- ====================================== -->
+
+                    <VBox maxWidth="340" minWidth="300" prefWidth="320" spacing="14" style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);">
+
+                        <Label fx:id="lblFormTitle" style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="Create New Exam" />
+
+                        <VBox spacing="4">
+                            <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Exam Name *" />
+                            <TextField fx:id="txtExamName" promptText="e.g. Midterm Exam" />
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Batch *" />
+                            <ComboBox fx:id="cmbBatchForExam" maxWidth="Infinity" promptText="Select which batch this exam is for" />
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Exam Date *" />
+                            <DatePicker fx:id="dpExamDate" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Total Marks *" />
+                            <TextField fx:id="txtTotalMarks" promptText="100" />
+                        </VBox>
+
+                        <HBox spacing="10">
+                            <Button fx:id="btnCancel" onAction="#handleCancel" style="-fx-background-color: #f0f2f6; -fx-text-fill: #344563; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 18; -fx-cursor: hand;" text="Cancel" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnSave" maxWidth="Infinity" onAction="#handleSave" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 0; -fx-cursor: hand;" text="Save Exam" HBox.hgrow="ALWAYS" />
+                        </HBox>
+
+                    </VBox>
+
+                    <!-- ====================================== -->
+                    <!-- TABLE -->
+                    <!-- ====================================== -->
+
+                    <VBox maxWidth="Infinity" spacing="14" style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);" HBox.hgrow="ALWAYS">
+
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label style="-fx-text-fill: #344563; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filter by batch:" />
+                            <ComboBox fx:id="cmbBatchFilter" prefWidth="220" HBox.hgrow="ALWAYS" />
+                            <Button onAction="#handleRefresh" style="-fx-background-color: #f0f2f6; -fx-text-fill: #344563; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 16; -fx-cursor: hand;" text="⟳  Refresh" />
+                        </HBox>
+
+                        <TableView fx:id="examTable" maxWidth="Infinity" minHeight="150" prefHeight="480" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="idColumn" prefWidth="50" text="ID" />
+                                <TableColumn fx:id="nameColumn" prefWidth="180" text="Exam Name" />
+                                <TableColumn fx:id="batchColumn" prefWidth="160" text="Batch" />
+                                <TableColumn fx:id="dateColumn" prefWidth="110" text="Date" />
+                                <TableColumn fx:id="marksColumn" prefWidth="90" text="Marks" />
+                                <TableColumn fx:id="gradesColumn" prefWidth="100" text="Graded" />
+                                <TableColumn fx:id="actionColumn" prefWidth="160" text="Actions" />
+                            </columns>
+                        </TableView>
+
+                    </VBox>
+
+                </HBox>
+
+                <Region minHeight="20" prefHeight="20" />
+
+            </VBox>
+
+        </content>
+
+    </ScrollPane>
+
+</AnchorPane>
