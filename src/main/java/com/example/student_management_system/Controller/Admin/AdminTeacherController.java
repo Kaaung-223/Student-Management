@@ -6,6 +6,7 @@ import com.example.student_management_system.Controller.Model.Teacher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -15,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -31,185 +33,598 @@ import java.util.ResourceBundle;
 
 public class AdminTeacherController implements Initializable {
 
-    @FXML private TextField txtSearchTeacher;
-    @FXML private Label lblTeacherCount;
-    @FXML private Button btnAddTeacher;
-    @FXML private FlowPane teacherCardContainer;
-    @FXML private VBox emptyStateBox;
+    @FXML
+    private TextField txtSearchTeacher;
 
-    private final TeacherDAO teacherDAO = new TeacherDAO();
+    @FXML
+    private Label lblTeacherCount;
 
-    private static final NumberFormat SALARY_FORMAT = NumberFormat.getNumberInstance(Locale.US);
+    @FXML
+    private Button btnAddTeacher;
+
+    @FXML
+    private FlowPane teacherCardContainer;
+
+    @FXML
+    private VBox emptyStateBox;
+
+    private final TeacherDAO teacherDAO =
+            new TeacherDAO();
+
+    private static final NumberFormat SALARY_FORMAT =
+            NumberFormat.getNumberInstance(Locale.US);
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        txtSearchTeacher.textProperty().addListener((obs, oldVal, newVal) -> loadTeachers(newVal));
+    public void initialize(
+            URL location,
+            ResourceBundle resources
+    ) {
+
+        /*
+         * Search teachers whenever the search text changes.
+         */
+        txtSearchTeacher.textProperty()
+                .addListener(
+                        (observable, oldValue, newValue) ->
+                                loadTeachers(newValue)
+                );
+
+        /*
+         * Load all teachers when the page opens.
+         */
         loadTeachers(null);
     }
 
     private void loadTeachers(String searchQuery) {
-        List<Teacher> teachers = teacherDAO.searchTeachers(searchQuery);
+
+        List<Teacher> teachers =
+                teacherDAO.searchTeachers(searchQuery);
 
         teacherCardContainer.getChildren().clear();
-        for (Teacher t : teachers) {
-            teacherCardContainer.getChildren().add(buildTeacherCard(t));
+
+        for (Teacher teacher : teachers) {
+
+            VBox teacherCard =
+                    buildTeacherCard(teacher);
+
+            teacherCardContainer
+                    .getChildren()
+                    .add(teacherCard);
         }
 
-        lblTeacherCount.setText(teachers.size() + (teachers.size() == 1 ? " teacher" : " teachers"));
+        lblTeacherCount.setText(
+                teachers.size() +
+                        (
+                                teachers.size() == 1
+                                        ? " teacher"
+                                        : " teachers"
+                        )
+        );
 
-        boolean empty = teachers.isEmpty();
-        emptyStateBox.setVisible(empty);
-        emptyStateBox.setManaged(empty);
-        teacherCardContainer.setVisible(!empty);
-        teacherCardContainer.setManaged(!empty);
+        boolean isEmpty =
+                teachers.isEmpty();
+
+        emptyStateBox.setVisible(isEmpty);
+        emptyStateBox.setManaged(isEmpty);
+
+        teacherCardContainer.setVisible(!isEmpty);
+        teacherCardContainer.setManaged(!isEmpty);
     }
 
-    /** Builds one photo card for a teacher: avatar, name, code, class-leader badge, subjects, contact, salary. */
-    private VBox buildTeacherCard(Teacher t) {
-        VBox card = new VBox(10);
-        card.setPrefWidth(260);
-        card.setMaxWidth(260);
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 4);");
+    private VBox buildTeacherCard(Teacher teacher) {
 
-        // ---- Avatar + name row ----
-        HBox topRow = new HBox(12);
-        topRow.setStyle("-fx-alignment: CENTER_LEFT;");
+        VBox card =
+                new VBox(10);
 
-        javafx.scene.Node avatar = buildAvatar(t);
+        card.setPrefWidth(280);
+        card.setMaxWidth(280);
 
-        VBox nameBox = new VBox(2);
-        Label nameLabel = new Label(t.getTeacherName());
-        nameLabel.setStyle("-fx-text-fill: #172033; -fx-font-size: 15px; -fx-font-weight: bold;");
+        card.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 16;" +
+                        "-fx-padding: 20;" +
+                        "-fx-effect: dropshadow(" +
+                        "gaussian, rgba(0,0,0,0.08), 15, 0, 0, 4);"
+        );
+
+        /*
+         * Teacher photo, name, and teacher code.
+         */
+        HBox topRow =
+                new HBox(12);
+
+        topRow.setStyle(
+                "-fx-alignment: CENTER_LEFT;"
+        );
+
+        Node avatar =
+                buildAvatar(teacher);
+
+        VBox nameBox =
+                new VBox(2);
+
+        Label nameLabel =
+                new Label(
+                        valueOrDefault(
+                                teacher.getTeacherName(),
+                                "Unknown Teacher"
+                        )
+                );
+
         nameLabel.setWrapText(true);
 
-        Label codeLabel = new Label(t.getTeacherCode() != null ? t.getTeacherCode() : "-");
-        codeLabel.setStyle("-fx-text-fill: #8995aa; -fx-font-size: 11px;");
+        nameLabel.setStyle(
+                "-fx-text-fill: #172033;" +
+                        "-fx-font-size: 15px;" +
+                        "-fx-font-weight: bold;"
+        );
 
-        nameBox.getChildren().addAll(nameLabel, codeLabel);
-        topRow.getChildren().addAll(avatar, nameBox);
+        Label codeLabel =
+                new Label(
+                        "Code: " +
+                                valueOrDefault(
+                                        teacher.getTeacherCode(),
+                                        "-"
+                                )
+                );
 
-        card.getChildren().add(topRow);
+        codeLabel.setStyle(
+                "-fx-text-fill: #8995aa;" +
+                        "-fx-font-size: 11px;"
+        );
 
-        // ---- Status + Class Leader badges ----
-        HBox badgeRow = new HBox(6);
-        badgeRow.getChildren().add(makeBadge(
-                "ACTIVE".equalsIgnoreCase(t.getStatus()) ? "Active" : "Inactive",
-                "ACTIVE".equalsIgnoreCase(t.getStatus()) ? "#eafaf0" : "#f2f2f2",
-                "ACTIVE".equalsIgnoreCase(t.getStatus()) ? "#1c8a52" : "#666"));
+        nameBox.getChildren()
+                .addAll(
+                        nameLabel,
+                        codeLabel
+                );
 
-        if (t.getClassLeaderOf() != null && !t.getClassLeaderOf().isEmpty()) {
-            badgeRow.getChildren().add(makeBadge("Class Leader · " + t.getClassLeaderOf(), "#eaf1fd", "#2563EB"));
+        topRow.getChildren()
+                .addAll(
+                        avatar,
+                        nameBox
+                );
+
+        card.getChildren()
+                .add(topRow);
+
+        /*
+         * Teacher login username.
+         *
+         * The password is intentionally never shown.
+         */
+        VBox accountBox =
+                new VBox(2);
+
+        Label accountTitle =
+                new Label("LOGIN ACCOUNT");
+
+        accountTitle.setStyle(
+                "-fx-text-fill: #8995aa;" +
+                        "-fx-font-size: 10px;" +
+                        "-fx-font-weight: bold;"
+        );
+
+        String username =
+                teacher.getUsername();
+
+        Label usernameLabel =
+                new Label(
+                        username == null || username.isBlank()
+                                ? "Username not available"
+                                : "@" + username
+                );
+
+        usernameLabel.setStyle(
+                "-fx-text-fill: #4f46e5;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-font-weight: bold;"
+        );
+
+        accountBox.getChildren()
+                .addAll(
+                        accountTitle,
+                        usernameLabel
+                );
+
+        card.getChildren()
+                .add(accountBox);
+
+        /*
+         * Status and class leader badges.
+         */
+        HBox badgeRow =
+                new HBox(6);
+
+        boolean active =
+                "ACTIVE".equalsIgnoreCase(
+                        teacher.getStatus()
+                );
+
+        Label statusBadge =
+                makeBadge(
+                        active
+                                ? "Active"
+                                : "Inactive",
+                        active
+                                ? "#eafaf0"
+                                : "#f2f2f2",
+                        active
+                                ? "#1c8a52"
+                                : "#666666"
+                );
+
+        badgeRow.getChildren()
+                .add(statusBadge);
+
+        if (
+                teacher.getClassLeaderOf() != null &&
+                        !teacher.getClassLeaderOf().isBlank()
+        ) {
+
+            Label classLeaderBadge =
+                    makeBadge(
+                            "Class Leader · " +
+                                    teacher.getClassLeaderOf(),
+                            "#eaf1fd",
+                            "#2563eb"
+                    );
+
+            badgeRow.getChildren()
+                    .add(classLeaderBadge);
         }
-        card.getChildren().add(badgeRow);
 
-        // ---- Subjects taught ----
-        VBox subjectsBox = new VBox(2);
-        Label subjectsHeader = new Label("TEACHING");
-        subjectsHeader.setStyle("-fx-text-fill: #8995aa; -fx-font-size: 10px; -fx-font-weight: bold;");
-        Label subjectsValue = new Label(
-                t.getSubjectsTaught() != null && !t.getSubjectsTaught().isEmpty()
-                        ? t.getSubjectsTaught() : "No subjects assigned");
+        card.getChildren()
+                .add(badgeRow);
+
+        /*
+         * Subjects taught.
+         */
+        VBox subjectsBox =
+                new VBox(2);
+
+        Label subjectsTitle =
+                new Label("TEACHING");
+
+        subjectsTitle.setStyle(
+                "-fx-text-fill: #8995aa;" +
+                        "-fx-font-size: 10px;" +
+                        "-fx-font-weight: bold;"
+        );
+
+        String subjects =
+                teacher.getSubjectsTaught();
+
+        Label subjectsValue =
+                new Label(
+                        subjects == null || subjects.isBlank()
+                                ? "No subjects assigned"
+                                : subjects
+                );
+
         subjectsValue.setWrapText(true);
-        subjectsValue.setStyle("-fx-text-fill: #344563; -fx-font-size: 12px;");
-        subjectsBox.getChildren().addAll(subjectsHeader, subjectsValue);
-        card.getChildren().add(subjectsBox);
 
-        // ---- Contact ----
-        VBox contactBox = new VBox(2);
-        Label emailLabel = new Label("✉ " + (t.getEmail() != null ? t.getEmail() : "-"));
-        emailLabel.setStyle("-fx-text-fill: #5b6b85; -fx-font-size: 12px;");
-        Label phoneLabel = new Label("☎ " + (t.getPhone() != null ? t.getPhone() : "-"));
-        phoneLabel.setStyle("-fx-text-fill: #5b6b85; -fx-font-size: 12px;");
-        contactBox.getChildren().addAll(emailLabel, phoneLabel);
-        card.getChildren().add(contactBox);
+        subjectsValue.setStyle(
+                "-fx-text-fill: #344563;" +
+                        "-fx-font-size: 12px;"
+        );
 
-        // ---- Salary ----
-        if (t.getSalary() != null) {
-            Label salaryLabel = new Label("Salary: " + formatSalary(t.getSalary()) + " MMK/mo");
-            salaryLabel.setStyle("-fx-text-fill: #172033; -fx-font-size: 12px; -fx-font-weight: bold;");
-            card.getChildren().add(salaryLabel);
+        subjectsBox.getChildren()
+                .addAll(
+                        subjectsTitle,
+                        subjectsValue
+                );
+
+        card.getChildren()
+                .add(subjectsBox);
+
+        /*
+         * Email and phone.
+         */
+        VBox contactBox =
+                new VBox(2);
+
+        Label emailLabel =
+                new Label(
+                        "✉ " +
+                                valueOrDefault(
+                                        teacher.getEmail(),
+                                        "-"
+                                )
+                );
+
+        emailLabel.setStyle(
+                "-fx-text-fill: #5b6b85;" +
+                        "-fx-font-size: 12px;"
+        );
+
+        Label phoneLabel =
+                new Label(
+                        "☎ " +
+                                valueOrDefault(
+                                        teacher.getPhone(),
+                                        "-"
+                                )
+                );
+
+        phoneLabel.setStyle(
+                "-fx-text-fill: #5b6b85;" +
+                        "-fx-font-size: 12px;"
+        );
+
+        contactBox.getChildren()
+                .addAll(
+                        emailLabel,
+                        phoneLabel
+                );
+
+        card.getChildren()
+                .add(contactBox);
+
+        /*
+         * Salary.
+         */
+        if (teacher.getSalary() != null) {
+
+            Label salaryLabel =
+                    new Label(
+                            "Salary: " +
+                                    formatSalary(
+                                            teacher.getSalary()
+                                    ) +
+                                    " MMK/mo"
+                    );
+
+            salaryLabel.setStyle(
+                    "-fx-text-fill: #172033;" +
+                            "-fx-font-size: 12px;" +
+                            "-fx-font-weight: bold;"
+            );
+
+            card.getChildren()
+                    .add(salaryLabel);
         }
 
         return card;
     }
 
-    /** Circular photo if photo_path resolves to a real file, otherwise a colored circle with initials. */
-    private javafx.scene.Node buildAvatar(Teacher t) {
+    private Node buildAvatar(Teacher teacher) {
+
         double size = 52;
 
-        if (t.getPhotoPath() != null && !t.getPhotoPath().isEmpty()) {
-            File file = new File(t.getPhotoPath());
-            if (file.exists()) {
-                ImageView iv = new ImageView(new Image(file.toURI().toString(), size, size, true, true));
-                Circle clip = new Circle(size / 2, size / 2, size / 2);
-                iv.setClip(clip);
-                return iv;
+        String photoPath =
+                teacher.getPhotoPath();
+
+        /*
+         * Show uploaded teacher photo.
+         */
+        if (
+                photoPath != null &&
+                        !photoPath.isBlank()
+        ) {
+
+            File imageFile =
+                    new File(photoPath);
+
+            if (imageFile.exists()) {
+
+                ImageView imageView =
+                        new ImageView(
+                                new Image(
+                                        imageFile.toURI().toString(),
+                                        size,
+                                        size,
+                                        true,
+                                        true
+                                )
+                        );
+
+                Circle clip =
+                        new Circle(
+                                size / 2,
+                                size / 2,
+                                size / 2
+                        );
+
+                imageView.setClip(clip);
+
+                return imageView;
             }
         }
 
-        // Fallback: colored circle with initials
-        String initials = initialsOf(t.getTeacherName());
-        Circle circle = new Circle(size / 2, deriveColor(t.getTeacherName()));
-        Label initialsLabel = new Label(initials);
-        initialsLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+        /*
+         * If no photo exists, display initials.
+         */
+        String initials =
+                initialsOf(
+                        teacher.getTeacherName()
+                );
 
-        javafx.scene.layout.StackPane avatarStack = new javafx.scene.layout.StackPane(circle, initialsLabel);
-        avatarStack.setPrefSize(size, size);
-        avatarStack.setMaxSize(size, size);
-        return avatarStack;
+        Circle circle =
+                new Circle(
+                        size / 2,
+                        deriveColor(
+                                teacher.getTeacherName()
+                        )
+                );
+
+        Label initialsLabel =
+                new Label(initials);
+
+        initialsLabel.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-weight: bold;"
+        );
+
+        StackPane avatar =
+                new StackPane(
+                        circle,
+                        initialsLabel
+                );
+
+        avatar.setPrefSize(
+                size,
+                size
+        );
+
+        avatar.setMaxSize(
+                size,
+                size
+        );
+
+        return avatar;
     }
 
     private String initialsOf(String name) {
-        if (name == null || name.isEmpty()) return "?";
-        String[] parts = name.trim().split("\\s+");
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < Math.min(2, parts.length); i++) {
-            if (!parts[i].isEmpty()) sb.append(Character.toUpperCase(parts[i].charAt(0)));
+
+        if (name == null || name.isBlank()) {
+            return "?";
         }
-        return sb.length() > 0 ? sb.toString() : "?";
+
+        String[] parts =
+                name.trim()
+                        .split("\\s+");
+
+        StringBuilder initials =
+                new StringBuilder();
+
+        for (
+                int i = 0;
+                i < Math.min(2, parts.length);
+                i++
+        ) {
+
+            if (!parts[i].isEmpty()) {
+
+                initials.append(
+                        Character.toUpperCase(
+                                parts[i].charAt(0)
+                        )
+                );
+            }
+        }
+
+        return initials.length() > 0
+                ? initials.toString()
+                : "?";
     }
 
-    /** Deterministic color per teacher, so the same teacher always gets the same avatar color. */
     private Color deriveColor(String name) {
-        int hash = name != null ? name.hashCode() : 0;
-        double hue = Math.abs(hash % 360);
-        return Color.hsb(hue, 0.55, 0.75);
+
+        int hash =
+                name != null
+                        ? name.hashCode()
+                        : 0;
+
+        double hue =
+                Math.abs(hash % 360);
+
+        return Color.hsb(
+                hue,
+                0.55,
+                0.75
+        );
     }
 
-    private Label makeBadge(String text, String bgColor, String fgColor) {
-        Label badge = new Label(text);
-        badge.setStyle("-fx-background-color: " + bgColor + "; -fx-text-fill: " + fgColor + "; " +
-                "-fx-font-size: 10px; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 3 8;");
+    private Label makeBadge(
+            String text,
+            String backgroundColor,
+            String foregroundColor
+    ) {
+
+        Label badge =
+                new Label(text);
+
+        badge.setStyle(
+                "-fx-background-color: " +
+                        backgroundColor +
+                        ";" +
+                        "-fx-text-fill: " +
+                        foregroundColor +
+                        ";" +
+                        "-fx-font-size: 10px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 6;" +
+                        "-fx-padding: 3 8;"
+        );
+
         return badge;
     }
 
-    private String formatSalary(BigDecimal salary) {
+    private String formatSalary(
+            BigDecimal salary
+    ) {
+
         return SALARY_FORMAT.format(salary);
+    }
+
+    private String valueOrDefault(
+            String value,
+            String defaultValue
+    ) {
+
+        if (value == null || value.isBlank()) {
+            return defaultValue;
+        }
+
+        return value;
     }
 
     @FXML
     public void openAddTeacherDialog() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/student_management_system/View/Admin/AdminTeacherDialog.fxml"));
-            Parent root = loader.load();
 
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Add Teacher");
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setScene(new Scene(root));
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+                            getClass().getResource(
+                                    "/com/example/" +
+                                            "student_management_system/" +
+                                            "View/Admin/" +
+                                            "AdminTeacherDialog.fxml"
+                            )
+                    );
+
+            Parent root =
+                    loader.load();
+
+            Stage dialogStage =
+                    new Stage();
+
+            dialogStage.setTitle(
+                    "Add Teacher"
+            );
+
+            dialogStage.initModality(
+                    Modality.APPLICATION_MODAL
+            );
+
+            dialogStage.setScene(
+                    new Scene(root)
+            );
+
             dialogStage.setResizable(false);
 
-            AddTeacherDialogController controller = loader.getController();
-            controller.setDialogStage(dialogStage);
+            AddTeacherDialogController controller =
+                    loader.getController();
+
+            controller.setDialogStage(
+                    dialogStage
+            );
 
             dialogStage.showAndWait();
 
-            // Refresh regardless of whether a teacher was actually added — cheap and always correct.
-            loadTeachers(txtSearchTeacher.getText());
+            /*
+             * Refresh the teacher cards after
+             * the dialog closes.
+             */
+            loadTeachers(
+                    txtSearchTeacher.getText()
+            );
 
         } catch (Exception e) {
+
             e.printStackTrace();
         }
     }
