@@ -199,10 +199,16 @@
                     <Button fx:id="btnLogin"
                             maxWidth="Infinity"
                             minHeight="47"
+                            defaultButton="true"
                             onAction="#login"
                             onMousePressed="#handleLoginPress"
                             onMouseReleased="#handleLoginRelease"
-                            style="-fx-background-color:#4f46e5;-fx-text-fill:white;-fx-background-radius:10;-fx-font-size:13px;-fx-font-weight:bold;-fx-cursor:hand;"
+                            style="-fx-background-color:#4f46e5;
+               -fx-text-fill:white;
+               -fx-background-radius:10;
+               -fx-font-size:13px;
+               -fx-font-weight:bold;
+               -fx-cursor:hand;"
                             text="SIGN IN"/>
 
 

@@ -10,22 +10,33 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class LoginController {
 
     @FXML
-    private Button btnLogin, btnEye;
+    private Button btnLogin;
 
     @FXML
-    private TextField txtUsername, visiblePasswordField;
+    private Button btnEye;
+
+    @FXML
+    private TextField txtUsername;
+
+    @FXML
+    private TextField visiblePasswordField;
 
     @FXML
     private PasswordField passwordField;
@@ -36,13 +47,14 @@ public class LoginController {
     @FXML
     private FontIcon eyeIcon;
 
-    private boolean showPassword;
-
-
+    private boolean showPassword = false;
 
     @FXML
     public void initialize() {
 
+        /*
+         * Keep both password fields synchronized.
+         */
         visiblePasswordField.textProperty()
                 .bindBidirectional(passwordField.textProperty());
 
@@ -50,6 +62,30 @@ public class LoginController {
         visiblePasswordField.setManaged(false);
 
         eyeIcon.setIconLiteral("fas-eye");
+
+        /*
+         * Pressing ENTER in the username field
+         * clicks/fires the login button.
+         */
+        txtUsername.setOnAction(event -> btnLogin.fire());
+
+        /*
+         * Pressing ENTER in the password field
+         * clicks/fires the login button.
+         */
+        passwordField.setOnAction(event -> btnLogin.fire());
+
+        /*
+         * Pressing ENTER in the visible password field
+         * also clicks/fires the login button.
+         */
+        visiblePasswordField.setOnAction(event -> btnLogin.fire());
+
+        /*
+         * Makes the login button respond to ENTER
+         * when another control has focus.
+         */
+        btnLogin.setDefaultButton(true);
     }
 
     @FXML
@@ -68,7 +104,6 @@ public class LoginController {
         );
     }
 
-
     @FXML
     private void login(ActionEvent event) {
 
@@ -84,7 +119,10 @@ public class LoginController {
         }
 
         String sql =
-                "SELECT * FROM users WHERE username=? AND password=? AND status='ACTIVE'";
+                "SELECT * FROM users " +
+                        "WHERE username = ? " +
+                        "AND password = ? " +
+                        "AND status = 'ACTIVE'";
 
         try (Connection con = DBConnention.getConnection()) {
 
@@ -105,11 +143,13 @@ public class LoginController {
                         return;
                     }
 
-                    if ("ADMIN".equalsIgnoreCase(rs.getString("role"))) {
+                    String role = rs.getString("role");
+
+                    if ("ADMIN".equalsIgnoreCase(role)) {
 
                         openAdminDashboard(username);
 
-                    } else if ("TEACHER".equalsIgnoreCase(rs.getString("role"))) {
+                    } else if ("TEACHER".equalsIgnoreCase(role)) {
 
                         showError("Teacher dashboard is coming soon.");
 
@@ -128,7 +168,6 @@ public class LoginController {
         }
     }
 
-
     private void showError(String message) {
 
         lblLoginMessage.setText(message);
@@ -139,16 +178,13 @@ public class LoginController {
         PauseTransition delay =
                 new PauseTransition(Duration.seconds(4));
 
-        delay.setOnFinished(e -> {
-
+        delay.setOnFinished(event -> {
             lblLoginMessage.setVisible(false);
             lblLoginMessage.setManaged(false);
-
         });
 
         delay.play();
     }
-
 
     private void openAdminDashboard(String username) {
 
@@ -174,13 +210,14 @@ public class LoginController {
             Rectangle2D bounds =
                     Screen.getPrimary().getVisualBounds();
 
-            stage.setScene(
+            Scene scene =
                     new Scene(
                             root,
                             bounds.getWidth(),
                             bounds.getHeight()
-                    )
-            );
+                    );
+
+            stage.setScene(scene);
 
             stage.setX(bounds.getMinX());
             stage.setY(bounds.getMinY());
@@ -189,7 +226,6 @@ public class LoginController {
             stage.setHeight(bounds.getHeight());
 
             stage.setMaximized(true);
-
             stage.show();
 
         } catch (Exception e) {
@@ -199,7 +235,6 @@ public class LoginController {
             showError("Unable to open the dashboard.");
         }
     }
-
 
     @FXML
     private void handleLoginPress() {
@@ -215,7 +250,6 @@ public class LoginController {
                         "-fx-scale-y:.98;"
         );
     }
-
 
     @FXML
     private void handleLoginRelease() {
