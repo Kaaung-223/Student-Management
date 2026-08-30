@@ -134,6 +134,19 @@
                         text="Classes"/>
 
 
+                <Button fx:id="btnClassFees"
+                        maxWidth="Infinity"
+                        minHeight="44"
+                        onAction="#openClassFees"
+                        style="-fx-background-color:transparent;
+                               -fx-text-fill:#cbd5e1;
+                               -fx-font-size:13px;
+                               -fx-alignment:CENTER_LEFT;
+                               -fx-padding:0 16;
+                               -fx-cursor:hand;"
+                        text="Class Fees"/>
+
+
                 <Button fx:id="btnSubjects"
                         maxWidth="Infinity"
                         minHeight="44"

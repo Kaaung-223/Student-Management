@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="Infinity"
+            maxWidth="Infinity"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Admin.AdminClassFeeController">
+
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                maxHeight="Infinity"
+                maxWidth="Infinity"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0"
+                style="-fx-background-color: transparent;
+                       -fx-border-color: transparent;">
+
+        <content>
+
+            <VBox fillWidth="true"
+                  maxWidth="Infinity"
+                  spacing="20"
+                  style="-fx-background-color: #f5f7fb;">
+
+                <padding>
+                    <Insets top="28"
+                            right="30"
+                            bottom="35"
+                            left="30"/>
+                </padding>
+
+                <!-- HEADER -->
+                <HBox alignment="CENTER_LEFT"
+                      maxWidth="Infinity"
+                      spacing="20">
+
+                    <VBox spacing="4"
+                          HBox.hgrow="ALWAYS">
+
+                        <Label text="Class Fees"
+                               style="-fx-text-fill: #172033;
+                                      -fx-font-size: 28px;
+                                      -fx-font-weight: bold;"/>
+
+                        <Label text="View financial statements and student payment status (read only)"
+                               wrapText="true"
+                               style="-fx-text-fill: #8995aa;
+                                      -fx-font-size: 14px;"/>
+
+                    </VBox>
+
+                </HBox>
+
+                <!-- FINANCIAL SUMMARY CARDS -->
+                <HBox spacing="16"
+                      maxWidth="Infinity">
+
+                    <VBox spacing="6"
+                          minWidth="170"
+                          prefWidth="190"
+                          HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 18;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+
+                        <Label text="TOTAL EXPECTED"
+                               style="-fx-text-fill: #8995aa;
+                                      -fx-font-size: 10px;
+                                      -fx-font-weight: bold;"/>
+
+                        <Label fx:id="lblTotalExpected"
+                               text="0 MMK"
+                               style="-fx-text-fill: #172033;
+                                      -fx-font-size: 22px;
+                                      -fx-font-weight: bold;"/>
+
+                    </VBox>
+
+                    <VBox spacing="6"
+                          minWidth="170"
+                          prefWidth="190"
+                          HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 18;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+
+                        <Label text="TOTAL COLLECTED"
+                               style="-fx-text-fill: #8995aa;
+                                      -fx-font-size: 10px;
+                                      -fx-font-weight: bold;"/>
+
+                        <Label fx:id="lblTotalCollected"
+                               text="0 MMK"
+                               style="-fx-text-fill: #16a34a;
+                                      -fx-font-size: 22px;
+                                      -fx-font-weight: bold;"/>
+
+                    </VBox>
+
+                    <VBox spacing="6"
+                          minWidth="170"
+                          prefWidth="190"
+                          HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 18;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+
+                        <Label text="OUTSTANDING"
+                               style="-fx-text-fill: #8995aa;
+                                      -fx-font-size: 10px;
+                                      -fx-font-weight: bold;"/>
+
+                        <Label fx:id="lblTotalOutstanding"
+                               text="0 MMK"
+                               style="-fx-text-fill: #dc2626;
+                                      -fx-font-size: 22px;
+                                      -fx-font-weight: bold;"/>
+
+                    </VBox>
+
+                    <VBox spacing="6"
+                          minWidth="170"
+                          prefWidth="190"
+                          HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 18;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+
+                        <Label text="PAID / UNPAID"
+                               style="-fx-text-fill: #8995aa;
+                                      -fx-font-size: 10px;
+                                      -fx-font-weight: bold;"/>
+
+                        <Label fx:id="lblPaidUnpaidCount"
+                               text="0 / 0"
+                               style="-fx-text-fill: #172033;
+                                      -fx-font-size: 22px;
+                                      -fx-font-weight: bold;"/>
+
+                    </VBox>
+
+                </HBox>
+
+                <!-- FILTERS -->
+                <HBox alignment="CENTER_LEFT"
+                      maxWidth="Infinity"
+                      spacing="12"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 12;
+                             -fx-padding: 12 16;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+
+                    <Label text="🔍"
+                           style="-fx-font-size: 15px;
+                                  -fx-text-fill: #8995aa;"/>
+
+                    <TextField fx:id="txtSearchStudent"
+                               promptText="Search student name, code, or class..."
+                               maxWidth="320"
+                               style="-fx-background-color: transparent;
+                                      -fx-border-color: transparent;
+                                      -fx-font-size: 13px;"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Label text="Class"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <ComboBox fx:id="cmbClassFilter"
+                              prefWidth="180"
+                              promptText="All Classes"/>
+
+                    <Label text="Status"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <ComboBox fx:id="cmbStatusFilter"
+                              prefWidth="140"
+                              promptText="All Status"/>
+
+                    <Label fx:id="lblStudentFeeCount"
+                           text="0 students"
+                           style="-fx-text-fill: #8995aa;
+                                  -fx-font-size: 12px;
+                                  -fx-font-weight: bold;"/>
+
+                </HBox>
+
+                <!-- STUDENT FEE TABLE -->
+                <VBox maxWidth="Infinity"
+                      spacing="14"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+
+                    <Label text="Student Payment Status"
+                           style="-fx-text-fill: #172033;
+                                  -fx-font-size: 16px;
+                                  -fx-font-weight: bold;"/>
+
+                    <TableView fx:id="feeTable"
+                               maxWidth="Infinity"
+                               prefHeight="420"
+                               VBox.vgrow="ALWAYS">
+
+                        <columns>
+
+                            <TableColumn fx:id="colStudentCode"
+                                         prefWidth="110"
+                                         text="Code"/>
+
+                            <TableColumn fx:id="colStudentName"
+                                         prefWidth="180"
+                                         text="Student Name"/>
+
+                            <TableColumn fx:id="colClassName"
+                                         prefWidth="160"
+                                         text="Class"/>
+
+                            <TableColumn fx:id="colClassFee"
+                                         prefWidth="120"
+                                         text="Class Fee"/>
+
+                            <TableColumn fx:id="colAmountPaid"
+                                         prefWidth="120"
+                                         text="Paid"/>
+
+                            <TableColumn fx:id="colBalanceDue"
+                                         prefWidth="120"
+                                         text="Balance"/>
+
+                            <TableColumn fx:id="colPaymentStatus"
+                                         prefWidth="120"
+                                         text="Status"/>
+
+                        </columns>
+
+                    </TableView>
+
+                </VBox>
+
+                <Region minHeight="10"/>
+
+            </VBox>
+
+        </content>
+
+    </ScrollPane>
+
+</AnchorPane>

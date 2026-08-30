@@ -28,6 +28,7 @@ public class AdminDashboardController implements Initializable {
             btnStudents,
             btnTeachers,
             btnClasses,
+            btnClassFees,
             btnSubjects,
             btnExams,
             btnGrades,
@@ -737,6 +738,7 @@ public class AdminDashboardController implements Initializable {
                         btnStudents,
                         btnTeachers,
                         btnClasses,
+                        btnClassFees,
                         btnSubjects,
                         btnExams,
                         btnGrades,
@@ -858,6 +860,36 @@ public class AdminDashboardController implements Initializable {
             adminPane.getChildren().setAll(classPage);
         } catch (Exception ec) {
             ec.printStackTrace();
+        }
+    }
+
+
+    // =========================================================
+    // CLASS FEES
+    // =========================================================
+
+    @FXML
+    public void openClassFees(ActionEvent e) {
+
+        try {
+            setActiveButton(btnClassFees);
+            showAdminPane();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Admin/AdminClassFee.fxml"
+            ));
+
+            Parent classFeePage = loader.load();
+
+            AnchorPane.setTopAnchor(classFeePage, 0.0);
+            AnchorPane.setRightAnchor(classFeePage, 0.0);
+            AnchorPane.setBottomAnchor(classFeePage, 0.0);
+            AnchorPane.setLeftAnchor(classFeePage, 0.0);
+
+            adminPane.getChildren().setAll(classFeePage);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
