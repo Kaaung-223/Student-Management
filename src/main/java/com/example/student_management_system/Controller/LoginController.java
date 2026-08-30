@@ -3,7 +3,9 @@ package com.example.student_management_system.Controller;
 import com.example.student_management_system.Controller.Admin.AdminDashboardController;
 import com.example.student_management_system.Controller.DAO.DBConnention;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +16,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -25,6 +30,38 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class LoginController {
+
+    private static final int MAX_FAILED_ATTEMPTS = 3;
+    private static final int LOCKOUT_SECONDS = 10;
+
+    private static final String BTN_NORMAL_STYLE =
+            "-fx-background-color:#4f46e5;" +
+                    "-fx-text-fill:white;" +
+                    "-fx-background-radius:10;" +
+                    "-fx-font-size:13px;" +
+                    "-fx-font-weight:bold;" +
+                    "-fx-cursor:hand;" +
+                    "-fx-opacity:1;";
+
+    private static final String BTN_PRESSED_STYLE =
+            "-fx-background-color:#3730a3;" +
+                    "-fx-text-fill:white;" +
+                    "-fx-background-radius:10;" +
+                    "-fx-font-size:13px;" +
+                    "-fx-font-weight:bold;" +
+                    "-fx-cursor:hand;" +
+                    "-fx-scale-x:.98;" +
+                    "-fx-scale-y:.98;" +
+                    "-fx-opacity:1;";
+
+    private static final String BTN_DISABLED_STYLE =
+            "-fx-background-color:#cbd5e1;" +
+                    "-fx-text-fill:#94a3b8;" +
+                    "-fx-background-radius:10;" +
+                    "-fx-font-size:13px;" +
+                    "-fx-font-weight:bold;" +
+                    "-fx-cursor:default;" +
+                    "-fx-opacity:0.85;";
 
     @FXML
     private Button btnLogin;
@@ -42,19 +79,40 @@ public class LoginController {
     private PasswordField passwordField;
 
     @FXML
-    private Label lblLoginMessage;
+    private VBox loginToast;
+
+    @FXML
+    private StackPane loginToastIconWrap;
+
+    @FXML
+    private Label loginToastIcon;
+
+    @FXML
+    private Label lblLoginToastTitle;
+
+    @FXML
+    private Label lblLoginToastHeading;
+
+    @FXML
+    private Label lblLoginToastMessage;
+
+    @FXML
+    private Region loginToastAccent;
 
     @FXML
     private FontIcon eyeIcon;
 
     private boolean showPassword = false;
+    private int failedAttempts = 0;
+    private boolean lockoutActive = false;
+
+    private PauseTransition toastTimer;
+    private Timeline lockoutTimeline;
+    private boolean loginInProgress = false;
 
     @FXML
     public void initialize() {
 
-        /*
-         * Keep both password fields synchronized.
-         */
         visiblePasswordField.textProperty()
                 .bindBidirectional(passwordField.textProperty());
 
@@ -63,29 +121,13 @@ public class LoginController {
 
         eyeIcon.setIconLiteral("fas-eye");
 
-        /*
-         * Pressing ENTER in the username field
-         * clicks/fires the login button.
-         */
-        txtUsername.setOnAction(event -> btnLogin.fire());
+        txtUsername.setOnAction(event -> loginWithButtonEffect());
+        passwordField.setOnAction(event -> loginWithButtonEffect());
+        visiblePasswordField.setOnAction(event -> loginWithButtonEffect());
 
-        /*
-         * Pressing ENTER in the password field
-         * clicks/fires the login button.
-         */
-        passwordField.setOnAction(event -> btnLogin.fire());
-
-        /*
-         * Pressing ENTER in the visible password field
-         * also clicks/fires the login button.
-         */
-        visiblePasswordField.setOnAction(event -> btnLogin.fire());
-
-        /*
-         * Makes the login button respond to ENTER
-         * when another control has focus.
-         */
         btnLogin.setDefaultButton(true);
+
+        applyLoginButtonStyle(true);
     }
 
     @FXML
@@ -107,6 +149,63 @@ public class LoginController {
     @FXML
     private void login(ActionEvent event) {
 
+        if (loginInProgress) {
+            return;
+        }
+
+        performLogin();
+    }
+
+    private void loginWithButtonEffect() {
+
+        if (loginInProgress) {
+            return;
+        }
+
+        if (lockoutActive) {
+            showErrorToast(
+                    "SIGN IN LOCKED",
+                    "Please wait",
+                    "Try again shortly."
+            );
+            return;
+        }
+
+        if (btnLogin.isDisabled()) {
+            return;
+        }
+
+        loginInProgress = true;
+        btnLogin.setStyle(BTN_PRESSED_STYLE);
+
+        PauseTransition pressEffect =
+                new PauseTransition(
+                        Duration.millis(160)
+                );
+
+        pressEffect.setOnFinished(e -> {
+
+            try {
+
+                if (!lockoutActive && !btnLogin.isDisabled()) {
+                    applyLoginButtonStyle(true);
+                }
+
+                performLogin();
+
+            } finally {
+                loginInProgress = false;
+            }
+        });
+
+        pressEffect.play();
+    }
+
+    private void performLogin() {
+
+        if (lockoutActive || btnLogin.isDisabled()) {
+            return;
+        }
         String username = txtUsername.getText().trim();
 
         String password = showPassword
@@ -114,7 +213,11 @@ public class LoginController {
                 : passwordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
-            showError("Please enter your username and password.");
+            showErrorToast(
+                    "LOGIN REQUIRED",
+                    "Missing details",
+                    "Enter username and password."
+            );
             return;
         }
 
@@ -127,7 +230,11 @@ public class LoginController {
         try (Connection con = DBConnention.getConnection()) {
 
             if (con == null) {
-                showError("Database connection is unavailable.");
+                showErrorToast(
+                        "CONNECTION ERROR",
+                        "Unavailable",
+                        "Check database connection."
+                );
                 return;
             }
 
@@ -139,23 +246,28 @@ public class LoginController {
                 try (ResultSet rs = ps.executeQuery()) {
 
                     if (!rs.next()) {
-                        showError("Incorrect username or password.");
+                        handleFailedLogin();
                         return;
                     }
+
+                    failedAttempts = 0;
 
                     String role = rs.getString("role");
 
                     if ("ADMIN".equalsIgnoreCase(role)) {
-
                         openAdminDashboard(username);
-
                     } else if ("TEACHER".equalsIgnoreCase(role)) {
-
-                        showError("Teacher dashboard is coming soon.");
-
+                        showErrorToast(
+                                "ACCESS LIMITED",
+                                "Coming soon",
+                                "Teacher login not ready."
+                        );
                     } else {
-
-                        showError("Your account role is not supported.");
+                        showErrorToast(
+                                "ACCESS DENIED",
+                                "Not supported",
+                                "Contact administrator."
+                        );
                     }
                 }
             }
@@ -164,26 +276,179 @@ public class LoginController {
 
             e.printStackTrace();
 
-            showError("Please check your database connection.");
+            showErrorToast(
+                    "CONNECTION ERROR",
+                    "Try again",
+                    "Database connection failed."
+            );
         }
     }
 
-    private void showError(String message) {
+    private void handleFailedLogin() {
 
-        lblLoginMessage.setText(message);
+        failedAttempts++;
 
-        lblLoginMessage.setManaged(true);
-        lblLoginMessage.setVisible(true);
+        int remaining =
+                MAX_FAILED_ATTEMPTS - failedAttempts;
 
-        PauseTransition delay =
-                new PauseTransition(Duration.seconds(4));
+        if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+            startLockout();
+            return;
+        }
 
-        delay.setOnFinished(event -> {
-            lblLoginMessage.setVisible(false);
-            lblLoginMessage.setManaged(false);
+        String message =
+                remaining == 1
+                        ? "1 attempt left."
+                        : remaining + " attempts left.";
+
+        showErrorToast(
+                "LOGIN FAILED",
+                "Invalid credentials",
+                message
+        );
+    }
+
+    private void startLockout() {
+
+        lockoutActive = true;
+        failedAttempts = 0;
+
+        setLoginEnabled(false);
+
+        showErrorToast(
+                "SIGN IN LOCKED",
+                "Please wait",
+                "Retry in " + LOCKOUT_SECONDS + " seconds.",
+                LOCKOUT_SECONDS
+        );
+
+        if (lockoutTimeline != null) {
+            lockoutTimeline.stop();
+        }
+
+        final int[] secondsLeft = {LOCKOUT_SECONDS};
+
+        updateLockoutButtonText(secondsLeft[0]);
+
+        lockoutTimeline = new Timeline(
+                new KeyFrame(
+                        Duration.seconds(1),
+                        event -> {
+
+                            secondsLeft[0]--;
+
+                            if (secondsLeft[0] > 0) {
+                                updateLockoutButtonText(
+                                        secondsLeft[0]
+                                );
+                            } else {
+                                endLockout();
+                            }
+                        }
+                )
+        );
+
+        lockoutTimeline.setCycleCount(LOCKOUT_SECONDS);
+        lockoutTimeline.play();
+    }
+
+    private void endLockout() {
+
+        lockoutActive = false;
+
+        if (lockoutTimeline != null) {
+            lockoutTimeline.stop();
+            lockoutTimeline = null;
+        }
+
+        setLoginEnabled(true);
+        btnLogin.setText("SIGN IN");
+    }
+
+    private void updateLockoutButtonText(int secondsLeft) {
+        btnLogin.setText(
+                "SIGN IN (" + secondsLeft + "s)"
+        );
+    }
+
+    private void setLoginEnabled(boolean enabled) {
+
+        btnLogin.setDisable(!enabled);
+        applyLoginButtonStyle(enabled);
+    }
+
+    private void applyLoginButtonStyle(boolean enabled) {
+
+        btnLogin.setStyle(
+                enabled
+                        ? BTN_NORMAL_STYLE
+                        : BTN_DISABLED_STYLE
+        );
+    }
+
+    private void showErrorToast(
+            String title,
+            String heading,
+            String message
+    ) {
+        showErrorToast(
+                title,
+                heading,
+                message,
+                5
+        );
+    }
+
+    private void showErrorToast(
+            String title,
+            String heading,
+            String message,
+            int hideAfterSeconds
+    ) {
+
+        loginToastIconWrap.setStyle(
+                "-fx-background-color:#fee2e2;" +
+                        "-fx-background-radius:19;"
+        );
+        loginToastIcon.setText("✕");
+        loginToastIcon.setStyle(
+                "-fx-text-fill:#dc2626;" +
+                        "-fx-font-size:17px;" +
+                        "-fx-font-weight:bold;"
+        );
+        loginToastAccent.setStyle(
+                "-fx-background-color:#ef4444;" +
+                        "-fx-background-radius:3;"
+        );
+
+        lblLoginToastTitle.setText(title);
+        lblLoginToastHeading.setText(heading);
+        lblLoginToastMessage.setText(message);
+
+        loginToast.setPrefWidth(350);
+        loginToast.setMinWidth(350);
+        loginToast.setMaxWidth(350);
+        loginToast.setPrefHeight(125);
+        loginToast.setMinHeight(125);
+        loginToast.setMaxHeight(125);
+
+        loginToast.setManaged(true);
+        loginToast.setVisible(true);
+
+        if (toastTimer != null) {
+            toastTimer.stop();
+        }
+
+        toastTimer = new PauseTransition(
+                Duration.seconds(hideAfterSeconds)
+        );
+
+        toastTimer.setOnFinished(event -> {
+            loginToast.setVisible(false);
+            loginToast.setManaged(false);
         });
 
-        delay.play();
+        toastTimer.play();
     }
 
     private void openAdminDashboard(String username) {
@@ -232,37 +497,32 @@ public class LoginController {
 
             e.printStackTrace();
 
-            showError("Unable to open the dashboard.");
+            showErrorToast(
+                    "DASHBOARD ERROR",
+                    "Unable to open",
+                    "Please try again."
+            );
         }
     }
 
     @FXML
     private void handleLoginPress() {
 
-        btnLogin.setStyle(
-                "-fx-background-color:#3730a3;" +
-                        "-fx-text-fill:white;" +
-                        "-fx-background-radius:10;" +
-                        "-fx-font-size:13px;" +
-                        "-fx-font-weight:bold;" +
-                        "-fx-cursor:hand;" +
-                        "-fx-scale-x:.98;" +
-                        "-fx-scale-y:.98;"
-        );
+        if (btnLogin.isDisabled() || lockoutActive) {
+            return;
+        }
+
+        btnLogin.setStyle(BTN_PRESSED_STYLE);
     }
 
     @FXML
     private void handleLoginRelease() {
 
-        btnLogin.setStyle(
-                "-fx-background-color:#4f46e5;" +
-                        "-fx-text-fill:white;" +
-                        "-fx-background-radius:10;" +
-                        "-fx-font-size:13px;" +
-                        "-fx-font-weight:bold;" +
-                        "-fx-cursor:hand;" +
-                        "-fx-scale-x:1;" +
-                        "-fx-scale-y:1;"
-        );
+        if (btnLogin.isDisabled() || lockoutActive) {
+            applyLoginButtonStyle(false);
+            return;
+        }
+
+        applyLoginButtonStyle(true);
     }
 }
