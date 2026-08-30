@@ -9,7 +9,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -385,7 +387,132 @@ public class AdminTeacherController implements Initializable {
                     .add(salaryLabel);
         }
 
+        /*
+         * Update and delete actions.
+         */
+        HBox actionRow =
+                new HBox(8);
+
+        actionRow.setStyle(
+                "-fx-alignment: CENTER_RIGHT;"
+        );
+
+        Button viewButton =
+                makeCardButton(
+                        "View",
+                        "#f0f2f6",
+                        "#344563"
+                );
+
+        Button updateButton =
+                makeCardButton(
+                        "Update",
+                        "#4f46e5",
+                        "white"
+                );
+
+        Button deleteButton =
+                makeCardButton(
+                        "Delete",
+                        "#fee2e2",
+                        "#dc2626"
+                );
+
+        viewButton.setOnAction(event ->
+                openTeacherDialog(
+                        teacher,
+                        AddTeacherDialogController.DialogMode.VIEW
+                )
+        );
+
+        updateButton.setOnAction(event ->
+                openTeacherDialog(
+                        teacher,
+                        AddTeacherDialogController.DialogMode.EDIT
+                )
+        );
+
+        deleteButton.setOnAction(event ->
+                confirmDeleteTeacher(teacher)
+        );
+
+        actionRow.getChildren()
+                .addAll(
+                        viewButton,
+                        updateButton,
+                        deleteButton
+                );
+
+        card.getChildren()
+                .add(actionRow);
+
+        card.setOnMouseClicked(event -> {
+
+            if (
+                    !(event.getTarget()
+                            instanceof javafx.scene.Node clickedNode)
+            ) {
+                return;
+            }
+
+            if (isButtonInHierarchy(clickedNode)) {
+                return;
+            }
+
+            openTeacherDialog(
+                    teacher,
+                    AddTeacherDialogController.DialogMode.VIEW
+            );
+        });
+
+        card.setStyle(
+                card.getStyle() +
+                        "-fx-cursor: hand;"
+        );
+
         return card;
+    }
+
+    private boolean isButtonInHierarchy(
+            javafx.scene.Node node
+    ) {
+
+        while (node != null) {
+
+            if (node instanceof Button) {
+                return true;
+            }
+
+            node = node.getParent();
+        }
+
+        return false;
+    }
+
+    private Button makeCardButton(
+            String text,
+            String backgroundColor,
+            String foregroundColor
+    ) {
+
+        Button button =
+                new Button(text);
+
+        button.setStyle(
+                "-fx-background-color: " +
+                        backgroundColor +
+                        ";" +
+                        "-fx-text-fill: " +
+                        foregroundColor +
+                        ";" +
+                        "-fx-font-size: 11px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-padding: 6 12;" +
+                        "-fx-cursor: hand;"
+        );
+
+        return button;
     }
 
     private Node buildAvatar(Teacher teacher) {
@@ -573,14 +700,23 @@ public class AdminTeacherController implements Initializable {
 
     @FXML
     public void openAddTeacherDialog() {
+        openTeacherDialog(
+                null,
+                AddTeacherDialogController.DialogMode.ADD
+        );
+    }
+
+    private void openTeacherDialog(
+            Teacher teacher,
+            AddTeacherDialogController.DialogMode mode
+    ) {
 
         try {
 
             FXMLLoader loader =
                     new FXMLLoader(
                             getClass().getResource(
-                                    "/com/example/" +
-                                            "student_management_system/" +
+                                    "/com/example/student_management_system/" +
                                             "View/Admin/" +
                                             "AdminTeacherDialog.fxml"
                             )
@@ -592,19 +728,33 @@ public class AdminTeacherController implements Initializable {
             Stage dialogStage =
                     new Stage();
 
-            dialogStage.setTitle(
-                    "Add Teacher"
-            );
+            String title;
+
+            if (mode == AddTeacherDialogController.DialogMode.ADD) {
+                title = "Add Teacher";
+            } else if (mode == AddTeacherDialogController.DialogMode.EDIT) {
+                title = "Update Teacher";
+            } else {
+                title = "Teacher Details";
+            }
+
+            dialogStage.setTitle(title);
 
             dialogStage.initModality(
                     Modality.APPLICATION_MODAL
             );
 
-            dialogStage.setScene(
-                    new Scene(root)
-            );
+            Scene scene =
+                    new Scene(
+                            root,
+                            620,
+                            760
+                    );
 
-            dialogStage.setResizable(false);
+            dialogStage.setScene(scene);
+            dialogStage.setMinWidth(460);
+            dialogStage.setMinHeight(600);
+            dialogStage.setResizable(true);
 
             AddTeacherDialogController controller =
                     loader.getController();
@@ -612,20 +762,90 @@ public class AdminTeacherController implements Initializable {
             controller.setDialogStage(
                     dialogStage
             );
+            controller.setDialogMode(mode);
+
+            if (
+                    teacher != null &&
+                            mode != AddTeacherDialogController.DialogMode.ADD
+            ) {
+                controller.loadTeacher(teacher);
+            }
 
             dialogStage.showAndWait();
 
-            /*
-             * Refresh the teacher cards after
-             * the dialog closes.
-             */
-            loadTeachers(
-                    txtSearchTeacher.getText()
-            );
+            if (controller.wasSaved()) {
+                loadTeachers(
+                        txtSearchTeacher.getText()
+                );
+            }
 
         } catch (Exception e) {
 
             e.printStackTrace();
         }
+    }
+
+    private void confirmDeleteTeacher(Teacher teacher) {
+
+        Alert confirm =
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
+
+        confirm.setTitle("Delete Teacher");
+        confirm.setHeaderText(
+                "Delete " +
+                        valueOrDefault(
+                                teacher.getTeacherName(),
+                                "this teacher"
+                        ) +
+                        "?"
+        );
+        confirm.setContentText(
+                "This will permanently remove the teacher profile " +
+                        "and login account."
+        );
+
+        confirm.showAndWait()
+                .ifPresent(response -> {
+
+                    if (
+                            response ==
+                                    ButtonType.OK
+                    ) {
+
+                        boolean deleted =
+                                teacherDAO.deleteTeacher(
+                                        teacher.getId()
+                                );
+
+                        if (deleted) {
+                            loadTeachers(
+                                    txtSearchTeacher.getText()
+                            );
+                        } else {
+                            showAlert(
+                                    Alert.AlertType.ERROR,
+                                    "Delete Failed",
+                                    "Could not delete this teacher."
+                            );
+                        }
+                    }
+                });
+    }
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

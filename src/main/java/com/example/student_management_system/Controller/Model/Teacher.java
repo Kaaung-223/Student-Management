@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public class Teacher {
 
     private int id;
+    private int userId;
     private String teacherCode;
     private String teacherName;
     private String username;
@@ -25,6 +26,7 @@ public class Teacher {
 
     public Teacher(
             int id,
+            int userId,
             String teacherCode,
             String teacherName,
             String username,
@@ -40,6 +42,7 @@ public class Teacher {
             String classLeaderOf
     ) {
         this.id = id;
+        this.userId = userId;
         this.teacherCode = teacherCode;
         this.teacherName = teacherName;
         this.username = username;
@@ -55,49 +58,20 @@ public class Teacher {
         this.classLeaderOf = classLeaderOf;
     }
 
-    /*
-     * This old constructor is kept so other existing code
-     * can continue to work.
-     */
-    public Teacher(
-            int id,
-            String teacherCode,
-            String teacherName,
-            String email,
-            String phone,
-            String gender,
-            String address,
-            String photoPath,
-            BigDecimal salary,
-            LocalDate hireDate,
-            String status,
-            String subjectsTaught,
-            String classLeaderOf
-    ) {
-        this(
-                id,
-                teacherCode,
-                teacherName,
-                null,
-                email,
-                phone,
-                gender,
-                address,
-                photoPath,
-                salary,
-                hireDate,
-                status,
-                subjectsTaught,
-                classLeaderOf
-        );
-    }
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getTeacherCode() {

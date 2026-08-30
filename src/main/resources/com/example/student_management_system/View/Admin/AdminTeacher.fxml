@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -10,52 +9,120 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-
-<AnchorPane maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.student_management_system.Controller.Admin.AdminTeacherController">
-
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="Infinity" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-
+<AnchorPane maxHeight="Infinity"
+            maxWidth="Infinity"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Admin.AdminTeacherController">
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                maxHeight="Infinity"
+                maxWidth="Infinity"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0"
+                style="-fx-background-color: transparent;
+                       -fx-border-color: transparent;">
         <content>
-
-            <VBox fillWidth="true" maxWidth="Infinity" spacing="20" style="-fx-background-color: #f5f7fb;">
-
+            <VBox fillWidth="true"
+                  maxWidth="Infinity"
+                  spacing="20"
+                  style="-fx-background-color: #f5f7fb;">
                 <padding>
-                    <Insets bottom="35" left="30" right="30" top="28" />
+                    <Insets top="28"
+                            right="30"
+                            bottom="35"
+                            left="30"/>
                 </padding>
-
                 <!-- HEADER -->
-                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="20">
-                    <VBox spacing="4" HBox.hgrow="ALWAYS">
-                        <Label style="-fx-text-fill: #172033; -fx-font-size: 28px; -fx-font-weight: bold;" text="Teachers" />
-                        <Label style="-fx-text-fill: #8995aa; -fx-font-size: 14px;" text="Manage teacher profiles, subjects, and class leadership" />
+                <HBox alignment="CENTER_LEFT"
+                      maxWidth="Infinity"
+                      spacing="20">
+                    <VBox spacing="4"
+                          HBox.hgrow="ALWAYS">
+                        <Label text="Teachers"
+                               style="-fx-text-fill: #172033;
+                                      -fx-font-size: 28px;
+                                      -fx-font-weight: bold;"/>
+                        <Label text="Manage teacher profiles, login accounts, subjects, and class leadership"
+                               wrapText="true"
+                               style="-fx-text-fill: #8995aa;
+                                      -fx-font-size: 14px;"/>
                     </VBox>
-
-                    <Button fx:id="btnAddTeacher" onAction="#openAddTeacherDialog" prefHeight="42" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 20; -fx-cursor: hand;" text="+  Add Teacher" />
+                    <Button fx:id="btnAddTeacher"
+                            onAction="#openAddTeacherDialog"
+                            text="+  Add Teacher"
+                            prefHeight="42"
+                            minWidth="130"
+                            style="-fx-background-color: #2563EB;
+                                   -fx-text-fill: white;
+                                   -fx-font-size: 13px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-radius: 10;
+                                   -fx-padding: 0 20;
+                                   -fx-cursor: hand;"/>
                 </HBox>
-
                 <!-- SEARCH BAR -->
-                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 10 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06),10,0,0,3);">
-                    <Label style="-fx-font-size: 15px; -fx-text-fill: #8995aa;" text="🔍" />
-                    <TextField fx:id="txtSearchTeacher" maxWidth="Infinity" promptText="Search by name, code, email, or subject..." style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px;" HBox.hgrow="ALWAYS" />
-                    <Label fx:id="lblTeacherCount" style="-fx-text-fill: #8995aa; -fx-font-size: 12px; -fx-font-weight: bold;" text="0 teachers" />
+                <HBox alignment="CENTER_LEFT"
+                      maxWidth="Infinity"
+                      spacing="10"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 12;
+                             -fx-padding: 10 16;
+                             -fx-effect: dropshadow(
+                                 gaussian,
+                                 rgba(0,0,0,0.06),
+                                 10,
+                                 0,
+                                 0,
+                                 3);">
+                    <Label text="🔍"
+                           style="-fx-font-size: 15px;
+                                  -fx-text-fill: #8995aa;"/>
+                    <TextField fx:id="txtSearchTeacher"
+                               maxWidth="Infinity"
+                               promptText="Search by name, code, username, email, or subject..."
+                               style="-fx-background-color: transparent;
+                                      -fx-border-color: transparent;
+                                      -fx-font-size: 13px;"
+                               HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblTeacherCount"
+                           text="0 teachers"
+                           style="-fx-text-fill: #8995aa;
+                                  -fx-font-size: 12px;
+                                  -fx-font-weight: bold;"/>
                 </HBox>
-
-                <!-- TEACHER CARDS -->
-                <FlowPane fx:id="teacherCardContainer" hgap="18" maxWidth="Infinity" vgap="18" />
-
+                <!-- RESPONSIVE TEACHER CARDS -->
+                <FlowPane fx:id="teacherCardContainer"
+                          hgap="18"
+                          vgap="18"
+                          prefWrapLength="900"
+                          maxWidth="Infinity"
+                          style="-fx-padding: 2;"/>
                 <!-- EMPTY STATE -->
-                <VBox fx:id="emptyStateBox" alignment="CENTER" maxWidth="Infinity" spacing="8" style="-fx-padding: 60 0;" visible="false" managed="false">
-                    <Label style="-fx-font-size: 32px;" text="🔍" />
-                    <Label style="-fx-text-fill: #172033; -fx-font-size: 16px; -fx-font-weight: bold;" text="No teachers found" />
-                    <Label style="-fx-text-fill: #8995aa; -fx-font-size: 13px;" text="Try a different search term, or add a new teacher." />
+                <VBox fx:id="emptyStateBox"
+                      alignment="CENTER"
+                      maxWidth="Infinity"
+                      spacing="8"
+                      visible="false"
+                      managed="false"
+                      style="-fx-padding: 60 0;">
+                    <Label text="🔍"
+                           style="-fx-font-size: 32px;"/>
+                    <Label text="No teachers found"
+                           style="-fx-text-fill: #172033;
+                                  -fx-font-size: 16px;
+                                  -fx-font-weight: bold;"/>
+                    <Label text="Try a different search term, or add a new teacher."
+                           wrapText="true"
+                           style="-fx-text-fill: #8995aa;
+                                  -fx-font-size: 13px;"/>
                 </VBox>
-
-                <Region minHeight="20" prefHeight="20" />
-
+                <Region minHeight="20"
+                        prefHeight="20"/>
             </VBox>
-
         </content>
-
     </ScrollPane>
-
 </AnchorPane>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
@@ -10,129 +9,422 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<VBox maxWidth="Infinity" prefWidth="520" spacing="0" style="-fx-background-color: #f5f7fb;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.student_management_system.Controller.Admin.AddTeacherDialogController">
+<VBox maxWidth="Infinity"
+      maxHeight="Infinity"
+      prefWidth="620"
+      prefHeight="760"
+      minWidth="460"
+      minHeight="600"
+      spacing="0"
+      fillWidth="true"
+      style="-fx-background-color: #f5f7fb;"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.student_management_system.Controller.Admin.AddTeacherDialogController">
 
     <!-- HEADER -->
-    <VBox spacing="4" style="-fx-background-color: white; -fx-padding: 22 26;">
-        <Label style="-fx-text-fill: #172033; -fx-font-size: 20px; -fx-font-weight: bold;" text="Add New Teacher" />
-        <Label style="-fx-text-fill: #8995aa; -fx-font-size: 12px;" text="Create a login, profile, subjects, and (optionally) class leadership" />
+    <VBox spacing="5"
+          fillWidth="true"
+          style="-fx-background-color: white;
+                 -fx-padding: 22 26;">
+
+        <Label fx:id="lblDialogTitle"
+               text="Add New Teacher"
+               style="-fx-text-fill: #172033;
+                      -fx-font-size: 20px;
+                      -fx-font-weight: bold;"/>
+
+        <Label fx:id="lblDialogSubtitle"
+               text="Create a teacher account and profile"
+               wrapText="true"
+               style="-fx-text-fill: #8995aa;
+                      -fx-font-size: 12px;"/>
     </VBox>
 
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+    <!-- SCROLLABLE FORM AREA -->
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                maxWidth="Infinity"
+                maxHeight="Infinity"
+                style="-fx-background-color: transparent;
+                       -fx-border-color: transparent;"
+                VBox.vgrow="ALWAYS">
+
         <content>
-            <VBox spacing="18" style="-fx-padding: 22 26;">
+
+            <VBox maxWidth="Infinity"
+                  fillWidth="true"
+                  spacing="18"
+                  style="-fx-padding: 22 26;">
 
                 <!-- PHOTO -->
-                <HBox alignment="CENTER_LEFT" spacing="16">
-                    <javafx.scene.layout.StackPane prefHeight="72" prefWidth="72">
-                        <Circle fx:id="photoPlaceholderCircle" fill="#e4e8ef" radius="36" />
-                        <ImageView fx:id="photoPreview" fitHeight="72" fitWidth="72" pickOnBounds="true" preserveRatio="false" visible="false" />
-                    </javafx.scene.layout.StackPane>
-                    <VBox spacing="6">
-                        <Button fx:id="btnChoosePhoto" onAction="#choosePhoto" style="-fx-background-color: #edf3ff; -fx-text-fill: #4267d5; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 14; -fx-cursor: hand;" text="Choose Photo" />
-                        <Label fx:id="lblPhotoFileName" style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="No photo selected" />
+                <HBox alignment="CENTER_LEFT"
+                      spacing="16"
+                      maxWidth="Infinity">
+
+                    <StackPane prefHeight="72"
+                               prefWidth="72"
+                               minHeight="72"
+                               minWidth="72">
+
+                        <Circle fx:id="photoPlaceholderCircle"
+                                radius="36"
+                                fill="#e4e8ef"/>
+
+                        <ImageView fx:id="photoPreview"
+                                   fitHeight="72"
+                                   fitWidth="72"
+                                   pickOnBounds="true"
+                                   preserveRatio="false"
+                                   visible="false"/>
+                    </StackPane>
+
+                    <VBox spacing="6"
+                          fillWidth="true"
+                          HBox.hgrow="ALWAYS">
+
+                        <Button fx:id="btnChoosePhoto"
+                                onAction="#choosePhoto"
+                                text="Choose Photo"
+                                maxWidth="Infinity"
+                                style="-fx-background-color: #edf3ff;
+                                       -fx-text-fill: #4267d5;
+                                       -fx-font-size: 12px;
+                                       -fx-font-weight: bold;
+                                       -fx-background-radius: 8;
+                                       -fx-padding: 8 14;
+                                       -fx-cursor: hand;"/>
+
+                        <Label fx:id="lblPhotoFileName"
+                               text="No photo selected"
+                               wrapText="true"
+                               style="-fx-text-fill: #8995aa;
+                                      -fx-font-size: 11px;"/>
+
+                        <Label fx:id="lblPhotoError"
+                               visible="false"
+                               managed="false"
+                               wrapText="true"
+                               style="-fx-text-fill: #e5484d;
+                                      -fx-font-size: 11px;
+                                      -fx-font-weight: bold;"/>
                     </VBox>
                 </HBox>
 
-                <!-- BASIC INFO -->
-                <GridPane hgap="14" vgap="12">
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="50" />
-                        <ColumnConstraints percentWidth="50" />
-                    </columnConstraints>
+                <!-- FULL NAME -->
+                <VBox spacing="5"
+                      fillWidth="true">
 
-                    <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Full Name *" />
-                        <TextField fx:id="txtFullName" promptText="e.g. John Smith" />
-                    </VBox>
+                    <Label text="Full Name *"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
 
-                    <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Teacher Code" />
-                        <TextField fx:id="txtTeacherCode" promptText="e.g. T004" />
-                    </VBox>
+                    <TextField fx:id="txtFullName"
+                               maxWidth="Infinity"
+                               promptText="e.g. John Smith"/>
 
-                    <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Username *" />
-                        <TextField fx:id="txtUsername" promptText="Login username" />
-                    </VBox>
+                    <Label fx:id="lblFullNameError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
 
-                    <VBox spacing="4"
-                          GridPane.columnIndex="1"
-                          GridPane.rowIndex="1">
+                <!-- TEACHER CODE -->
+                <VBox spacing="5"
+                      fillWidth="true">
 
-                        <Label style="-fx-font-size: 11px;
-                  -fx-text-fill: #5b6b85;
-                  -fx-font-weight: bold;"
-                               text="Password *" />
+                    <Label text="Teacher Code"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
 
-                        <PasswordField fx:id="txtPassword"
-                                       promptText="Login password" />
+                    <TextField fx:id="txtTeacherCode"
+                               maxWidth="Infinity"
+                               promptText="e.g. T004"/>
 
-                        <Label style="-fx-font-size: 10px;
-                  -fx-text-fill: #8995aa;"
-                               text="8+ characters, uppercase, lowercase, number, and special character"
-                               wrapText="true" />
-                    </VBox>
+                    <Label fx:id="lblTeacherCodeError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
 
-                    <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Email" />
-                        <TextField fx:id="txtEmail" promptText="teacher@school.com" />
-                    </VBox>
+                <!-- USERNAME -->
+                <VBox spacing="5"
+                      fillWidth="true">
 
-                    <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Phone" />
-                        <TextField fx:id="txtPhone" promptText="09xxxxxxxx" />
-                    </VBox>
+                    <Label text="Username *"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
 
-                    <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="3">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Gender" />
-                        <ComboBox fx:id="cmbGender" maxWidth="Infinity" promptText="Select" />
-                    </VBox>
+                    <TextField fx:id="txtUsername"
+                               maxWidth="Infinity"
+                               promptText="Login username"/>
 
-                    <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Hire Date" />
-                        <DatePicker fx:id="dpHireDate" maxWidth="Infinity" />
-                    </VBox>
+                    <Label fx:id="lblUsernameError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
 
-                    <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="4">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Salary (MMK / month)" />
-                        <TextField fx:id="txtSalary" promptText="e.g. 750000" />
-                    </VBox>
+                <!-- PASSWORD -->
+                <VBox spacing="5"
+                      fillWidth="true">
 
-                    <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Class Leader Of" />
-                        <ComboBox fx:id="cmbClassLeaderOf" maxWidth="Infinity" promptText="None" />
-                    </VBox>
+                    <Label text="Password *"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
 
-                </GridPane>
+                    <PasswordField fx:id="txtPassword"
+                                   maxWidth="Infinity"
+                                   promptText="Login password"/>
 
-                <VBox spacing="4">
-                    <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Address" />
-                    <TextArea fx:id="txtAddress" prefRowCount="2" wrapText="true" />
+                    <Label fx:id="lblPasswordHint"
+                           text="Minimum 8 characters"
+                           style="-fx-text-fill: #8995aa;
+                                  -fx-font-size: 10px;"/>
+
+                    <Label fx:id="lblPasswordRules"
+                           text="Must contain uppercase, lowercase, number, and special character"
+                           wrapText="true"
+                           style="-fx-text-fill: #8995aa;
+                                  -fx-font-size: 10px;"/>
+
+                    <Label fx:id="lblPasswordError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- CONFIRM PASSWORD -->
+                <VBox spacing="5"
+                      fillWidth="true">
+
+                    <Label text="Confirm Password *"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <PasswordField fx:id="txtConfirmPassword"
+                                   maxWidth="Infinity"
+                                   promptText="Repeat password"/>
+
+                    <Label fx:id="lblConfirmPasswordError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- EMAIL -->
+                <VBox spacing="5"
+                      fillWidth="true">
+
+                    <Label text="Email"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <TextField fx:id="txtEmail"
+                               maxWidth="Infinity"
+                               promptText="teacher@gmail.com"/>
+
+                    <Label fx:id="lblEmailError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- PHONE -->
+                <VBox spacing="5"
+                      fillWidth="true">
+
+                    <Label text="Phone"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <TextField fx:id="txtPhone"
+                               maxWidth="Infinity"
+                               promptText="09xxxxxxxxx"/>
+
+                    <Label fx:id="lblPhoneError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- GENDER -->
+                <VBox spacing="5"
+                      fillWidth="true">
+
+                    <Label text="Gender"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <ComboBox fx:id="cmbGender"
+                              maxWidth="Infinity"
+                              promptText="Select"/>
+                </VBox>
+
+                <!-- HIRE DATE -->
+                <VBox spacing="5"
+                      fillWidth="true">
+
+                    <Label text="Hire Date"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <DatePicker fx:id="dpHireDate"
+                                maxWidth="Infinity"/>
+
+                    <Label fx:id="lblHireDateError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- SALARY -->
+                <VBox spacing="5"
+                      fillWidth="true">
+
+                    <Label text="Salary (MMK / month)"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <TextField fx:id="txtSalary"
+                               maxWidth="Infinity"
+                               promptText="e.g. 750000"/>
+
+                    <Label fx:id="lblSalaryError"
+                           visible="false"
+                           managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill: #e5484d;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+
+                <!-- CLASS LEADER -->
+                <VBox spacing="5"
+                      fillWidth="true">
+
+                    <Label text="Class Leader Of"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <ComboBox fx:id="cmbClassLeaderOf"
+                              maxWidth="Infinity"
+                              promptText="None"/>
+                </VBox>
+
+                <!-- ADDRESS -->
+                <VBox spacing="5"
+                      fillWidth="true">
+
+                    <Label text="Address"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <TextArea fx:id="txtAddress"
+                              maxWidth="Infinity"
+                              prefRowCount="3"
+                              wrapText="true"/>
                 </VBox>
 
                 <!-- SUBJECTS -->
-                <VBox spacing="8">
-                    <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Subjects Teaching" />
-                    <VBox fx:id="subjectsBox" spacing="6" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12; -fx-border-color: #e4e8ef; -fx-border-radius: 10;" />
+                <VBox spacing="8"
+                      fillWidth="true">
+
+                    <Label text="Subjects Teaching"
+                           style="-fx-text-fill: #5b6b85;
+                                  -fx-font-size: 11px;
+                                  -fx-font-weight: bold;"/>
+
+                    <VBox fx:id="subjectsBox"
+                          maxWidth="Infinity"
+                          spacing="6"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 10;
+                                 -fx-padding: 12;
+                                 -fx-border-color: #e4e8ef;
+                                 -fx-border-radius: 10;"/>
                 </VBox>
-
-                <Label fx:id="lblFormError" style="-fx-text-fill: #e5484d; -fx-font-size: 12px; -fx-font-weight: bold;" visible="false" managed="false" wrapText="true" />
-
             </VBox>
         </content>
     </ScrollPane>
 
-    <!-- FOOTER -->
-    <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-background-color: white; -fx-padding: 16 26; -fx-border-color: #eef1f6 transparent transparent transparent; -fx-border-width: 1 0 0 0;">
-        <Button fx:id="btnCancel" onAction="#cancel" style="-fx-background-color: #f0f2f6; -fx-text-fill: #344563; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand;" text="Cancel" />
-        <Button fx:id="btnSave" onAction="#save" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 22; -fx-cursor: hand;" text="Save Teacher" />
+    <!-- FIXED FOOTER -->
+    <HBox alignment="CENTER_RIGHT"
+          minHeight="72"
+          prefHeight="72"
+          maxHeight="72"
+          spacing="10"
+          style="-fx-background-color: white;
+                 -fx-padding: 14 26;
+                 -fx-border-color: #eef1f6 transparent transparent transparent;
+                 -fx-border-width: 1 0 0 0;">
+
+        <Button fx:id="btnCancel"
+                onAction="#cancel"
+                minWidth="95"
+                text="Cancel"
+                style="-fx-background-color: #f0f2f6;
+                       -fx-text-fill: #344563;
+                       -fx-font-size: 13px;
+                       -fx-font-weight: bold;
+                       -fx-background-radius: 8;
+                       -fx-padding: 10 20;
+                       -fx-cursor: hand;"/>
+
+        <Button fx:id="btnSave"
+                defaultButton="true"
+                onAction="#save"
+                minWidth="125"
+                text="Save Teacher"
+                style="-fx-background-color: #2563EB;
+                       -fx-text-fill: white;
+                       -fx-font-size: 13px;
+                       -fx-font-weight: bold;
+                       -fx-background-radius: 8;
+                       -fx-padding: 10 22;
+                       -fx-cursor: hand;"/>
     </HBox>
 
 </VBox>
