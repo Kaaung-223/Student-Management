@@ -870,7 +870,7 @@ public class AdminDashboardController implements Initializable {
                         btnExams,
                         btnGrades,
                         btnAttendance,
-                        btnLeave,
+
                         btnAnnouncements,
                         btnProfile
                 )) {
@@ -1141,15 +1141,7 @@ public class AdminDashboardController implements Initializable {
     // LEAVE
     // =========================================================
 
-    @FXML
-    public void openLeaveRequests(ActionEvent e) {
 
-        setActiveButton(
-                btnLeave
-        );
-
-        showAdminPane();
-    }
 
 
     // =========================================================
