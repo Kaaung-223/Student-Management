@@ -1,5 +1,6 @@
 package com.example.student_management_system.Controller.DAO;
 
+import com.example.student_management_system.Controller.Model.FeeClassBreakdown;
 import com.example.student_management_system.Controller.Model.FeeFinancialSummary;
 import com.example.student_management_system.Controller.Model.StudentFeeRow;
 
@@ -180,6 +181,46 @@ public class FeeDAO {
                 totalCollected,
                 totalOutstanding
         );
+    }
+
+    public List<FeeClassBreakdown> getFeeBreakdownByClass() {
+        List<FeeClassBreakdown> rows = new ArrayList<>();
+
+        String sql =
+                "SELECT COALESCE(c.class_name, 'Unassigned') AS class_name, " +
+                        "SUM(COALESCE(c.course_fee, 0)) AS expected, " +
+                        "SUM(COALESCE(paid.total_paid, 0)) AS collected, " +
+                        "SUM(GREATEST(COALESCE(c.course_fee, 0) - COALESCE(paid.total_paid, 0), 0)) AS outstanding " +
+                        "FROM students s " +
+                        "LEFT JOIN classes c ON s.class_id = c.class_id " +
+                        "LEFT JOIN ( " +
+                        "SELECT student_id, SUM(amount) AS total_paid " +
+                        "FROM student_payments " +
+                        "GROUP BY student_id " +
+                        ") paid ON paid.student_id = s.student_id " +
+                        "WHERE s.status = 'ACTIVE' " +
+                        "GROUP BY c.class_id, c.class_name " +
+                        "ORDER BY c.class_name";
+
+        try (Connection con = DBConnention.getConnection()) {
+            if (con == null) {
+                return rows;
+            }
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    rows.add(new FeeClassBreakdown(
+                            rs.getString("class_name"),
+                            rs.getBigDecimal("expected"),
+                            rs.getBigDecimal("collected"),
+                            rs.getBigDecimal("outstanding")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rows;
     }
 
     private StudentFeeRow mapStudentFeeRow(ResultSet rs)

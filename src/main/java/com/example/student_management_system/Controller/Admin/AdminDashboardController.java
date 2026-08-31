@@ -11,13 +11,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 
+import java.math.BigDecimal;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -58,7 +62,11 @@ public class AdminDashboardController implements Initializable {
             lblPresentCount,
             lblAbsentCount,
             lblLateCount,
-            lblDashboardWelcome;
+            lblDashboardWelcome,
+            lblFinanceExpected,
+            lblFinanceCollected,
+            lblFinanceOutstanding,
+            lblFinancePaidUnpaid;
 
     @FXML
     private VBox welcomeToast;
@@ -69,14 +77,19 @@ public class AdminDashboardController implements Initializable {
     @FXML
     private ComboBox<Batch> cmbAttendanceBatch,
             cmbStudentsBatch,
-            cmbLeaveBatch;
+            cmbLeaveBatch,
+            cmbFinanceBatch;
 
     @FXML
     private ComboBox<ExamOption> cmbExam;
 
     @FXML
     private PieChart attendancePieChart,
-            examPieChart;
+            examPieChart,
+            financePieChart;
+
+    @FXML
+    private BarChart<String, Number> financeBarChart;
 
     @FXML
     private TableView<Student> studentTable;
@@ -119,6 +132,8 @@ public class AdminDashboardController implements Initializable {
 
     private final LeaveDAO leaveDAO = new LeaveDAO();
 
+    private final FeeDAO feeDAO = new FeeDAO();
+
 
     // =========================================================
     // CONSTANTS
@@ -132,6 +147,9 @@ public class AdminDashboardController implements Initializable {
 
     private static final ExamOption ALL_EXAMS =
             new ExamOption(-1, "All Exams");
+
+    private static final NumberFormat MONEY_FORMAT =
+            NumberFormat.getNumberInstance(Locale.US);
 
 
     private static final String ACTIVE =
@@ -296,7 +314,8 @@ public class AdminDashboardController implements Initializable {
         for (ComboBox<Batch> box :
                 List.of(
                         cmbStudentsBatch,
-                        cmbLeaveBatch
+                        cmbLeaveBatch,
+                        cmbFinanceBatch
                 )) {
 
             box.setItems(
@@ -321,6 +340,10 @@ public class AdminDashboardController implements Initializable {
 
         cmbLeaveBatch.setOnAction(
                 e -> loadLeaveTable()
+        );
+
+        cmbFinanceBatch.setOnAction(
+                e -> loadFinanceChart()
         );
 
 
@@ -479,6 +502,8 @@ public class AdminDashboardController implements Initializable {
         loadAttendanceChart();
 
         loadExamChart();
+
+        loadFinanceChart();
 
         loadStudentsByBatch();
 
@@ -653,6 +678,108 @@ public class AdminDashboardController implements Initializable {
         styleNoData(
                 examPieChart
         );
+    }
+
+
+    // =========================================================
+    // FINANCIAL STATEMENT CHART
+    // =========================================================
+
+    private void loadFinanceChart() {
+
+        Batch batch = cmbFinanceBatch.getValue();
+        int classId = batch == null ? -1 : batch.getId();
+
+        FeeFinancialSummary summary = feeDAO.getFinancialSummary(classId);
+
+        lblFinanceExpected.setText(formatMoney(summary.getTotalExpected()) + " MMK");
+        lblFinanceCollected.setText(formatMoney(summary.getTotalCollected()) + " MMK");
+        lblFinanceOutstanding.setText(formatMoney(summary.getTotalOutstanding()) + " MMK");
+        lblFinancePaidUnpaid.setText(
+                summary.getPaidStudents() + " / " + summary.getUnpaidStudents()
+        );
+
+        double collected = toChartValue(summary.getTotalCollected());
+        double outstanding = toChartValue(summary.getTotalOutstanding());
+
+        if (collected + outstanding == 0) {
+            financePieChart.setData(
+                    FXCollections.observableArrayList(
+                            new PieChart.Data("No Fee Data", 1)
+                    )
+            );
+        } else {
+            financePieChart.setData(
+                    FXCollections.observableArrayList(
+                            new PieChart.Data("Collected", collected),
+                            new PieChart.Data("Outstanding", outstanding)
+                    )
+            );
+        }
+
+        styleFinancePie();
+
+        XYChart.Series<String, Number> expectedSeries = new XYChart.Series<>();
+        expectedSeries.setName("Expected");
+        XYChart.Series<String, Number> collectedSeries = new XYChart.Series<>();
+        collectedSeries.setName("Collected");
+        XYChart.Series<String, Number> outstandingSeries = new XYChart.Series<>();
+        outstandingSeries.setName("Outstanding");
+
+        List<FeeClassBreakdown> breakdown = feeDAO.getFeeBreakdownByClass();
+        if (classId != -1) {
+            String selectedName = batch.getName();
+            breakdown = breakdown.stream()
+                    .filter(row -> selectedName.equals(row.getClassName()))
+                    .toList();
+        }
+
+        if (breakdown.isEmpty()) {
+            expectedSeries.getData().add(new XYChart.Data<>("No Data", 0));
+            collectedSeries.getData().add(new XYChart.Data<>("No Data", 0));
+            outstandingSeries.getData().add(new XYChart.Data<>("No Data", 0));
+        } else {
+            for (FeeClassBreakdown row : breakdown) {
+                String name = row.getClassName() == null ? "Unassigned" : row.getClassName();
+                expectedSeries.getData().add(new XYChart.Data<>(name, toChartValue(row.getExpected())));
+                collectedSeries.getData().add(new XYChart.Data<>(name, toChartValue(row.getCollected())));
+                outstandingSeries.getData().add(new XYChart.Data<>(name, toChartValue(row.getOutstanding())));
+            }
+        }
+
+        financeBarChart.getData().setAll(expectedSeries, collectedSeries, outstandingSeries);
+    }
+
+    private void styleFinancePie() {
+        for (PieChart.Data d : financePieChart.getData()) {
+            d.nodeProperty().addListener((o, n, x) -> {
+                if (x == null) {
+                    return;
+                }
+                String name = d.getName();
+                if (name.startsWith("Collected")) {
+                    x.setStyle("-fx-pie-color:#16a34a;");
+                } else if (name.startsWith("Outstanding")) {
+                    x.setStyle("-fx-pie-color:#dc2626;");
+                } else {
+                    x.setStyle("-fx-pie-color:#cbd5e1;");
+                }
+            });
+        }
+    }
+
+    private double toChartValue(BigDecimal amount) {
+        if (amount == null) {
+            return 0.0;
+        }
+        return amount.doubleValue();
+    }
+
+    private String formatMoney(BigDecimal amount) {
+        if (amount == null) {
+            return "0";
+        }
+        return MONEY_FORMAT.format(amount);
     }
 
 
