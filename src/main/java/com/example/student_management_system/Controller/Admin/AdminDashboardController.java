@@ -959,11 +959,25 @@ public class AdminDashboardController implements Initializable {
     @FXML
     public void openGrades(ActionEvent e) {
 
-        setActiveButton(
-                btnGrades
-        );
+        try {
+            setActiveButton(btnGrades);
+            showAdminPane();
 
-        showAdminPane();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Admin/AdminGrade.fxml"
+            ));
+
+            Parent gradePage = loader.load();
+
+            AnchorPane.setTopAnchor(gradePage, 0.0);
+            AnchorPane.setRightAnchor(gradePage, 0.0);
+            AnchorPane.setBottomAnchor(gradePage, 0.0);
+            AnchorPane.setLeftAnchor(gradePage, 0.0);
+
+            adminPane.getChildren().setAll(gradePage);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 

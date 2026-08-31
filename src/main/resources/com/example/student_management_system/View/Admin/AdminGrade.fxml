@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="Infinity"
+            maxWidth="Infinity"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Admin.AdminGradeController">
+
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                maxHeight="Infinity"
+                maxWidth="Infinity"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0"
+                style="-fx-background-color: transparent;
+                       -fx-border-color: transparent;">
+
+        <content>
+
+            <VBox fillWidth="true"
+                  maxWidth="Infinity"
+                  spacing="20"
+                  style="-fx-background-color: #f5f7fb;">
+
+                <padding>
+                    <Insets top="28" right="30" bottom="35" left="30"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="20">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Grades / Results"
+                               style="-fx-text-fill: #172033;
+                                      -fx-font-size: 28px;
+                                      -fx-font-weight: bold;"/>
+                        <Label text="Batch exam pass/fail rates, student results, and GPA"
+                               wrapText="true"
+                               style="-fx-text-fill: #8995aa;
+                                      -fx-font-size: 14px;"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="16" maxWidth="Infinity">
+
+                    <VBox spacing="6" minWidth="150" prefWidth="170" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 18;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="PASS"
+                               style="-fx-text-fill: #8995aa; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblPassCount" text="0"
+                               style="-fx-text-fill: #16a34a; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                    <VBox spacing="6" minWidth="150" prefWidth="170" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 18;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="FAIL"
+                               style="-fx-text-fill: #8995aa; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblFailCount" text="0"
+                               style="-fx-text-fill: #dc2626; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                    <VBox spacing="6" minWidth="150" prefWidth="170" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 18;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="PASS RATE"
+                               style="-fx-text-fill: #8995aa; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblPassRate" text="0%"
+                               style="-fx-text-fill: #2563EB; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                    <VBox spacing="6" minWidth="150" prefWidth="170" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white;
+                                 -fx-background-radius: 16;
+                                 -fx-padding: 18;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="AVERAGE GPA"
+                               style="-fx-text-fill: #8995aa; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblAverageGpa" text="0.00"
+                               style="-fx-text-fill: #172033; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT"
+                      maxWidth="Infinity"
+                      spacing="12"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 12;
+                             -fx-padding: 12 16;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+
+                    <Label text="🔍"
+                           style="-fx-font-size: 15px; -fx-text-fill: #8995aa;"/>
+
+                    <TextField fx:id="txtSearchStudent"
+                               promptText="Search student name or code..."
+                               maxWidth="280"
+                               style="-fx-background-color: transparent;
+                                      -fx-border-color: transparent;
+                                      -fx-font-size: 13px;"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Label text="Batch"
+                           style="-fx-text-fill: #5b6b85; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cmbBatchFilter" prefWidth="180" promptText="All Batches"/>
+
+                    <Label text="Exam"
+                           style="-fx-text-fill: #5b6b85; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cmbExamFilter" prefWidth="200" promptText="All Exams"/>
+
+                    <Label fx:id="lblStudentCount"
+                           text="0 students"
+                           style="-fx-text-fill: #8995aa; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                </HBox>
+
+                <VBox maxWidth="Infinity" spacing="14"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+
+                    <Label text="Exam pass / fail rate by batch"
+                           style="-fx-text-fill: #172033; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <TableView fx:id="examRateTable"
+                               maxWidth="Infinity"
+                               prefHeight="240"
+                               VBox.vgrow="NEVER">
+                        <columns>
+                            <TableColumn fx:id="colExamName" prefWidth="180" text="Exam"/>
+                            <TableColumn fx:id="colExamBatch" prefWidth="150" text="Batch"/>
+                            <TableColumn fx:id="colExamDate" prefWidth="120" text="Date"/>
+                            <TableColumn fx:id="colGraded" prefWidth="90" text="Graded"/>
+                            <TableColumn fx:id="colExamPass" prefWidth="80" text="Pass"/>
+                            <TableColumn fx:id="colExamFail" prefWidth="80" text="Fail"/>
+                            <TableColumn fx:id="colExamPassRate" prefWidth="110" text="Pass Rate"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <VBox maxWidth="Infinity" spacing="14"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 18;
+                             -fx-padding: 22;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+
+                    <VBox spacing="4">
+                        <Label text="Student results"
+                               style="-fx-text-fill: #172033; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <Label text="GPA: 90%+=4.0  ·  80%+=3.5  ·  70%+=3.0  ·  60%+=2.5  ·  50%+=2.0  ·  below 50%=0.0"
+                               wrapText="true"
+                               style="-fx-text-fill: #8995aa; -fx-font-size: 12px;"/>
+                    </VBox>
+
+                    <TableView fx:id="studentGradeTable"
+                               maxWidth="Infinity"
+                               prefHeight="380"
+                               VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colStudentCode" prefWidth="90" text="Code"/>
+                            <TableColumn fx:id="colStudentName" prefWidth="160" text="Student"/>
+                            <TableColumn fx:id="colStudentBatch" prefWidth="130" text="Batch"/>
+                            <TableColumn fx:id="colStudentExam" prefWidth="120" text="Exam"/>
+                            <TableColumn fx:id="colMarks" prefWidth="70" text="Marks"/>
+                            <TableColumn fx:id="colPercentage" prefWidth="70" text="Score"/>
+                            <TableColumn fx:id="colLetter" prefWidth="60" text="Grade"/>
+                            <TableColumn fx:id="colStudentPass" prefWidth="70" text="Pass"/>
+                            <TableColumn fx:id="colStudentFail" prefWidth="70" text="Fail"/>
+                            <TableColumn fx:id="colResult" prefWidth="110" text="Result"/>
+                            <TableColumn fx:id="colGpa" prefWidth="70" text="GPA"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <Region minHeight="10"/>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+</AnchorPane>
