@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="Infinity"
+            maxWidth="Infinity"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Admin.AdminAttendanceController">
+
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                maxHeight="Infinity"
+                maxWidth="Infinity"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0"
+                style="-fx-background-color: transparent;
+                       -fx-border-color: transparent;">
+
+        <content>
+            <VBox fillWidth="true" maxWidth="Infinity" spacing="20" style="-fx-background-color: #f5f7fb;">
+                <padding>
+                    <Insets top="28" right="30" bottom="35" left="30"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="20">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Attendance"
+                               style="-fx-text-fill: #172033; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+                        <Label text="Batch and student attendance by month, 6 months, year, or overall. Extra absent = absent days minus leave request days."
+                               wrapText="true"
+                               style="-fx-text-fill: #8995aa; -fx-font-size: 14px;"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="12" maxWidth="Infinity">
+                    <VBox spacing="6" minWidth="120" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="PRESENT" style="-fx-text-fill: #16a34a; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblPresent" text="0" style="-fx-text-fill: #0f172a; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <VBox spacing="6" minWidth="120" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="ABSENT" style="-fx-text-fill: #dc2626; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblAbsent" text="0" style="-fx-text-fill: #0f172a; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <VBox spacing="6" minWidth="120" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="LATE" style="-fx-text-fill: #f59e0b; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblLate" text="0" style="-fx-text-fill: #0f172a; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <VBox spacing="6" minWidth="120" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="ATTENDANCE RATE" style="-fx-text-fill: #2563EB; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblRate" text="0.0" style="-fx-text-fill: #0f172a; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <VBox spacing="6" minWidth="120" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="LEAVE REQUESTS" style="-fx-text-fill: #7c3aed; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblRequests" text="0" style="-fx-text-fill: #0f172a; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <VBox spacing="6" minWidth="120" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 12, 0, 0, 3);">
+                        <Label text="EXTRA ABSENT" style="-fx-text-fill: #b45309; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblExtraAbsent" text="0" style="-fx-text-fill: #0f172a; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                    </VBox>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12"
+                      style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 12 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+
+                    <Label text="Batch" style="-fx-text-fill: #5b6b85; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cmbBatch" prefWidth="170" promptText="All Batches"/>
+
+                    <Label text="Student" style="-fx-text-fill: #5b6b85; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cmbStudent" prefWidth="200" promptText="All Students"/>
+
+                    <Label text="Period" style="-fx-text-fill: #5b6b85; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cmbPeriodType" prefWidth="130"/>
+
+                    <ComboBox fx:id="cmbPeriodValue" prefWidth="180"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblStudentCount" text="0 students"
+                           style="-fx-text-fill: #8995aa; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                </HBox>
+
+                <VBox maxWidth="Infinity" spacing="14"
+                      style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+                    <Label text="Student attendance"
+                           style="-fx-text-fill: #172033; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <TableView fx:id="attendanceTable" maxWidth="Infinity" prefHeight="340" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colCode" prefWidth="90" text="Code"/>
+                            <TableColumn fx:id="colName" prefWidth="150" text="Student"/>
+                            <TableColumn fx:id="colBatch" prefWidth="130" text="Batch"/>
+                            <TableColumn fx:id="colPresent" prefWidth="70" text="Present"/>
+                            <TableColumn fx:id="colAbsent" prefWidth="70" text="Absent"/>
+                            <TableColumn fx:id="colLate" prefWidth="60" text="Late"/>
+                            <TableColumn fx:id="colRate" prefWidth="80" text="Rate"/>
+                            <TableColumn fx:id="colRequests" prefWidth="80" text="Requests"/>
+                            <TableColumn fx:id="colRequestedDays" prefWidth="90" text="Leave days"/>
+                            <TableColumn fx:id="colExtra" prefWidth="100" text="Extra absent"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <VBox maxWidth="Infinity" spacing="14"
+                      style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0, 0, 4);">
+                    <Label text="Leave requests"
+                           style="-fx-text-fill: #172033; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <TableView fx:id="leaveTable" maxWidth="Infinity" prefHeight="240">
+                        <columns>
+                            <TableColumn fx:id="colLeaveCode" prefWidth="90" text="Code"/>
+                            <TableColumn fx:id="colLeaveStudent" prefWidth="150" text="Student"/>
+                            <TableColumn fx:id="colLeaveBatch" prefWidth="130" text="Batch"/>
+                            <TableColumn fx:id="colLeaveFrom" prefWidth="110" text="From"/>
+                            <TableColumn fx:id="colLeaveTo" prefWidth="110" text="To"/>
+                            <TableColumn fx:id="colLeaveDays" prefWidth="70" text="Days"/>
+                            <TableColumn fx:id="colLeaveStatus" prefWidth="100" text="Status"/>
+                            <TableColumn fx:id="colLeaveReason" prefWidth="220" text="Reason"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <Region minHeight="10"/>
+            </VBox>
+        </content>
+    </ScrollPane>
+</AnchorPane>

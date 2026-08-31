@@ -1115,11 +1115,25 @@ public class AdminDashboardController implements Initializable {
     @FXML
     public void openAttendance(ActionEvent e) {
 
-        setActiveButton(
-                btnAttendance
-        );
+        try {
+            setActiveButton(btnAttendance);
+            showAdminPane();
 
-        showAdminPane();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Admin/AdminAttendance.fxml"
+            ));
+
+            Parent attendancePage = loader.load();
+
+            AnchorPane.setTopAnchor(attendancePage, 0.0);
+            AnchorPane.setRightAnchor(attendancePage, 0.0);
+            AnchorPane.setBottomAnchor(attendancePage, 0.0);
+            AnchorPane.setLeftAnchor(attendancePage, 0.0);
+
+            adminPane.getChildren().setAll(attendancePage);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
