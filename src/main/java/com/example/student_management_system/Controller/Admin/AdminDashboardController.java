@@ -1137,9 +1137,7 @@ public class AdminDashboardController implements Initializable {
     }
 
 
-    // =========================================================
-    // LEAVE
-    // =========================================================
+
 
 
 
@@ -1150,12 +1148,25 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     public void openAnnouncements(ActionEvent e) {
+        try {
+            setActiveButton(btnAnnouncements);
+            showAdminPane();
 
-        setActiveButton(
-                btnAnnouncements
-        );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Admin/AdminAnnouncement.fxml"
+            ));
 
-        showAdminPane();
+            Parent announcementPage = loader.load();
+
+            AnchorPane.setTopAnchor(announcementPage, 0.0);
+            AnchorPane.setRightAnchor(announcementPage, 0.0);
+            AnchorPane.setBottomAnchor(announcementPage, 0.0);
+            AnchorPane.setLeftAnchor(announcementPage, 0.0);
+
+            adminPane.getChildren().setAll(announcementPage);
+        } catch (Exception ea) {
+            ea.printStackTrace();
+        }
     }
 
 
