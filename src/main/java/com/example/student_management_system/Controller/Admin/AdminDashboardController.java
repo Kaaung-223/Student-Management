@@ -1137,11 +1137,6 @@ public class AdminDashboardController implements Initializable {
     }
 
 
-
-
-
-
-
     // =========================================================
     // ANNOUNCEMENTS
     // =========================================================
@@ -1176,21 +1171,34 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     public void openProfile(ActionEvent e) {
+        try {
+            setActiveButton(btnProfile);
+            showAdminPane();
 
-        setActiveButton(
-                btnProfile
-        );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Admin/AdminProfile.fxml"
+            ));
 
-        showAdminPane();
+            Parent profilePage = loader.load();
+
+            AnchorPane.setTopAnchor(profilePage, 0.0);
+            AnchorPane.setRightAnchor(profilePage, 0.0);
+            AnchorPane.setBottomAnchor(profilePage, 0.0);
+            AnchorPane.setLeftAnchor(profilePage, 0.0);
+
+            adminPane.getChildren().setAll(profilePage);
+        } catch (Exception eo) {
+            eo.printStackTrace();
+        }
     }
 
+        // =========================================================
+        // LOGOUT
+        // =========================================================
 
-    // =========================================================
-    // LOGOUT
-    // =========================================================
+        @FXML
+        public void logout (ActionEvent e){
 
-    @FXML
-    public void logout(ActionEvent e) {
-
+        }
     }
-}
+
