@@ -13,101 +13,145 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.student_management_system.Controller.Admin.AdminSubjectController">
+<AnchorPane fx:id="rootPane"
+        maxHeight="Infinity"
+        maxWidth="Infinity"
+        xmlns="http://javafx.com/javafx/25"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.example.student_management_system.Controller.Admin.AdminSubjectController">
 
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="Infinity" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+<ScrollPane fitToWidth="true"
+            hbarPolicy="NEVER"
+            maxHeight="Infinity"
+            maxWidth="Infinity"
+            style="-fx-background-color: transparent; -fx-border-color: transparent;"
+            vbarPolicy="AS_NEEDED"
+            AnchorPane.bottomAnchor="0"
+            AnchorPane.leftAnchor="0"
+            AnchorPane.rightAnchor="0"
+            AnchorPane.topAnchor="0">
 
-        <content>
+<content>
 
-            <VBox fillWidth="true" maxWidth="Infinity" spacing="20" style="-fx-background-color: #f5f7fb;">
+    <VBox fillWidth="true"
+          maxWidth="Infinity"
+          spacing="20"
+          style="-fx-background-color: #f5f7fb;">
 
-                <padding>
-                    <Insets bottom="35" left="30" right="30" top="28" />
-                </padding>
+        <padding>
+            <Insets bottom="35" left="30" right="30" top="28" />
+        </padding>
 
-                <!-- HEADER -->
-                <VBox spacing="4">
-                    <Label style="-fx-text-fill: #172033; -fx-font-size: 28px; -fx-font-weight: bold;" text="Subjects" />
-                    <Label style="-fx-text-fill: #8995aa; -fx-font-size: 14px;" text="Manage subjects and each class's curriculum" />
+        <!-- HEADER -->
+        <VBox spacing="4">
+            <Label style="-fx-text-fill: #172033; -fx-font-size: 28px; -fx-font-weight: bold;" text="Subjects" />
+            <Label style="-fx-text-fill: #8995aa; -fx-font-size: 14px;" text="Manage subjects and each class's curriculum" />
+        </VBox>
+
+        <!-- TOP ROW: CURRICULUM + ADD SUBJECT -->
+        <HBox spacing="20">
+
+            <!-- CLASS CURRICULUM -->
+            <VBox maxWidth="Infinity"
+                  spacing="14"
+                  style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);"
+                  HBox.hgrow="ALWAYS">
+
+                <VBox spacing="3">
+                    <Label style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="Class Curriculum" />
+                    <Label style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="Choose a class, then check which subjects it contains" />
                 </VBox>
 
-                <!-- TOP ROW: CURRICULUM + ADD SUBJECT -->
-                <HBox spacing="20">
+                <ComboBox fx:id="cmbClass" maxWidth="Infinity" prefHeight="38" promptText="Select a class" />
 
-                    <!-- CLASS CURRICULUM -->
-                    <VBox maxWidth="Infinity" spacing="14" style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);" HBox.hgrow="ALWAYS">
+                <VBox fx:id="curriculumChecklistBox"
+                      spacing="8"
+                      style="-fx-background-color: #f8fafc; -fx-background-radius: 10; -fx-padding: 14; -fx-border-color: #e4e8ef; -fx-border-radius: 10;" />
 
-                        <VBox spacing="3">
-                            <Label style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="Class Curriculum" />
-                            <Label style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="Choose a class, then check which subjects it contains" />
-                        </VBox>
+                <Label fx:id="lblCurriculumHint"
+                       style="-fx-text-fill: #8995aa; -fx-font-size: 11px;"
+                       text="Select a class above to edit its subjects." />
 
-                        <ComboBox fx:id="cmbClass" maxWidth="Infinity" prefHeight="38" promptText="Select a class" />
-
-                        <VBox fx:id="curriculumChecklistBox" spacing="8" style="-fx-background-color: #f8fafc; -fx-background-radius: 10; -fx-padding: 14; -fx-border-color: #e4e8ef; -fx-border-radius: 10;" />
-
-                        <Label fx:id="lblCurriculumHint" style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="Select a class above to edit its subjects." />
-
-                        <Button fx:id="btnSaveCurriculum" disable="true" maxWidth="Infinity" onAction="#saveCurriculum" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 0; -fx-cursor: hand;" text="Save Curriculum" />
-
-                    </VBox>
-
-                    <!-- ADD NEW SUBJECT -->
-                    <VBox maxWidth="320" minWidth="280" prefWidth="300" spacing="14" style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);">
-
-                        <VBox spacing="3">
-                            <Label style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="Add New Subject" />
-                            <Label style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="Create a subject to assign to classes and teachers" />
-                        </VBox>
-
-                        <VBox spacing="4">
-                            <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Subject Name *" />
-                            <TextField fx:id="txtNewSubjectName" promptText="e.g. Mobile App Development" />
-                        </VBox>
-
-                        <VBox spacing="4">
-                            <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Subject Code" />
-                            <TextField fx:id="txtNewSubjectCode" promptText="e.g. MOBILE" />
-                        </VBox>
-
-                        <Label fx:id="lblAddSubjectError" style="-fx-text-fill: #e5484d; -fx-font-size: 11px; -fx-font-weight: bold;" visible="false" managed="false" wrapText="true" />
-
-                        <Button fx:id="btnAddSubject" maxWidth="Infinity" onAction="#addSubject" style="-fx-background-color: #edf3ff; -fx-text-fill: #4267d5; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 0; -fx-cursor: hand;" text="+  Add Subject" />
-
-                        <Region VBox.vgrow="ALWAYS" />
-
-                    </VBox>
-
-                </HBox>
-
-                <!-- ALL SUBJECTS -->
-                <VBox maxWidth="Infinity" spacing="12" style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07),15,0,0,4);">
-
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <VBox spacing="3" HBox.hgrow="ALWAYS">
-                            <Label style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="All Subjects" />
-                            <Label style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="Every subject and which classes include it" />
-                        </VBox>
-                        <Label fx:id="lblSubjectCount" style="-fx-text-fill: #8995aa; -fx-font-size: 12px; -fx-font-weight: bold;" text="0 subjects" />
-                    </HBox>
-
-                    <TableView fx:id="subjectsTable" maxWidth="Infinity" minHeight="150" prefHeight="260">
-                        <columns>
-                            <TableColumn fx:id="subjectCodeColumn" prefWidth="130" text="Code" />
-                            <TableColumn fx:id="subjectNameColumn" prefWidth="240" text="Subject Name" />
-                            <TableColumn fx:id="subjectClassesColumn" prefWidth="270" text="Used In" />
-                            <TableColumn fx:id="subjectActionColumn" prefWidth="150" text="Actions" />
-                        </columns>
-                    </TableView>
-
-                </VBox>
-
-                <Region minHeight="20" prefHeight="20" />
+                <Button fx:id="btnSaveCurriculum"
+                        disable="true"
+                        maxWidth="Infinity"
+                        onAction="#saveCurriculum"
+                        style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 0; -fx-cursor: hand;"
+                        text="Save Curriculum" />
 
             </VBox>
 
-        </content>
+            <!-- ADD NEW SUBJECT -->
+            <VBox maxWidth="320"
+                  minWidth="280"
+                  prefWidth="300"
+                  spacing="14"
+                  style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);">
 
-    </ScrollPane>
+                <VBox spacing="3">
+                    <Label style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="Add New Subject" />
+                    <Label style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="Create a subject to assign to classes and teachers" />
+                </VBox>
 
-</AnchorPane>
+                <VBox spacing="4">
+                    <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Subject Name *" />
+                    <TextField fx:id="txtNewSubjectName" promptText="e.g. Mobile App Development" />
+                </VBox>
+
+                <VBox spacing="4">
+                    <Label style="-fx-font-size: 11px; -fx-text-fill: #5b6b85; -fx-font-weight: bold;" text="Subject Code" />
+                    <TextField fx:id="txtNewSubjectCode" promptText="e.g. MOBILE" />
+                </VBox>
+
+                <Label fx:id="lblAddSubjectError"
+                       style="-fx-text-fill: #e5484d; -fx-font-size: 11px; -fx-font-weight: bold;"
+                       visible="false" managed="false" wrapText="true" />
+
+                <Button fx:id="btnAddSubject"
+                        maxWidth="Infinity"
+                        onAction="#addSubject"
+                        style="-fx-background-color: #edf3ff; -fx-text-fill: #4267d5; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 0; -fx-cursor: hand;"
+                        text="+  Add Subject" />
+
+                <Region VBox.vgrow="ALWAYS" />
+
+            </VBox>
+
+        </HBox>
+
+        <!-- ALL SUBJECTS -->
+        <VBox maxWidth="Infinity"
+              spacing="12"
+              style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07),15,0,0,4);">
+
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="All Subjects" />
+                    <Label style="-fx-text-fill: #8995aa; -fx-font-size: 11px;" text="Every subject and which classes include it" />
+                </VBox>
+                <Label fx:id="lblSubjectCount" style="-fx-text-fill: #8995aa; -fx-font-size: 12px; -fx-font-weight: bold;" text="0 subjects" />
+            </HBox>
+
+            <TableView fx:id="subjectsTable"
+                       maxWidth="Infinity"
+                       minHeight="150"
+                       prefHeight="260">
+                <columns>
+                    <TableColumn fx:id="subjectCodeColumn" prefWidth="130" text="Code" />
+                    <TableColumn fx:id="subjectNameColumn" prefWidth="240" text="Subject Name" />
+                    <TableColumn fx:id="subjectClassesColumn" prefWidth="270" text="Used In" />
+                    <TableColumn fx:id="subjectActionColumn" prefWidth="150" text="Actions" />
+                </columns>
+            </TableView>
+
+        </VBox>
+
+        <Region minHeight="20" prefHeight="20" />
+
+    </VBox>
+
+</content>
+
+</ScrollPane>
+
+        </AnchorPane>

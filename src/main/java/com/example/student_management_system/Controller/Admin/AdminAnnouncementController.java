@@ -1,22 +1,27 @@
 package com.example.student_management_system.Controller.Admin;
 
-
-
 import com.example.student_management_system.Controller.DAO.AnnouncementDAO;
 import com.example.student_management_system.Controller.Model.Announcement;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.*;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class AdminAnnouncementController implements Initializable {
+
+    @FXML private AnchorPane rootPane;   // root for toast overlay
 
     @FXML private TextField txtTitle;
     @FXML private TextArea txtReason;
@@ -35,8 +40,9 @@ public class AdminAnnouncementController implements Initializable {
     private final ObservableList<Announcement> announcementList = FXCollections.observableArrayList();
     private Announcement selectedAnnouncement = null;
 
-    // Default logged-in User ID (e.g., admin)
     private int currentUserId = 1;
+
+    private PauseTransition toastTimer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -81,18 +87,21 @@ public class AdminAnnouncementController implements Initializable {
         Announcement announcement = new Announcement(title, reason, date, target, currentUserId);
 
         if (announcementDAO.insert(announcement)) {
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Announcement posted successfully!");
+            showToast(true, "POSTED", "Announcement saved",
+                    "Your announcement was posted successfully.");
             clearForm();
             loadAnnouncementData();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save announcement.");
+            showToast(false, "SAVE FAILED", "Could not save",
+                    "An error occurred while posting the announcement.");
         }
     }
 
     @FXML
     private void handleUpdate(ActionEvent event) {
         if (selectedAnnouncement == null) {
-            showAlert(Alert.AlertType.WARNING, "Warning", "Please select an announcement to update.");
+            showToast(false, "UPDATE", "No selection",
+                    "Please select an announcement to update.");
             return;
         }
 
@@ -104,27 +113,41 @@ public class AdminAnnouncementController implements Initializable {
         selectedAnnouncement.setTargetAudience(cbTargetAudience.getValue());
 
         if (announcementDAO.update(selectedAnnouncement)) {
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Announcement updated successfully!");
+            showToast(true, "UPDATED", "Announcement updated",
+                    "Changes have been saved.");
             clearForm();
             loadAnnouncementData();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to update announcement.");
+            showToast(false, "UPDATE FAILED", "Could not update",
+                    "An error occurred while updating the announcement.");
         }
     }
 
     @FXML
     private void handleDelete(ActionEvent event) {
         if (selectedAnnouncement == null) {
-            showAlert(Alert.AlertType.WARNING, "Warning", "Please select an announcement to delete.");
+            showToast(false, "DELETE", "No selection",
+                    "Please select an announcement to delete.");
+            return;
+        }
+
+        // Confirmation dialog (remains as Alert)
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Announcement");
+        confirm.setHeaderText("Delete \"" + selectedAnnouncement.getTitle() + "\"?");
+        confirm.setContentText("This action cannot be undone.");
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
             return;
         }
 
         if (announcementDAO.delete(selectedAnnouncement.getAnnouncementId())) {
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Announcement deleted!");
+            showToast(true, "DELETED", "Announcement removed",
+                    "The announcement has been deleted.");
             clearForm();
             loadAnnouncementData();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete announcement.");
+            showToast(false, "DELETE FAILED", "Could not delete",
+                    "An error occurred while deleting the announcement.");
         }
     }
 
@@ -150,19 +173,100 @@ public class AdminAnnouncementController implements Initializable {
     }
 
     private boolean validateInput() {
-        if (txtTitle.getText().trim().isEmpty() || txtReason.getText().trim().isEmpty() || dpAnnouncementDate.getValue() == null) {
-            showAlert(Alert.AlertType.ERROR, "Validation Error", "Title, Reason, and Date fields are required.");
+        if (txtTitle.getText().trim().isEmpty()) {
+            showToast(false, "VALIDATION", "Missing title",
+                    "Please enter an announcement title.");
+            txtTitle.requestFocus();
+            return false;
+        }
+        if (txtReason.getText().trim().isEmpty()) {
+            showToast(false, "VALIDATION", "Missing details",
+                    "Please enter the reason or details.");
+            txtReason.requestFocus();
+            return false;
+        }
+        if (dpAnnouncementDate.getValue() == null) {
+            showToast(false, "VALIDATION", "Missing date",
+                    "Please select an announcement date.");
+            dpAnnouncementDate.requestFocus();
             return false;
         }
         return true;
     }
 
-    private void showAlert(Alert.AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+    // =========================================================
+    // TOAST OVERLAY (styled like login toast)
+    // =========================================================
+
+    private void showToast(boolean success, String title, String heading, String message) {
+        hideToast();
+
+        VBox toast = new VBox(8);
+        toast.setMaxWidth(350);
+        toast.setPrefWidth(350);
+        toast.setStyle("-fx-background-color: white;" +
+                "-fx-background-radius: 15;" +
+                "-fx-padding: 15 17 15 15;" +
+                "-fx-border-color: #e2e8f0;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(15,23,42,.20), 22, 0, 0, 6);");
+
+        HBox topBox = new HBox(12);
+        topBox.setAlignment(Pos.CENTER_LEFT);
+
+        StackPane iconWrap = new StackPane();
+        iconWrap.setMinSize(38, 38);
+        iconWrap.setMaxSize(38, 38);
+        iconWrap.setStyle(success
+                ? "-fx-background-color: #dcfce7; -fx-background-radius: 19;"
+                : "-fx-background-color: #fee2e2; -fx-background-radius: 19;");
+
+        Label iconLabel = new Label(success ? "✓" : "✕");
+        iconLabel.setStyle(success
+                ? "-fx-text-fill: #16a34a; -fx-font-size: 20px; -fx-font-weight: bold;"
+                : "-fx-text-fill: #dc2626; -fx-font-size: 18px; -fx-font-weight: bold;");
+        iconWrap.getChildren().add(iconLabel);
+
+        VBox textBox = new VBox(3);
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 9px; -fx-font-weight: bold;");
+        Label headingLabel = new Label(heading);
+        headingLabel.setStyle("-fx-text-fill: #0f172a; -fx-font-size: 14px; -fx-font-weight: bold;");
+        Label messageLabel = new Label(message);
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(260);
+        messageLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
+        textBox.getChildren().addAll(titleLabel, headingLabel, messageLabel);
+
+        topBox.getChildren().addAll(iconWrap, textBox);
+
+        Region accent = new Region();
+        accent.setMinHeight(3);
+        accent.setMaxHeight(3);
+        accent.setStyle(success
+                ? "-fx-background-color: #16a34a; -fx-background-radius: 3;"
+                : "-fx-background-color: #ef4444; -fx-background-radius: 3;");
+
+        toast.getChildren().addAll(topBox, accent);
+
+        StackPane.setAlignment(toast, Pos.TOP_RIGHT);
+        StackPane.setMargin(toast, new Insets(24, 24, 0, 0));
+
+        rootPane.getChildren().add(toast);
+
+        toastTimer = new PauseTransition(Duration.seconds(3));
+        toastTimer.setOnFinished(e -> rootPane.getChildren().remove(toast));
+        toastTimer.play();
+    }
+
+    private void hideToast() {
+        if (toastTimer != null) {
+            toastTimer.stop();
+            toastTimer = null;
+        }
+        rootPane.getChildren().removeIf(node ->
+                node instanceof VBox && node.getStyle().contains("fx-background-color: white;")
+        );
     }
 
     public void setCurrentUserId(int userId) {

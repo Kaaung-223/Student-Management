@@ -14,9 +14,15 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.student_management_system.Controller.Admin.AdminExamController">
+<AnchorPane fx:id="rootPane"
+            maxHeight="Infinity" maxWidth="Infinity"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Admin.AdminExamController">
 
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="Infinity" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="Infinity" maxWidth="Infinity"
+                style="-fx-background-color: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED"
+                AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
         <content>
 
@@ -32,7 +38,9 @@
                         <Label style="-fx-text-fill: #172033; -fx-font-size: 28px; -fx-font-weight: bold;" text="Exams" />
                         <Label style="-fx-text-fill: #8995aa; -fx-font-size: 14px;" text="Create and manage exams for each batch" />
                     </VBox>
-                    <Button onAction="#handleCreateExam" prefHeight="42" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 20; -fx-cursor: hand;" text="+  New Exam" />
+                    <Button onAction="#handleCreateExam" prefHeight="42"
+                            style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 20; -fx-cursor: hand;"
+                            text="+  New Exam" />
                 </HBox>
 
                 <HBox spacing="20">
@@ -41,7 +49,8 @@
                     <!-- FORM -->
                     <!-- ====================================== -->
 
-                    <VBox maxWidth="340" minWidth="300" prefWidth="320" spacing="14" style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);">
+                    <VBox maxWidth="340" minWidth="300" prefWidth="320" spacing="14"
+                          style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);">
 
                         <Label fx:id="lblFormTitle" style="-fx-text-fill: #172033; -fx-font-size: 18px; -fx-font-weight: bold;" text="Create New Exam" />
 
@@ -66,8 +75,12 @@
                         </VBox>
 
                         <HBox spacing="10">
-                            <Button fx:id="btnCancel" onAction="#handleCancel" style="-fx-background-color: #f0f2f6; -fx-text-fill: #344563; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 18; -fx-cursor: hand;" text="Cancel" HBox.hgrow="ALWAYS" />
-                            <Button fx:id="btnSave" maxWidth="Infinity" onAction="#handleSave" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 0; -fx-cursor: hand;" text="Save Exam" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnCancel" onAction="#handleCancel"
+                                    style="-fx-background-color: #f0f2f6; -fx-text-fill: #344563; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 18; -fx-cursor: hand;"
+                                    text="Cancel" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnSave" maxWidth="Infinity" onAction="#handleSave"
+                                    style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 9; -fx-padding: 10 0; -fx-cursor: hand;"
+                                    text="Save Exam" HBox.hgrow="ALWAYS" />
                         </HBox>
 
                     </VBox>
@@ -76,12 +89,16 @@
                     <!-- TABLE -->
                     <!-- ====================================== -->
 
-                    <VBox maxWidth="Infinity" spacing="14" style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);" HBox.hgrow="ALWAYS">
+                    <VBox maxWidth="Infinity" spacing="14"
+                          style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08),18,0,0,4);"
+                          HBox.hgrow="ALWAYS">
 
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label style="-fx-text-fill: #344563; -fx-font-size: 12px; -fx-font-weight: bold;" text="Filter by batch:" />
                             <ComboBox fx:id="cmbBatchFilter" prefWidth="220" HBox.hgrow="ALWAYS" />
-                            <Button onAction="#handleRefresh" style="-fx-background-color: #f0f2f6; -fx-text-fill: #344563; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 16; -fx-cursor: hand;" text="⟳  Refresh" />
+                            <Button onAction="#handleRefresh"
+                                    style="-fx-background-color: #f0f2f6; -fx-text-fill: #344563; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 16; -fx-cursor: hand;"
+                                    text="⟳  Refresh" />
                         </HBox>
 
                         <TableView fx:id="examTable" maxWidth="Infinity" minHeight="150" prefHeight="480" VBox.vgrow="ALWAYS">

@@ -5,13 +5,17 @@ import com.example.student_management_system.Controller.DAO.ExamDAO;
 import com.example.student_management_system.Controller.Model.Batch;
 import com.example.student_management_system.Controller.Model.Exam;
 
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -21,6 +25,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AdminExamController implements Initializable {
+
+    // =========================================================
+    // ROOT FOR TOAST OVERLAY
+    // =========================================================
+
+    @FXML private AnchorPane rootPane;
+
 
     // =========================================================
     // BATCH FILTER
@@ -101,6 +112,8 @@ public class AdminExamController implements Initializable {
     // =========================================================
 
     private int selectedExamId = -1;
+
+    private PauseTransition toastTimer;
 
 
     // =========================================================
@@ -307,9 +320,11 @@ public class AdminExamController implements Initializable {
             success = examDAO.updateExam(selectedExamId, examName, classId, examDate, totalMarks);
 
             if (success) {
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Exam updated successfully.");
+                showToast(true, "UPDATED", "Exam updated",
+                        examName + " has been updated.");
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to update exam.");
+                showToast(false, "UPDATE FAILED", "Could not update",
+                        "An error occurred while updating the exam.");
                 return;
             }
 
@@ -318,9 +333,11 @@ public class AdminExamController implements Initializable {
             int newId = examDAO.createExam(examName, classId, examDate, totalMarks);
 
             if (newId != -1) {
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Exam created successfully.");
+                showToast(true, "CREATED", "Exam created",
+                        examName + " has been created.");
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to create exam.");
+                showToast(false, "CREATE FAILED", "Could not create",
+                        "An error occurred while creating the exam.");
                 return;
             }
         }
@@ -362,12 +379,14 @@ public class AdminExamController implements Initializable {
             boolean success = examDAO.deleteExam(exam.getId());
 
             if (success) {
-                showAlert(Alert.AlertType.INFORMATION, "Deleted", "Exam deleted successfully.");
+                showToast(true, "DELETED", "Exam removed",
+                        exam.getExamName() + " has been deleted.");
                 loadExams();
                 clearForm();
                 showCreateMode();
             } else {
-                showAlert(Alert.AlertType.ERROR, "Delete Failed", "Could not delete this exam.");
+                showToast(false, "DELETE FAILED", "Could not delete",
+                        "An error occurred while deleting the exam.");
             }
         }
     }
@@ -421,31 +440,35 @@ public class AdminExamController implements Initializable {
 
 
     // =========================================================
-    // VALIDATION
+    // VALIDATION (using toast)
     // =========================================================
 
     private boolean validateForm() {
 
         if (txtExamName.getText().trim().isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validation", "Please enter an exam name.");
+            showToast(false, "VALIDATION", "Missing exam name",
+                    "Please enter an exam name.");
             txtExamName.requestFocus();
             return false;
         }
 
         if (cmbBatchForExam.getValue() == null) {
-            showAlert(Alert.AlertType.WARNING, "Validation", "Please select which batch this exam is for.");
+            showToast(false, "VALIDATION", "Missing batch",
+                    "Please select which batch this exam is for.");
             cmbBatchForExam.requestFocus();
             return false;
         }
 
         if (dpExamDate.getValue() == null) {
-            showAlert(Alert.AlertType.WARNING, "Validation", "Please pick an exam date.");
+            showToast(false, "VALIDATION", "Missing date",
+                    "Please pick an exam date.");
             dpExamDate.requestFocus();
             return false;
         }
 
         if (txtTotalMarks.getText().trim().isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validation", "Please enter total marks.");
+            showToast(false, "VALIDATION", "Missing marks",
+                    "Please enter total marks.");
             txtTotalMarks.requestFocus();
             return false;
         }
@@ -456,7 +479,8 @@ public class AdminExamController implements Initializable {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.WARNING, "Validation", "Total marks must be a positive number.");
+            showToast(false, "VALIDATION", "Invalid marks",
+                    "Total marks must be a positive number.");
             txtTotalMarks.requestFocus();
             return false;
         }
@@ -466,14 +490,85 @@ public class AdminExamController implements Initializable {
 
 
     // =========================================================
-    // ALERT
+    // TOAST OVERLAY (styled like login toast)
     // =========================================================
 
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private void showToast(boolean success, String title, String heading, String message) {
+        // Remove any existing toast
+        hideToast();
+
+        // Build toast container
+        VBox toast = new VBox(8);
+        toast.setMaxWidth(350);
+        toast.setPrefWidth(350);
+        toast.setStyle("-fx-background-color: white;" +
+                "-fx-background-radius: 15;" +
+                "-fx-padding: 15 17 15 15;" +
+                "-fx-border-color: #e2e8f0;" +
+                "-fx-border-radius: 15;" +
+                "-fx-effect: dropshadow(gaussian, rgba(15,23,42,.20), 22, 0, 0, 6);");
+
+        // Icon area
+        HBox topBox = new HBox(12);
+        topBox.setAlignment(Pos.CENTER_LEFT);
+
+        StackPane iconWrap = new StackPane();
+        iconWrap.setMinSize(38, 38);
+        iconWrap.setMaxSize(38, 38);
+        iconWrap.setStyle(success
+                ? "-fx-background-color: #dcfce7; -fx-background-radius: 19;"
+                : "-fx-background-color: #fee2e2; -fx-background-radius: 19;");
+
+        Label iconLabel = new Label(success ? "✓" : "✕");
+        iconLabel.setStyle(success
+                ? "-fx-text-fill: #16a34a; -fx-font-size: 20px; -fx-font-weight: bold;"
+                : "-fx-text-fill: #dc2626; -fx-font-size: 18px; -fx-font-weight: bold;");
+        iconWrap.getChildren().add(iconLabel);
+
+        // Text block
+        VBox textBox = new VBox(3);
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 9px; -fx-font-weight: bold;");
+        Label headingLabel = new Label(heading);
+        headingLabel.setStyle("-fx-text-fill: #0f172a; -fx-font-size: 14px; -fx-font-weight: bold;");
+        Label messageLabel = new Label(message);
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(260);
+        messageLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
+        textBox.getChildren().addAll(titleLabel, headingLabel, messageLabel);
+
+        topBox.getChildren().addAll(iconWrap, textBox);
+
+        // Accent line
+        Region accent = new Region();
+        accent.setMinHeight(3);
+        accent.setMaxHeight(3);
+        accent.setStyle(success
+                ? "-fx-background-color: #16a34a; -fx-background-radius: 3;"
+                : "-fx-background-color: #ef4444; -fx-background-radius: 3;");
+
+        toast.getChildren().addAll(topBox, accent);
+
+        // Position at top-right of the root pane
+        StackPane.setAlignment(toast, Pos.TOP_RIGHT);
+        StackPane.setMargin(toast, new Insets(24, 24, 0, 0));
+
+        // Add to root
+        rootPane.getChildren().add(toast);
+
+        // Auto-hide after 3 seconds
+        toastTimer = new PauseTransition(Duration.seconds(3));
+        toastTimer.setOnFinished(e -> rootPane.getChildren().remove(toast));
+        toastTimer.play();
+    }
+
+    private void hideToast() {
+        if (toastTimer != null) {
+            toastTimer.stop();
+            toastTimer = null;
+        }
+        rootPane.getChildren().removeIf(node ->
+                node instanceof VBox && node.getStyle().contains("fx-background-color: white;")
+        );
     }
 }
