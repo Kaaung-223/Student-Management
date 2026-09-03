@@ -114,24 +114,25 @@ public class LoginController {
     public void initialize() {
 
         visiblePasswordField.textProperty()
-                .bindBidirectional(passwordField.textProperty());
+                .bindBidirectional(passwordField.textProperty());//A  value change B change
+                                                                 //B  value change A change
 
         visiblePasswordField.setVisible(false);
-        visiblePasswordField.setManaged(false);
+        visiblePasswordField.setManaged(false);//do not space in layout
 
         eyeIcon.setIconLiteral("fas-eye");
 
-        txtUsername.setOnAction(event -> loginWithButtonEffect());
+        txtUsername.setOnAction(event -> loginWithButtonEffect());//enter key triggers login
         passwordField.setOnAction(event -> loginWithButtonEffect());
         visiblePasswordField.setOnAction(event -> loginWithButtonEffect());
 
         btnLogin.setDefaultButton(true);
 
-        applyLoginButtonStyle(true);
+        applyLoginButtonStyle(true);//Login button normal style
     }
 
     @FXML
-    private void togglePassword() {
+    private void togglePassword() {//click on eye icon run this method
 
         showPassword = !showPassword;
 

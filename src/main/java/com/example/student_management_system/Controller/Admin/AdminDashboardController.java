@@ -10,23 +10,34 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.List;
 
 public class AdminDashboardController implements Initializable {
-
+    @FXML private Label lblToastTitle;
+    @FXML private Label lblToastHeading;
     @FXML
     private Button btnDashboard,
             btnStudents,
@@ -1196,9 +1207,45 @@ public class AdminDashboardController implements Initializable {
         // LOGOUT
         // =========================================================
 
-        @FXML
-        public void logout (ActionEvent e){
+    // =========================================================
+// LOGOUT
+// =========================================================
 
+    @FXML
+    public void logout(ActionEvent e) {
+        // 1. Update toast content
+        lblToastTitle.setText("LOGOUT SUCCESS");
+        lblToastHeading.setText("Signed out");
+        lblDashboardWelcome.setText("You have been logged out successfully.");
+
+        // 2. Show the toast
+        welcomeToast.setManaged(true);
+        welcomeToast.setVisible(true);
+
+        // 3. Stop any existing timer
+        if (welcomeTimer != null) {
+            welcomeTimer.stop();
         }
+
+        // 4. Wait 2.5 seconds, then go to login screen (full screen)
+        PauseTransition delay = new PauseTransition(Duration.seconds(2.5));
+        delay.setOnFinished(event -> {
+            try {
+                Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/com/example/student_management_system/View/Login.fxml")
+                );
+                Parent loginRoot = loader.load();
+                Scene scene = new Scene(loginRoot);
+                stage.setScene(scene);
+                stage.setMaximized(true);   // <-- Full screen, just like the initial login
+                stage.show();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        delay.play();
     }
+
+}
 

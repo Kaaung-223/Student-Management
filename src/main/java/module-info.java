@@ -12,6 +12,7 @@ module com.example.student_management_system {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires java.desktop;
 
     // JavaFX can launch your Main class
     exports com.example.student_management_system.Controller;

@@ -262,9 +262,9 @@
                                 <Region minHeight="4" style="-fx-background-color:linear-gradient(to right,#ea580c,#fdba74);                                                -fx-background-radius:4;" />
 
                             </VBox>
-                     <rowConstraints>
-                        <RowConstraints />
-                     </rowConstraints>
+                            <rowConstraints>
+                                <RowConstraints />
+                            </rowConstraints>
 
                         </GridPane>
 
@@ -394,9 +394,9 @@
                                 </HBox>
 
                             </VBox>
-                     <rowConstraints>
-                        <RowConstraints />
-                     </rowConstraints>
+                            <rowConstraints>
+                                <RowConstraints />
+                            </rowConstraints>
 
                         </GridPane>
 
@@ -464,9 +464,9 @@
                                         </yAxis>
                                     </BarChart>
                                 </VBox>
-                        <rowConstraints>
-                           <RowConstraints />
-                        </rowConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                </rowConstraints>
                             </GridPane>
 
                         </VBox>
@@ -575,7 +575,7 @@
 
 
             <!-- ================================================ -->
-            <!-- WELCOME TOAST -->
+            <!-- WELCOME TOAST (NOW REUSABLE FOR LOGOUT TOO)     -->
             <!-- ================================================ -->
 
             <VBox fx:id="welcomeToast" managed="false" maxWidth="350" prefWidth="350" spacing="8" style="-fx-background-color:white;                          -fx-background-radius:15;                          -fx-padding:15 17 15 15;                          -fx-border-color:#e2e8f0;                          -fx-border-radius:15;                          -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);" translateX="-24" translateY="24" visible="false" StackPane.alignment="TOP_RIGHT">
@@ -591,13 +591,13 @@
                     </StackPane>
 
 
-                    <!-- MESSAGE -->
+                    <!-- MESSAGE - NOW WITH fx:ids FOR DYNAMIC TEXT -->
 
                     <VBox spacing="3" HBox.hgrow="ALWAYS">
 
-                        <Label style="-fx-text-fill:#64748b;                                       -fx-font-size:9px;                                       -fx-font-weight:bold;" text="LOGIN SUCCESSFUL" />
+                        <Label fx:id="lblToastTitle" style="-fx-text-fill:#64748b;                                       -fx-font-size:9px;                                       -fx-font-weight:bold;" text="LOGIN SUCCESSFUL" />
 
-                        <Label style="-fx-text-fill:#0f172a;                                       -fx-font-size:14px;                                       -fx-font-weight:bold;" text="Welcome back!" />
+                        <Label fx:id="lblToastHeading" style="-fx-text-fill:#0f172a;                                       -fx-font-size:14px;                                       -fx-font-weight:bold;" text="Welcome back!" />
 
                         <Label fx:id="lblDashboardWelcome" style="-fx-text-fill:#64748b;                                       -fx-font-size:11px;" text="You are signed in successfully." wrapText="true" />
 
