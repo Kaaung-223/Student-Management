@@ -4,15 +4,12 @@ import com.example.student_management_system.Controller.DAO.AdminDAO;
 import com.example.student_management_system.Controller.Model.Admin;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,33 +21,31 @@ import java.util.regex.Pattern;
 
 public class AdminProfileController {
 
-    // ---- Profile section ----
     @FXML private ImageView imgProfilePhoto;
     @FXML private TextField txtFullName;
     @FXML private TextField txtUsername;
     @FXML private Button btnChoosePhoto;
     @FXML private Button btnSaveProfile;
-
-    // ---- Password section ----
     @FXML private PasswordField txtOldPassword;
     @FXML private PasswordField txtNewPassword;
     @FXML private PasswordField txtConfirmPassword;
-    @FXML private Button btnChangePassword;
-
-    // ---- Feedback ----
+    @FXML private TextField visibleOldPassword;
+    @FXML private TextField visibleNewPassword;
+    @FXML private TextField visibleConfirmPassword;
+    @FXML private Button btnOldPasswordEye;
+    @FXML private Button btnNewPasswordEye;
+    @FXML private Button btnConfirmPasswordEye;
+    @FXML private FontIcon oldPasswordEyeIcon;
+    @FXML private FontIcon newPasswordEyeIcon;
+    @FXML private FontIcon confirmPasswordEyeIcon;
     @FXML private Label lblMessage;
 
     private final AdminDAO adminDAO = new AdminDAO();
-
-    // Folder (relative to the running app) where uploaded profile photos are copied.
     private static final String PHOTO_STORAGE_DIR = "uploads/admin_photos";
-
-    // At least 8 chars overall, at least 1 lowercase, 1 uppercase, 1 special character.
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>_\\-+=~`\\[\\]/;']).{8,}$"
     );
 
-    // ---- Notification banner styles (shared base + variant) ----
     private static final String NOTI_BASE =
             "-fx-padding: 10 14 10 14; -fx-background-radius: 8; -fx-border-radius: 8; " +
                     "-fx-font-size: 12.5px; -fx-font-weight: 600; -fx-border-width: 0 0 0 3;";
@@ -60,36 +55,63 @@ public class AdminProfileController {
             NOTI_BASE + "-fx-background-color: #FDECEC; -fx-text-fill: #B3261E; -fx-border-color: #B3261E;";
 
     private Admin currentAdmin;
-    private String selectedPhotoAbsolutePath; // staged file on disk, chosen but not yet saved
+    private String selectedPhotoAbsolutePath;
+    private int adminId = -1;
 
     @FXML
     public void initialize() {
-        // Start with no banner showing.
         hideMessage();
+        visibleOldPassword.textProperty().bindBidirectional(txtOldPassword.textProperty());
+        visibleNewPassword.textProperty().bindBidirectional(txtNewPassword.textProperty());
+        visibleConfirmPassword.textProperty().bindBidirectional(txtConfirmPassword.textProperty());
 
-        // Fallback: if this screen is opened without loadAdmin(userId) being called
-        // from your login/session flow (e.g. testing it standalone), load the
-        // default 'admin' account so the screen still works instead of crashing
-        // with a NullPointerException on save.
-        if (currentAdmin == null) {
-            Admin fallback = adminDAO.getAdminByUsername("admin");
-            if (fallback != null) {
-                loadAdmin(fallback.getUserId());
-            }
+        visibleOldPassword.setVisible(false);
+        visibleOldPassword.setManaged(false);
+        visibleNewPassword.setVisible(false);
+        visibleNewPassword.setManaged(false);
+        visibleConfirmPassword.setVisible(false);
+        visibleConfirmPassword.setManaged(false);
+
+        if (adminId != -1) {
+            loadAdmin(adminId);
         }
     }
 
-    /**
-     * Call this right after loading the FXML, passing the logged-in admin's user_id
-     * from your login/session code, e.g.:
-     *   FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_profile.fxml"));
-     *   Parent root = loader.load();
-     *   loader.<AdminProfileController>getController().loadAdmin(loggedInUserId);
-     */
-    public void loadAdmin(int userId) {
+    public void setAdminId(int userId) {
+        this.adminId = userId;
+        if (currentAdmin == null) {
+            loadAdmin(userId);
+        }
+    }
+
+    @FXML
+    private void toggleOldPasswordVisibility() {
+        togglePasswordVisibility(txtOldPassword, visibleOldPassword, oldPasswordEyeIcon);
+    }
+
+    @FXML
+    private void toggleNewPasswordVisibility() {
+        togglePasswordVisibility(txtNewPassword, visibleNewPassword, newPasswordEyeIcon);
+    }
+
+    @FXML
+    private void toggleConfirmPasswordVisibility() {
+        togglePasswordVisibility(txtConfirmPassword, visibleConfirmPassword, confirmPasswordEyeIcon);
+    }
+
+    private void togglePasswordVisibility(PasswordField passwordField, TextField visibleField, FontIcon eyeIcon) {
+        boolean show = !visibleField.isVisible();
+        visibleField.setVisible(show);
+        visibleField.setManaged(show);
+        passwordField.setVisible(!show);
+        passwordField.setManaged(!show);
+        eyeIcon.setIconLiteral(show ? "fas-eye-slash" : "fas-eye");
+    }
+
+    private void loadAdmin(int userId) {
         currentAdmin = adminDAO.getAdminProfileById(userId);
         if (currentAdmin == null) {
-            showMessage("Could not load admin profile.", true);
+            showMessage("Could not load admin profile. Please log in again.", true);
             return;
         }
         txtFullName.setText(currentAdmin.getFullName());
@@ -101,7 +123,6 @@ public class AdminProfileController {
         if (photoPath != null && !photoPath.isBlank() && new File(photoPath).exists()) {
             imgProfilePhoto.setImage(new Image(new File(photoPath).toURI().toString()));
         } else {
-            // Optional: set a default placeholder image here.
             imgProfilePhoto.setImage(null);
         }
     }
@@ -125,54 +146,57 @@ public class AdminProfileController {
 
     @FXML
     private void handleSaveProfile() {
-        // ---- Guard: no admin loaded yet ----
-        if (currentAdmin == null) {
-            showMessage("No admin profile loaded. Please log in again.", true);
-            return;
-        }
-
-        String fullName = txtFullName.getText() == null ? "" : txtFullName.getText().trim();
-        String username = txtUsername.getText() == null ? "" : txtUsername.getText().trim();
-
-        // ---- Required field checks ----
-        if (fullName.isEmpty()) {
-            showMessage("Full name cannot be empty.", true);
-            return;
-        }
-        if (username.isEmpty()) {
-            showMessage("Username cannot be empty.", true);
-            return;
-        }
-
-        // ---- Uniqueness check for username ----
-        if (adminDAO.isUsernameTakenByOthers(username, currentAdmin.getUserId())) {
-            showMessage("That username is already taken.", true);
-            return;
-        }
-
-        // ---- Handle photo (only copy/persist if a new one was chosen) ----
-        String newStoredPhotoPath = null;
-        if (selectedPhotoAbsolutePath != null) {
-            try {
-                newStoredPhotoPath = copyPhotoToStorage(selectedPhotoAbsolutePath, currentAdmin.getUserId());
-            } catch (IOException e) {
-                showMessage("Failed to save the selected photo: " + e.getMessage(), true);
+        try {
+            if (currentAdmin == null) {
+                showMessage("No admin profile loaded. Please log in again.", true);
                 return;
             }
-        }
 
-        boolean success = adminDAO.updateProfile(currentAdmin.getUserId(), fullName, username, newStoredPhotoPath);
+            String fullName = txtFullName.getText() == null ? "" : txtFullName.getText().trim();
+            String username = txtUsername.getText() == null ? "" : txtUsername.getText().trim();
 
-        if (success) {
-            currentAdmin.setFullName(fullName);
-            currentAdmin.setUsername(username);
-            if (newStoredPhotoPath != null) {
-                currentAdmin.setPhotoPath(newStoredPhotoPath);
+            if (fullName.isEmpty()) {
+                showMessage("Full name cannot be empty.", true);
+                return;
             }
-            selectedPhotoAbsolutePath = null;
-            showMessage("Profile updated successfully.", false);
-        } else {
-            showMessage("Failed to update profile. Please try again.", true);
+            if (username.isEmpty()) {
+                showMessage("Username cannot be empty.", true);
+                return;
+            }
+
+            if (adminDAO.isUsernameTakenByOthers(username, currentAdmin.getUserId())) {
+                showMessage("That username is already taken.", true);
+                return;
+            }
+
+            String newStoredPhotoPath = null;
+            if (selectedPhotoAbsolutePath != null) {
+                try {
+                    newStoredPhotoPath = copyPhotoToStorage(selectedPhotoAbsolutePath, currentAdmin.getUserId());
+                } catch (IOException e) {
+                    showMessage("Failed to save the selected photo: " + e.getMessage(), true);
+                    return;
+                }
+            }
+
+            boolean success = adminDAO.updateProfile(currentAdmin.getUserId(), fullName, username, newStoredPhotoPath);
+
+            if (success) {
+                currentAdmin.setFullName(fullName);
+                currentAdmin.setUsername(username);
+                if (newStoredPhotoPath != null) {
+                    currentAdmin.setPhotoPath(newStoredPhotoPath);
+                }
+                selectedPhotoAbsolutePath = null;
+                showMessage("Profile updated successfully.", false);
+                loadPhotoIntoView(currentAdmin.getPhotoPath());
+            } else {
+                showMessage("Failed to update profile. Please check the database connection and try again.", true);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showMessage("Something went wrong while saving your profile: " + ex.getMessage(), true);
         }
     }
 
@@ -185,76 +209,79 @@ public class AdminProfileController {
         String name = sourcePath.getFileName().toString();
         int dot = name.lastIndexOf('.');
         if (dot >= 0) {
-            extension = name.substring(dot); // includes the dot
+            extension = name.substring(dot);
         }
 
         String targetFileName = "admin_" + userId + "_" + System.currentTimeMillis() + extension;
         Path targetPath = targetDir.resolve(targetFileName);
 
         Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-
         return targetPath.toString();
     }
 
     @FXML
     private void handleChangePassword() {
-        // ---- Guard: no admin loaded yet ----
-        if (currentAdmin == null) {
-            showMessage("No admin profile loaded. Please log in again.", true);
-            return;
-        }
+        try {
+            if (currentAdmin == null) {
+                showMessage("No admin profile loaded. Please log in again.", true);
+                return;
+            }
 
-        String oldPassword = txtOldPassword.getText() == null ? "" : txtOldPassword.getText();
-        String newPassword = txtNewPassword.getText() == null ? "" : txtNewPassword.getText();
-        String confirmPassword = txtConfirmPassword.getText() == null ? "" : txtConfirmPassword.getText();
+            String oldPassword = txtOldPassword.isVisible() ? txtOldPassword.getText() : visibleOldPassword.getText();
+            String newPassword = txtNewPassword.isVisible() ? txtNewPassword.getText() : visibleNewPassword.getText();
+            String confirmPassword = txtConfirmPassword.isVisible() ? txtConfirmPassword.getText() : visibleConfirmPassword.getText();
 
-        // ---- Required field checks ----
-        if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            showMessage("Please fill in all three password fields.", true);
-            return;
-        }
+            if (oldPassword == null || oldPassword.isEmpty() ||
+                    newPassword == null || newPassword.isEmpty() ||
+                    confirmPassword == null || confirmPassword.isEmpty()) {
+                showMessage("Please fill in all three password fields.", true);
+                return;
+            }
 
-        // ---- Confirm current password is correct ----
-        if (!adminDAO.verifyCurrentPassword(currentAdmin.getUserId(), oldPassword)) {
-            showMessage("Current password is incorrect.", true);
-            return;
-        }
+            if (!adminDAO.verifyCurrentPassword(currentAdmin.getUserId(), oldPassword)) {
+                showMessage("Current password is incorrect.", true);
+                return;
+            }
 
-        // ---- New == Confirm ----
-        if (!newPassword.equals(confirmPassword)) {
-            showMessage("New password and confirm password do not match.", true);
-            return;
-        }
+            if (!newPassword.equals(confirmPassword)) {
+                showMessage("New password and confirm password do not match.", true);
+                return;
+            }
 
-        // ---- Strength check: 8+ chars, 1 lowercase, 1 uppercase, 1 special char ----
-        if (!PASSWORD_PATTERN.matcher(newPassword).matches()) {
-            showMessage(
-                    "Password must be at least 8 characters and include at least one " +
-                            "uppercase letter, one lowercase letter, and one special character.",
-                    true
-            );
-            return;
-        }
+            if (!PASSWORD_PATTERN.matcher(newPassword).matches()) {
+                showMessage(
+                        "Password must be at least 8 characters and include at least one " +
+                                "uppercase letter, one lowercase letter, and one special character.",
+                        true
+                );
+                return;
+            }
 
-        // ---- Don't allow reusing the same password ----
-        if (newPassword.equals(oldPassword)) {
-            showMessage("New password must be different from the current password.", true);
-            return;
-        }
+            if (newPassword.equals(oldPassword)) {
+                showMessage("New password must be different from the current password.", true);
+                return;
+            }
 
-        boolean success = adminDAO.updatePassword(currentAdmin.getUserId(), newPassword);
+            boolean success = adminDAO.updatePassword(currentAdmin.getUserId(), newPassword);
 
-        if (success) {
-            txtOldPassword.clear();
-            txtNewPassword.clear();
-            txtConfirmPassword.clear();
-            showMessage("Password changed successfully.", false);
-        } else {
-            showMessage("Failed to change password. Please try again.", true);
+            if (success) {
+                txtOldPassword.clear();
+                txtNewPassword.clear();
+                txtConfirmPassword.clear();
+                visibleOldPassword.clear();
+                visibleNewPassword.clear();
+                visibleConfirmPassword.clear();
+                showMessage("Password changed successfully.", false);
+            } else {
+                showMessage("Failed to change password. Please check the database connection and try again.", true);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showMessage("Something went wrong while changing your password: " + ex.getMessage(), true);
         }
     }
 
-    /** Shows a colored notification banner (green = success, red = error) above/below the forms. */
     private void showMessage(String text, boolean isError) {
         if (lblMessage != null) {
             lblMessage.setText(text);
@@ -262,7 +289,6 @@ public class AdminProfileController {
             lblMessage.setVisible(true);
             lblMessage.setManaged(true);
         } else {
-            // Fallback if no inline label is wired up in the FXML.
             Alert alert = new Alert(isError ? Alert.AlertType.ERROR : Alert.AlertType.INFORMATION);
             alert.setTitle(isError ? "Error" : "Success");
             alert.setHeaderText(null);

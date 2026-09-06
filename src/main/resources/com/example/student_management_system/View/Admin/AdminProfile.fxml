@@ -10,10 +10,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <VBox style="-fx-background-color: #F7F8FA;" spacing="26.0"
-      xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.student_management_system.Controller.Admin.AdminProfileController">
     <padding>
         <Insets top="32" right="40" bottom="32" left="40"/>
@@ -26,17 +28,22 @@
                style="-fx-font-size: 13px; -fx-text-fill: #6B7280;"/>
     </VBox>
 
-    <!-- Notification banner: hidden until the controller calls showMessage(...) -->
     <Label fx:id="lblMessage" wrapText="true" visible="false" managed="false"/>
 
     <HBox spacing="32.0">
 
-        <!-- ===================== Identity panel ===================== -->
         <VBox spacing="16.0" alignment="TOP_CENTER" prefWidth="240.0" minWidth="240.0"
               style="-fx-background-color: linear-gradient(to bottom right, #2F6F5E, #23493D); -fx-background-radius: 16; -fx-padding: 32 24 28 24;">
 
             <StackPane style="-fx-background-color: rgba(255,255,255,0.14); -fx-background-radius: 14; -fx-border-color: rgba(255,255,255,0.35); -fx-border-radius: 14; -fx-border-width: 1.5; -fx-padding: 4;">
-                <ImageView fx:id="imgProfilePhoto" fitWidth="130.0" fitHeight="130.0" preserveRatio="true"/>
+                <StackPane>
+                    <Circle radius="60" fill="transparent"/>
+                    <ImageView fx:id="imgProfilePhoto" fitWidth="120" fitHeight="120" preserveRatio="true">
+                        <clip>
+                            <Circle radius="60" centerX="60" centerY="60"/>
+                        </clip>
+                    </ImageView>
+                </StackPane>
             </StackPane>
 
             <Button fx:id="btnChoosePhoto" text="Change photo" onAction="#handleChoosePhoto"
@@ -46,10 +53,8 @@
                    style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.65);"/>
         </VBox>
 
-        <!-- ===================== Content panel ===================== -->
         <VBox spacing="28.0" HBox.hgrow="ALWAYS">
 
-            <!--  Profile details  -->
             <VBox spacing="16.0">
                 <Label text="Profile details" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1E2433;"/>
 
@@ -74,7 +79,6 @@
 
             <Separator style="-fx-background-color: #E4E7EC;"/>
 
-            <!-- - Security - -->
             <VBox spacing="16.0">
                 <VBox spacing="2.0">
                     <Label text="Security" style="-fx-font-size: 15px; -fx-font-weight: 700; -fx-text-fill: #1E2433;"/>
@@ -83,21 +87,94 @@
                 </VBox>
 
                 <VBox spacing="14.0" maxWidth="360.0">
+
                     <VBox spacing="6.0">
                         <Label text="Current password" style="-fx-font-size: 12px; -fx-font-weight: 600; -fx-text-fill: #4B5563;"/>
-                        <PasswordField fx:id="txtOldPassword"
-                                       style="-fx-background-color: #FFFFFF; -fx-border-color: #E1E4EA; -fx-border-width: 1.2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 9 12 9 12; -fx-font-size: 13px;"/>
+                        <HBox alignment="CENTER_LEFT"
+                              style="-fx-background-color: #FFFFFF; -fx-border-color: #E1E4EA; -fx-border-width: 1.2; -fx-border-radius: 8; -fx-background-radius: 8;">
+
+                            <StackPane HBox.hgrow="ALWAYS">
+                                <PasswordField fx:id="txtOldPassword"
+                                               promptText="Enter current password"
+                                               style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px; -fx-padding: 9 12 9 12;"/>
+                                <TextField fx:id="visibleOldPassword"
+                                           managed="false" visible="false"
+                                           promptText="Enter current password"
+                                           style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px; -fx-padding: 9 12 9 12;"/>
+                            </StackPane>
+
+                            <Button fx:id="btnOldPasswordEye"
+                                    minWidth="40" minHeight="40"
+                                    onAction="#toggleOldPasswordVisibility"
+                                    style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0; -fx-cursor: hand;">
+                                <graphic>
+                                    <FontIcon fx:id="oldPasswordEyeIcon"
+                                              iconLiteral="fas-eye"
+                                              iconSize="16"
+                                              iconColor="#64748b"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
                     </VBox>
+
                     <VBox spacing="6.0">
                         <Label text="New password" style="-fx-font-size: 12px; -fx-font-weight: 600; -fx-text-fill: #4B5563;"/>
-                        <PasswordField fx:id="txtNewPassword"
-                                       style="-fx-background-color: #FFFFFF; -fx-border-color: #E1E4EA; -fx-border-width: 1.2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 9 12 9 12; -fx-font-size: 13px;"/>
+                        <HBox alignment="CENTER_LEFT"
+                              style="-fx-background-color: #FFFFFF; -fx-border-color: #E1E4EA; -fx-border-width: 1.2; -fx-border-radius: 8; -fx-background-radius: 8;">
+
+                            <StackPane HBox.hgrow="ALWAYS">
+                                <PasswordField fx:id="txtNewPassword"
+                                               promptText="Enter new password"
+                                               style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px; -fx-padding: 9 12 9 12;"/>
+                                <TextField fx:id="visibleNewPassword"
+                                           managed="false" visible="false"
+                                           promptText="Enter new password"
+                                           style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px; -fx-padding: 9 12 9 12;"/>
+                            </StackPane>
+
+                            <Button fx:id="btnNewPasswordEye"
+                                    minWidth="40" minHeight="40"
+                                    onAction="#toggleNewPasswordVisibility"
+                                    style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0; -fx-cursor: hand;">
+                                <graphic>
+                                    <FontIcon fx:id="newPasswordEyeIcon"
+                                              iconLiteral="fas-eye"
+                                              iconSize="16"
+                                              iconColor="#64748b"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
                     </VBox>
+
                     <VBox spacing="6.0">
                         <Label text="Confirm new password" style="-fx-font-size: 12px; -fx-font-weight: 600; -fx-text-fill: #4B5563;"/>
-                        <PasswordField fx:id="txtConfirmPassword"
-                                       style="-fx-background-color: #FFFFFF; -fx-border-color: #E1E4EA; -fx-border-width: 1.2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 9 12 9 12; -fx-font-size: 13px;"/>
+                        <HBox alignment="CENTER_LEFT"
+                              style="-fx-background-color: #FFFFFF; -fx-border-color: #E1E4EA; -fx-border-width: 1.2; -fx-border-radius: 8; -fx-background-radius: 8;">
+
+                            <StackPane HBox.hgrow="ALWAYS">
+                                <PasswordField fx:id="txtConfirmPassword"
+                                               promptText="Confirm new password"
+                                               style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px; -fx-padding: 9 12 9 12;"/>
+                                <TextField fx:id="visibleConfirmPassword"
+                                           managed="false" visible="false"
+                                           promptText="Confirm new password"
+                                           style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px; -fx-padding: 9 12 9 12;"/>
+                            </StackPane>
+
+                            <Button fx:id="btnConfirmPasswordEye"
+                                    minWidth="40" minHeight="40"
+                                    onAction="#toggleConfirmPasswordVisibility"
+                                    style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0; -fx-cursor: hand;">
+                                <graphic>
+                                    <FontIcon fx:id="confirmPasswordEyeIcon"
+                                              iconLiteral="fas-eye"
+                                              iconSize="16"
+                                              iconColor="#64748b"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
                     </VBox>
+
                 </VBox>
 
                 <HBox alignment="CENTER_RIGHT">
@@ -108,5 +185,4 @@
 
         </VBox>
     </HBox>
-
 </VBox>
