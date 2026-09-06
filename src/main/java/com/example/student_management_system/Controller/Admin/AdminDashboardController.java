@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,6 +22,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
@@ -109,19 +109,20 @@ public class AdminDashboardController implements Initializable {
 
         cmbAttendanceBatch.setItems(FXCollections.observableArrayList());
         cmbAttendanceBatch.getItems().add(ALL_BATCHES);
-        cmbAttendanceBatch.getItems().addAll(batches);
+        if (batches != null) cmbAttendanceBatch.getItems().addAll(batches);
         cmbAttendanceBatch.setValue(ALL_BATCHES);
         cmbAttendanceBatch.setOnAction(e -> loadAttendanceChart());
 
         cmbFinanceBatch.setItems(FXCollections.observableArrayList());
         cmbFinanceBatch.getItems().add(ALL_BATCHES);
-        cmbFinanceBatch.getItems().addAll(batches);
+        if (batches != null) cmbFinanceBatch.getItems().addAll(batches);
         cmbFinanceBatch.setValue(ALL_BATCHES);
         cmbFinanceBatch.setOnAction(e -> loadFinanceChart());
 
         cmbExam.setItems(FXCollections.observableArrayList());
         cmbExam.getItems().add(ALL_EXAMS);
-        cmbExam.getItems().addAll(examDAO.getAllExams());
+        List<ExamOption> exams = examDAO.getAllExams();
+        if (exams != null) cmbExam.getItems().addAll(exams);
         cmbExam.setValue(ALL_EXAMS);
         cmbExam.setOnAction(e -> loadExamChart());
     }
@@ -149,10 +150,15 @@ public class AdminDashboardController implements Initializable {
 
     private void loadAdminPhoto(int userId) {
         Admin profile = adminDAO.getAdminProfileById(userId);
-        if (profile != null && profile.getPhotoPath() != null && !profile.getPhotoPath().isEmpty()) {
+        if (profile != null && profile.getPhotoPath() != null && !profile.getPhotoPath().trim().isEmpty()) {
             try {
-                Image img = new Image(new java.io.File(profile.getPhotoPath()).toURI().toString(), true);
-                adminPhoto.setImage(img);
+                File imgFile = new File(profile.getPhotoPath());
+                if (imgFile.exists()) {
+                    Image img = new Image(imgFile.toURI().toString(), true);
+                    adminPhoto.setImage(img);
+                } else {
+                    setDefaultAdminPhoto();
+                }
             } catch (Exception e) {
                 setDefaultAdminPhoto();
             }
@@ -229,9 +235,9 @@ public class AdminDashboardController implements Initializable {
                 cmbAttendancePeriod.getValue(),
                 b == null ? -1 : b.getId()
         );
-        int p = s.getPresentCount();
-        int a = s.getAbsentCount();
-        int l = s.getLateCount();
+        int p = (s != null) ? s.getPresentCount() : 0;
+        int a = (s != null) ? s.getAbsentCount() : 0;
+        int l = (s != null) ? s.getLateCount() : 0;
 
         lblPresentCount.setText("" + p);
         lblAbsentCount.setText("" + a);
@@ -254,8 +260,8 @@ public class AdminDashboardController implements Initializable {
     private void loadExamChart() {
         ExamOption e = cmbExam.getValue();
         ExamResultSummary s = examDAO.getExamResultSummary(e == null ? -1 : e.getId());
-        int p = s.getPassCount();
-        int f = s.getFailCount();
+        int p = (s != null) ? s.getPassCount() : 0;
+        int f = (s != null) ? s.getFailCount() : 0;
         lblPassCount.setText("" + p);
         lblFailCount.setText("" + f);
 
@@ -277,15 +283,19 @@ public class AdminDashboardController implements Initializable {
         int classId = batch == null ? -1 : batch.getId();
 
         FeeFinancialSummary summary = feeDAO.getFinancialSummary(classId);
-        lblFinanceExpected.setText(formatMoney(summary.getTotalExpected()) + " MMK");
-        lblFinanceCollected.setText(formatMoney(summary.getTotalCollected()) + " MMK");
-        lblFinanceOutstanding.setText(formatMoney(summary.getTotalOutstanding()) + " MMK");
-        lblFinancePaidUnpaid.setText(
-                summary.getPaidStudents() + " / " + summary.getUnpaidStudents()
-        );
+        BigDecimal expected = (summary != null) ? summary.getTotalExpected() : BigDecimal.ZERO;
+        BigDecimal collectedAmt = (summary != null) ? summary.getTotalCollected() : BigDecimal.ZERO;
+        BigDecimal outstandingAmt = (summary != null) ? summary.getTotalOutstanding() : BigDecimal.ZERO;
+        int paidStudents = (summary != null) ? summary.getPaidStudents() : 0;
+        int unpaidStudents = (summary != null) ? summary.getUnpaidStudents() : 0;
 
-        double collected = toChartValue(summary.getTotalCollected());
-        double outstanding = toChartValue(summary.getTotalOutstanding());
+        lblFinanceExpected.setText(formatMoney(expected) + " MMK");
+        lblFinanceCollected.setText(formatMoney(collectedAmt) + " MMK");
+        lblFinanceOutstanding.setText(formatMoney(outstandingAmt) + " MMK");
+        lblFinancePaidUnpaid.setText(paidStudents + " / " + unpaidStudents);
+
+        double collected = toChartValue(collectedAmt);
+        double outstanding = toChartValue(outstandingAmt);
 
         if (collected + outstanding == 0) {
             financePieChart.setData(FXCollections.observableArrayList(
@@ -307,7 +317,9 @@ public class AdminDashboardController implements Initializable {
         outstandingSeries.setName("Outstanding");
 
         List<FeeClassBreakdown> breakdown = feeDAO.getFeeBreakdownByClass();
-        if (classId != -1) {
+        if (breakdown == null) breakdown = new ArrayList<>();
+
+        if (classId != -1 && batch != null) {
             String selectedName = batch.getName();
             breakdown = breakdown.stream()
                     .filter(row -> selectedName.equals(row.getClassName()))
@@ -370,7 +382,9 @@ public class AdminDashboardController implements Initializable {
                 btnClassFees, btnSubjects, btnExams, btnGrades,
                 btnAttendance, btnAnnouncements, btnProfile
         )) {
-            b.setStyle(b == selected ? ACTIVE : NORMAL);
+            if (b != null) {
+                b.setStyle(b == selected ? ACTIVE : NORMAL);
+            }
         }
     }
 
@@ -404,7 +418,7 @@ public class AdminDashboardController implements Initializable {
             );
             Parent page = loader.load();
             AdminProfileController controller = loader.getController();
-            if (currentAdminId != -1) {
+            if (controller != null && currentAdminId != -1) {
                 controller.setAdminId(currentAdminId);
             }
             AnchorPane.setTopAnchor(page, 0.0);
@@ -435,25 +449,44 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     public void logout(ActionEvent e) {
-        lblToastTitle.setText("LOGOUT SUCCESS");
-        lblToastHeading.setText("Signed out");
-        lblDashboardWelcome.setText("You have been logged out successfully.");
-        welcomeToast.setManaged(true);
-        welcomeToast.setVisible(true);
+        // 1. Synchronously obtain the target Stage reference before starting the timer
+        Stage stage = null;
+        if (e != null && e.getSource() instanceof Node) {
+            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        } else if (btnLogout != null && btnLogout.getScene() != null) {
+            stage = (Stage) btnLogout.getScene().getWindow();
+        }
+
+        if (stage == null) {
+            System.err.println("Logout Error: Target Stage reference could not be determined.");
+            return;
+        }
+
+        final Stage currentStage = stage;
+
+        // 2. Show logout toast feedback
+        if (lblToastTitle != null) lblToastTitle.setText("LOGOUT SUCCESS");
+        if (lblToastHeading != null) lblToastHeading.setText("Signed out");
+        if (lblDashboardWelcome != null) lblDashboardWelcome.setText("You have been logged out successfully.");
+
+        if (welcomeToast != null) {
+            welcomeToast.setManaged(true);
+            welcomeToast.setVisible(true);
+        }
         if (welcomeTimer != null) welcomeTimer.stop();
 
-        PauseTransition delay = new PauseTransition(Duration.seconds(2.5));
+        // 3. Delayed scene switch to Login window
+        PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
         delay.setOnFinished(event -> {
             try {
-                Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/com/example/student_management_system/View/Login.fxml")
                 );
                 Parent loginRoot = loader.load();
                 Scene scene = new Scene(loginRoot);
-                stage.setScene(scene);
-                stage.setMaximized(true);
-                stage.show();
+                currentStage.setScene(scene);
+                currentStage.setMaximized(true);
+                currentStage.show();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

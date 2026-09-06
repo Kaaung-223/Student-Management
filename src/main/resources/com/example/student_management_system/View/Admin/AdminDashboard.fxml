@@ -23,10 +23,11 @@
 
 <BorderPane minHeight="650" minWidth="1000" style="-fx-background-color:#f6f8fc;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.student_management_system.Controller.Admin.AdminDashboardController">
 
-    <!-- LEFT SIDEBAR – fixed layout with VBox.vgrow to prevent button shifting -->
+    <!-- LEFT SIDEBAR – fixed layout preventing logout shifting -->
     <left>
-        <VBox maxWidth="260" minWidth="235" prefWidth="250" spacing="6" style="-fx-background-color:linear-gradient(to bottom,#111827,#1e293b);">
+        <VBox maxWidth="260" minWidth="235" prefWidth="250" style="-fx-background-color:linear-gradient(to bottom,#111827,#1e293b);">
             <padding><Insets bottom="20" left="16" right="16" top="25"/></padding>
+
             <HBox spacing="12" style="-fx-padding:0 4 25 4;">
                 <StackPane minHeight="43" minWidth="43" style="-fx-background-color:#4f46e5; -fx-background-radius:13; -fx-effect:dropshadow(gaussian,rgba(79,70,229,.35),12,0,0,3);">
                     <Label style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;" text="S"/>
@@ -36,8 +37,10 @@
                     <Label style="-fx-text-fill:#94a3b8; -fx-font-size:9px; -fx-font-weight:bold;" text="MANAGEMENT SYSTEM"/>
                 </VBox>
             </HBox>
+
             <Label style="-fx-text-fill:#64748b; -fx-font-size:10px; -fx-font-weight:bold; -fx-padding:2 8 8 8;" text="MAIN MENU"/>
-            <VBox spacing="5" VBox.vgrow="ALWAYS">
+
+            <VBox spacing="5">
                 <Button fx:id="btnDashboard" maxWidth="Infinity" minHeight="44" onAction="#refreshDashboard" style="-fx-background-color:#4f46e5; -fx-background-radius:10; -fx-text-fill:white; -fx-font-size:13px; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Dashboard"/>
                 <Button fx:id="btnStudents" maxWidth="Infinity" minHeight="44" onAction="#openStudents" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Students"/>
                 <Button fx:id="btnTeachers" maxWidth="Infinity" minHeight="44" onAction="#openTeachers" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Teachers"/>
@@ -50,12 +53,16 @@
                 <Button fx:id="btnAnnouncements" maxWidth="Infinity" minHeight="44" onAction="#openAnnouncements" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Announcements"/>
                 <Button fx:id="btnProfile" maxWidth="Infinity" minHeight="44" onAction="#openProfile" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Profile"/>
             </VBox>
-            <!-- Logout button stays at bottom; fixed height to avoid shifting -->
+
+            <!-- Flexible vertical space pushing logout to the bottom -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Logout button pinned at bottom -->
             <Button fx:id="btnLogout" maxWidth="Infinity" minHeight="44" onAction="#logout" style="-fx-background-color:#312e3f; -fx-text-fill:#fda4af; -fx-background-radius:10; -fx-cursor:hand; -fx-font-weight:bold;" text="Logout"/>
         </VBox>
     </left>
 
-    <!-- CENTER (unchanged) -->
+    <!-- CENTER CONTENT -->
     <center>
         <StackPane fx:id="contentPane">
             <ScrollPane fx:id="dashboardScrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background:#f6f8fc; -fx-border-color:transparent;">
@@ -75,11 +82,11 @@
                                 </HBox>
                             </VBox>
 
-                            <!-- ADMIN INFO WITH PHOTO -->
+                            <!-- ADMIN INFO WITH RESPONSIVE PHOTO -->
                             <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color:white; -fx-background-radius:14; -fx-padding:10 16; -fx-border-color:#e9edf5; -fx-border-radius:14; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),12,0,0,3);">
-                                <StackPane>
+                                <StackPane minHeight="38" minWidth="38" prefHeight="38" prefWidth="38">
                                     <Circle radius="19" fill="#eef2ff"/>
-                                    <ImageView fx:id="adminPhoto" fitWidth="38" fitHeight="38" preserveRatio="true">
+                                    <ImageView fx:id="adminPhoto" fitHeight="38" fitWidth="38" preserveRatio="false">
                                         <clip>
                                             <Circle radius="19" centerX="19" centerY="19"/>
                                         </clip>
@@ -87,12 +94,12 @@
                                 </StackPane>
                                 <VBox spacing="1">
                                     <Label style="-fx-text-fill:#94a3b8; -fx-font-size:9px; -fx-font-weight:bold;" text="ADMINISTRATOR"/>
-                                    <Label fx:id="lblAdminName" style="-fx-text-fill:#1e293b; -fx-font-size:13px; -fx-font-weight:bold;" text="Administrator"/>
+                                    <Label fx:id="lblAdminName" style="-fx-text-fill:#1e293b; -fx-font-size:13px; -fx-font-weight:bold;" text="Kaung Min Khant"/>
                                 </VBox>
                             </HBox>
                         </HBox>
 
-                        <!-- STAT CARDS (unchanged) -->
+                        <!-- STAT CARDS -->
                         <GridPane hgap="18">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="25"/>
@@ -143,7 +150,7 @@
                             <rowConstraints><RowConstraints/></rowConstraints>
                         </GridPane>
 
-                        <!-- ATTENDANCE + EXAM (unchanged) -->
+                        <!-- ATTENDANCE + EXAM -->
                         <GridPane hgap="20">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="50"/>
@@ -201,7 +208,7 @@
                             <rowConstraints><RowConstraints/></rowConstraints>
                         </GridPane>
 
-                        <!-- FINANCIAL STATEMENT (unchanged) -->
+                        <!-- FINANCIAL STATEMENT -->
                         <VBox spacing="16" style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:22; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);">
                             <HBox alignment="CENTER_LEFT" spacing="16">
                                 <VBox spacing="3" HBox.hgrow="ALWAYS">
