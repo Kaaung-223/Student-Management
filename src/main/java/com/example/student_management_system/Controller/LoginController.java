@@ -1,6 +1,7 @@
 package com.example.student_management_system.Controller;
 
 import com.example.student_management_system.Controller.Admin.AdminDashboardController;
+import com.example.student_management_system.Controller.Teacher.TeacherDashboardController;
 import com.example.student_management_system.Controller.DAO.DBConnention;
 
 import javafx.animation.KeyFrame;
@@ -112,28 +113,24 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-
         visiblePasswordField.textProperty()
-                .bindBidirectional(passwordField.textProperty());//A  value change B change
-                                                                 //B  value change A change
+                .bindBidirectional(passwordField.textProperty());
 
         visiblePasswordField.setVisible(false);
-        visiblePasswordField.setManaged(false);//do not space in layout
+        visiblePasswordField.setManaged(false);
 
         eyeIcon.setIconLiteral("fas-eye");
 
-        txtUsername.setOnAction(event -> loginWithButtonEffect());//enter key triggers login
+        txtUsername.setOnAction(event -> loginWithButtonEffect());
         passwordField.setOnAction(event -> loginWithButtonEffect());
         visiblePasswordField.setOnAction(event -> loginWithButtonEffect());
 
         btnLogin.setDefaultButton(true);
-
-        applyLoginButtonStyle(true);//Login button normal style
+        applyLoginButtonStyle(true);
     }
 
     @FXML
-    private void togglePassword() {//click on eye icon run this method
-
+    private void togglePassword() {
         showPassword = !showPassword;
 
         passwordField.setVisible(!showPassword);
@@ -149,16 +146,13 @@ public class LoginController {
 
     @FXML
     private void login(ActionEvent event) {
-
         if (loginInProgress) {
             return;
         }
-
         performLogin();
     }
 
     private void loginWithButtonEffect() {
-
         if (loginInProgress) {
             return;
         }
@@ -185,15 +179,11 @@ public class LoginController {
                 );
 
         pressEffect.setOnFinished(e -> {
-
             try {
-
                 if (!lockoutActive && !btnLogin.isDisabled()) {
                     applyLoginButtonStyle(true);
                 }
-
                 performLogin();
-
             } finally {
                 loginInProgress = false;
             }
@@ -203,12 +193,10 @@ public class LoginController {
     }
 
     private void performLogin() {
-
         if (lockoutActive || btnLogin.isDisabled()) {
             return;
         }
         String username = txtUsername.getText().trim();
-
         String password = showPassword
                 ? visiblePasswordField.getText()
                 : passwordField.getText();
@@ -229,7 +217,6 @@ public class LoginController {
                         "AND status = 'ACTIVE'";
 
         try (Connection con = DBConnention.getConnection()) {
-
             if (con == null) {
                 showErrorToast(
                         "CONNECTION ERROR",
@@ -240,29 +227,22 @@ public class LoginController {
             }
 
             try (PreparedStatement ps = con.prepareStatement(sql)) {
-
                 ps.setString(1, username);
                 ps.setString(2, password);
 
                 try (ResultSet rs = ps.executeQuery()) {
-
                     if (!rs.next()) {
                         handleFailedLogin();
                         return;
                     }
 
                     failedAttempts = 0;
-
                     String role = rs.getString("role");
 
                     if ("ADMIN".equalsIgnoreCase(role)) {
                         openAdminDashboard(username);
                     } else if ("TEACHER".equalsIgnoreCase(role)) {
-                        showErrorToast(
-                                "ACCESS LIMITED",
-                                "Coming soon",
-                                "Teacher login not ready."
-                        );
+                        openTeacherDashboard(username);
                     } else {
                         showErrorToast(
                                 "ACCESS DENIED",
@@ -272,11 +252,8 @@ public class LoginController {
                     }
                 }
             }
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
             showErrorToast(
                     "CONNECTION ERROR",
                     "Try again",
@@ -286,11 +263,8 @@ public class LoginController {
     }
 
     private void handleFailedLogin() {
-
         failedAttempts++;
-
-        int remaining =
-                MAX_FAILED_ATTEMPTS - failedAttempts;
+        int remaining = MAX_FAILED_ATTEMPTS - failedAttempts;
 
         if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
             startLockout();
@@ -310,10 +284,8 @@ public class LoginController {
     }
 
     private void startLockout() {
-
         lockoutActive = true;
         failedAttempts = 0;
-
         setLoginEnabled(false);
 
         showErrorToast(
@@ -328,20 +300,15 @@ public class LoginController {
         }
 
         final int[] secondsLeft = {LOCKOUT_SECONDS};
-
         updateLockoutButtonText(secondsLeft[0]);
 
         lockoutTimeline = new Timeline(
                 new KeyFrame(
                         Duration.seconds(1),
                         event -> {
-
                             secondsLeft[0]--;
-
                             if (secondsLeft[0] > 0) {
-                                updateLockoutButtonText(
-                                        secondsLeft[0]
-                                );
+                                updateLockoutButtonText(secondsLeft[0]);
                             } else {
                                 endLockout();
                             }
@@ -354,14 +321,11 @@ public class LoginController {
     }
 
     private void endLockout() {
-
         lockoutActive = false;
-
         if (lockoutTimeline != null) {
             lockoutTimeline.stop();
             lockoutTimeline = null;
         }
-
         setLoginEnabled(true);
         btnLogin.setText("SIGN IN");
     }
@@ -373,13 +337,11 @@ public class LoginController {
     }
 
     private void setLoginEnabled(boolean enabled) {
-
         btnLogin.setDisable(!enabled);
         applyLoginButtonStyle(enabled);
     }
 
     private void applyLoginButtonStyle(boolean enabled) {
-
         btnLogin.setStyle(
                 enabled
                         ? BTN_NORMAL_STYLE
@@ -406,7 +368,6 @@ public class LoginController {
             String message,
             int hideAfterSeconds
     ) {
-
         loginToastIconWrap.setStyle(
                 "-fx-background-color:#fee2e2;" +
                         "-fx-background-radius:19;"
@@ -453,9 +414,7 @@ public class LoginController {
     }
 
     private void openAdminDashboard(String username) {
-
         try {
-
             FXMLLoader loader =
                     new FXMLLoader(
                             getClass().getResource(
@@ -464,43 +423,58 @@ public class LoginController {
                     );
 
             Parent root = loader.load();
-
-            AdminDashboardController controller =
-                    loader.getController();
-
+            AdminDashboardController controller = loader.getController();
             controller.setLoggedInAdmin(username);
 
-            Stage stage =
-                    (Stage) txtUsername.getScene().getWindow();
+            Stage stage = (Stage) txtUsername.getScene().getWindow();
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
 
-            Rectangle2D bounds =
-                    Screen.getPrimary().getVisualBounds();
-
-            Scene scene =
-                    new Scene(
-                            root,
-                            bounds.getWidth(),
-                            bounds.getHeight()
-                    );
-
+            Scene scene = new Scene(root, bounds.getWidth(), bounds.getHeight());
             stage.setScene(scene);
-
             stage.setX(bounds.getMinX());
             stage.setY(bounds.getMinY());
-
             stage.setWidth(bounds.getWidth());
             stage.setHeight(bounds.getHeight());
-
             stage.setMaximized(true);
             stage.show();
 
         } catch (Exception e) {
-
             e.printStackTrace();
-
             showErrorToast(
                     "DASHBOARD ERROR",
-                    "Unable to open",
+                    "Unable to open admin dashboard",
+                    "Please try again."
+            );
+        }
+    }
+
+    private void openTeacherDashboard(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/student_management_system/View/Teacher/TeacherDashboard.fxml")
+            );
+            Parent root = loader.load();
+
+            TeacherDashboardController controller = loader.getController();
+            controller.setLoggedInTeacher(username);
+
+            Stage stage = (Stage) txtUsername.getScene().getWindow();
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+
+            Scene scene = new Scene(root, bounds.getWidth(), bounds.getHeight());
+            stage.setScene(scene);
+            stage.setX(bounds.getMinX());
+            stage.setY(bounds.getMinY());
+            stage.setWidth(bounds.getWidth());
+            stage.setHeight(bounds.getHeight());
+            stage.setMaximized(true);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorToast(
+                    "DASHBOARD ERROR",
+                    "Unable to open teacher dashboard",
                     "Please try again."
             );
         }
@@ -508,22 +482,18 @@ public class LoginController {
 
     @FXML
     private void handleLoginPress() {
-
         if (btnLogin.isDisabled() || lockoutActive) {
             return;
         }
-
         btnLogin.setStyle(BTN_PRESSED_STYLE);
     }
 
     @FXML
     private void handleLoginRelease() {
-
         if (btnLogin.isDisabled() || lockoutActive) {
             applyLoginButtonStyle(false);
             return;
         }
-
         applyLoginButtonStyle(true);
     }
 }
