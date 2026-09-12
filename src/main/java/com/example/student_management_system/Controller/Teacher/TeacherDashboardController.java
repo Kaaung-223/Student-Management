@@ -1,5 +1,8 @@
 package com.example.student_management_system.Controller.Teacher;
 
+import com.example.student_management_system.Controller.DAO.TeacherDashboardDAO;
+import com.example.student_management_system.Controller.Model.TeacherInfo;   // <-- fixed
+
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -19,8 +22,10 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class TeacherDashboardController implements Initializable {
@@ -44,88 +49,216 @@ public class TeacherDashboardController implements Initializable {
     // Stat cards
     @FXML private Label lblTotalStudents, lblTotalClasses, lblTotalSubjects, lblPendingLeave;
 
-    // Attendance section
+    // Attendance
     @FXML private ComboBox<String> cmbAttendancePeriod;
-    @FXML private ComboBox<String> cmbAttendanceClass;  // simple String combo
+    @FXML private ComboBox<String> cmbAttendanceClass;
     @FXML private PieChart attendancePieChart;
     @FXML private Label lblPresentCount, lblAbsentCount, lblLateCount;
 
-    // Exam section
+    // Exam
     @FXML private ComboBox<String> cmbExam;
     @FXML private PieChart examPieChart;
     @FXML private Label lblPassCount, lblFailCount;
 
-    // Performance chart
+    // Performance
     @FXML private ComboBox<String> cmbPerformanceExam;
     @FXML private BarChart<String, Number> performanceBarChart;
 
-    private String teacherUsername;
+    // DAO + session
+    private final TeacherDashboardDAO dao = new TeacherDashboardDAO();
+    private TeacherInfo teacherInfo;
     private PauseTransition welcomeTimer;
+    private Map<Integer, String> teacherClassMap;
 
-    // Button styles
     private static final String ACTIVE =
-            "-fx-background-color:#4f46e5;" +
-                    "-fx-background-radius:10;" +
-                    "-fx-text-fill:white;" +
-                    "-fx-font-size:13px;" +
-                    "-fx-font-weight:bold;" +
-                    "-fx-alignment:CENTER_LEFT;" +
-                    "-fx-padding:0 16;" +
-                    "-fx-cursor:hand;";
+            "-fx-background-color:#4f46e5; -fx-background-radius:10; -fx-text-fill:white;" +
+                    "-fx-font-size:13px; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT;" +
+                    "-fx-padding:0 16; -fx-cursor:hand;";
     private static final String NORMAL =
-            "-fx-background-color:transparent;" +
-                    "-fx-text-fill:#cbd5e1;" +
-                    "-fx-font-size:13px;" +
-                    "-fx-alignment:CENTER_LEFT;" +
-                    "-fx-padding:0 16;" +
-                    "-fx-cursor:hand;";
+            "-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px;" +
+                    "-fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Populate combo boxes with static dummy items
         cmbAttendancePeriod.setItems(FXCollections.observableArrayList(
-                "This Week", "This Month", "This Year", "All Time"
-        ));
+                "This Week", "This Month", "This Year", "All Time"));
         cmbAttendancePeriod.setValue("This Month");
 
-        cmbAttendanceClass.setItems(FXCollections.observableArrayList(
-                "All Classes", "Class 10A", "Class 10B", "Class 11A"
-        ));
+        cmbAttendanceClass.setItems(FXCollections.observableArrayList("All Classes"));
         cmbAttendanceClass.setValue("All Classes");
 
-        cmbExam.setItems(FXCollections.observableArrayList(
-                "All Exams", "Midterm 2026", "Final 2026", "Quarterly"
-        ));
+        cmbExam.setItems(FXCollections.observableArrayList("All Exams"));
         cmbExam.setValue("All Exams");
 
-        cmbPerformanceExam.setItems(FXCollections.observableArrayList(
-                "All Exams", "Midterm 2026", "Final 2026", "Quarterly"
-        ));
+        cmbPerformanceExam.setItems(FXCollections.observableArrayList("All Exams"));
         cmbPerformanceExam.setValue("All Exams");
 
-        // Set active button
+        cmbAttendancePeriod.setOnAction(e -> reloadAttendance());
+        cmbAttendanceClass .setOnAction(e -> reloadAttendance());
+        cmbExam            .setOnAction(e -> reloadExamStats());
+        cmbPerformanceExam .setOnAction(e -> reloadPerformance());
+
         setActiveButton(btnDashboard);
     }
 
-    /**
-     * Called from LoginController after login with the teacher's username.
-     */
+    /** Called from LoginController. */
     public void setLoggedInTeacher(String username) {
-        teacherUsername = username;
-        lblTeacherName.setText(username);  // or you can load full name from DB later
-        showWelcomeToast(username);
+        teacherInfo = dao.getTeacherByUsername(username);
+
+        if (teacherInfo != null) {
+            lblTeacherName.setText(teacherInfo.getDisplayName());
+            loadTeacherPhoto(teacherInfo.getPhotoPath());
+            loadTeacherCombos();
+            loadDashboardData();
+            showWelcomeToast(teacherInfo.getDisplayName());
+        } else {
+            lblTeacherName.setText(username);
+            loadDefaultPhoto();
+            showWelcomeToast(username);
+        }
+    }
+
+    private void loadTeacherPhoto(String photoPath) {
+        try {
+            if (photoPath != null && !photoPath.isBlank()) {
+                if (photoPath.startsWith("http")) {
+                    teacherPhoto.setImage(new Image(photoPath, true));
+                    return;
+                }
+                File f = new File(photoPath);
+                if (f.exists()) {
+                    teacherPhoto.setImage(new Image(f.toURI().toString()));
+                    return;
+                }
+            }
+        } catch (Exception ignored) {}
         loadDefaultPhoto();
-        loadDummyData();  // fill stats and charts with dummy numbers
     }
 
     private void loadDefaultPhoto() {
         try {
-            Image img = new Image(
-                    getClass().getResourceAsStream("/com/example/student_management_system/Images/default_avatar.png")
-            );
+            Image img = new Image(getClass().getResourceAsStream(
+                    "/com/example/student_management_system/Images/default_avatar.png"));
             teacherPhoto.setImage(img);
         } catch (Exception e) {
             teacherPhoto.setImage(null);
+        }
+    }
+
+    private void loadTeacherCombos() {
+        if (teacherInfo == null) return;
+
+        teacherClassMap = dao.getTeacherClassMap(teacherInfo.getTeacherId());
+
+        var classItems = FXCollections.observableArrayList("All Classes");
+        classItems.addAll(teacherClassMap.values());
+        cmbAttendanceClass.setItems(classItems);
+        cmbAttendanceClass.setValue("All Classes");
+
+        List<String> exams = dao.getTeacherExamNames(teacherInfo.getTeacherId());
+        var examItems = FXCollections.observableArrayList("All Exams");
+        examItems.addAll(exams);
+
+        cmbExam.setItems(FXCollections.observableArrayList(examItems));
+        cmbExam.setValue("All Exams");
+        cmbPerformanceExam.setItems(FXCollections.observableArrayList(examItems));
+        cmbPerformanceExam.setValue("All Exams");
+    }
+
+    private void loadDashboardData() {
+        if (teacherInfo == null) return;
+        int tid = teacherInfo.getTeacherId();
+
+        lblTotalStudents.setText(String.valueOf(dao.getTotalStudents(tid)));
+        lblTotalClasses .setText(String.valueOf(dao.getTotalClasses(tid)));
+        lblTotalSubjects.setText(String.valueOf(dao.getTotalSubjects(tid)));
+        lblPendingLeave .setText(String.valueOf(dao.getPendingLeaveCount(tid)));
+
+        reloadAttendance();
+        reloadExamStats();
+        reloadPerformance();
+    }
+
+    private void reloadAttendance() {
+        if (teacherInfo == null) return;
+
+        String period = cmbAttendancePeriod.getValue();
+        String cls    = cmbAttendanceClass.getValue();
+        Integer classId = null;
+        if (cls != null && !cls.equals("All Classes") && teacherClassMap != null) {
+            classId = teacherClassMap.entrySet().stream()
+                    .filter(e -> e.getValue().equals(cls))
+                    .map(Map.Entry::getKey).findFirst().orElse(null);
+        }
+
+        Map<String, Integer> stats = dao.getAttendanceStats(teacherInfo.getTeacherId(), period, classId);
+        int present = stats.getOrDefault("Present", 0);
+        int absent  = stats.getOrDefault("Absent", 0);
+        int late    = stats.getOrDefault("Late", 0);
+
+        if (present + absent + late == 0) {
+            attendancePieChart.setData(FXCollections.observableArrayList());
+        } else {
+            attendancePieChart.setData(FXCollections.observableArrayList(
+                    new PieChart.Data("Present", present),
+                    new PieChart.Data("Absent", absent),
+                    new PieChart.Data("Late", late)));
+            applyPieColor(attendancePieChart, "Present", "#16a34a");
+            applyPieColor(attendancePieChart, "Absent",  "#ef4444");
+            applyPieColor(attendancePieChart, "Late",    "#f59e0b");
+        }
+
+        lblPresentCount.setText(String.valueOf(present));
+        lblAbsentCount .setText(String.valueOf(absent));
+        lblLateCount   .setText(String.valueOf(late));
+    }
+
+    private void reloadExamStats() {
+        if (teacherInfo == null) return;
+        String examName = cmbExam.getValue();
+        Map<String, Integer> stats = dao.getExamStats(teacherInfo.getTeacherId(), examName);
+        int pass = stats.getOrDefault("PASS", 0);
+        int fail = stats.getOrDefault("FAIL", 0);
+
+        if (pass + fail == 0) {
+            examPieChart.setData(FXCollections.observableArrayList());
+        } else {
+            examPieChart.setData(FXCollections.observableArrayList(
+                    new PieChart.Data("Pass", pass),
+                    new PieChart.Data("Fail", fail)));
+            applyPieColor(examPieChart, "Pass", "#16a34a");
+            applyPieColor(examPieChart, "Fail", "#ef4444");
+        }
+
+        lblPassCount.setText(String.valueOf(pass));
+        lblFailCount.setText(String.valueOf(fail));
+    }
+
+    private void reloadPerformance() {
+        if (teacherInfo == null) return;
+        String examName = cmbPerformanceExam.getValue();
+        Map<String, Map<String, Double>> data =
+                dao.getPerformanceData(teacherInfo.getTeacherId(), examName);
+
+        performanceBarChart.getData().clear();
+        for (Map.Entry<String, Map<String, Double>> e : data.entrySet()) {
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName(e.getKey());
+            for (Map.Entry<String, Double> sub : e.getValue().entrySet()) {
+                series.getData().add(new XYChart.Data<>(sub.getKey(), sub.getValue()));
+            }
+            performanceBarChart.getData().add(series);
+        }
+    }
+
+    private void applyPieColor(PieChart chart, String name, String color) {
+        for (PieChart.Data d : chart.getData()) {
+            if (d.getName().equals(name)) {
+                d.nodeProperty().addListener((obs, o, n) -> {
+                    if (n != null) n.setStyle("-fx-pie-color:" + color + ";");
+                });
+                if (d.getNode() != null) d.getNode().setStyle("-fx-pie-color:" + color + ";");
+            }
         }
     }
 
@@ -138,6 +271,8 @@ public class TeacherDashboardController implements Initializable {
         welcomeToast.setMinHeight(125);
         welcomeToast.setMaxHeight(125);
 
+        lblToastTitle.setText("LOGIN SUCCESSFUL");
+        lblToastHeading.setText("Welcome back!");
         lblDashboardWelcome.setText("Welcome, " + name + ". You are signed in successfully.");
         welcomeToast.setManaged(true);
         welcomeToast.setVisible(true);
@@ -153,71 +288,19 @@ public class TeacherDashboardController implements Initializable {
 
     @FXML
     public void refreshDashboard(ActionEvent e) {
-        showDashboard();
         setActiveButton(btnDashboard);
-        loadDummyData();
-    }
-
-    private void loadDummyData() {
-        // Stat cards – dummy numbers
-        lblTotalStudents.setText("42");
-        lblTotalClasses.setText("3");
-        lblTotalSubjects.setText("5");
-        lblPendingLeave.setText("2");
-
-        // Attendance pie chart
-        attendancePieChart.setData(FXCollections.observableArrayList(
-                new PieChart.Data("Present", 28),
-                new PieChart.Data("Absent", 6),
-                new PieChart.Data("Late", 4)
-        ));
-        // Set colors manually
-        for (PieChart.Data d : attendancePieChart.getData()) {
-            if (d.getName().equals("Present")) d.getNode().setStyle("-fx-pie-color:#16a34a;");
-            else if (d.getName().equals("Absent")) d.getNode().setStyle("-fx-pie-color:#ef4444;");
-            else d.getNode().setStyle("-fx-pie-color:#f59e0b;");
-        }
-        lblPresentCount.setText("28");
-        lblAbsentCount.setText("6");
-        lblLateCount.setText("4");
-
-        // Exam pie chart
-        examPieChart.setData(FXCollections.observableArrayList(
-                new PieChart.Data("Pass", 34),
-                new PieChart.Data("Fail", 8)
-        ));
-        for (PieChart.Data d : examPieChart.getData()) {
-            if (d.getName().equals("Pass")) d.getNode().setStyle("-fx-pie-color:#16a34a;");
-            else d.getNode().setStyle("-fx-pie-color:#ef4444;");
-        }
-        lblPassCount.setText("34");
-        lblFailCount.setText("8");
-
-        // Performance bar chart – dummy data by class
-        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-        series1.setName("Class 10A");
-        series1.getData().add(new XYChart.Data<>("Math", 78.5));
-        series1.getData().add(new XYChart.Data<>("Science", 82.0));
-        series1.getData().add(new XYChart.Data<>("English", 74.3));
-
-        XYChart.Series<String, Number> series2 = new XYChart.Series<>();
-        series2.setName("Class 10B");
-        series2.getData().add(new XYChart.Data<>("Math", 65.2));
-        series2.getData().add(new XYChart.Data<>("Science", 70.8));
-        series2.getData().add(new XYChart.Data<>("English", 68.1));
-
-        performanceBarChart.getData().setAll(series1, series2);
+        dashboardScrollPane.setVisible(true);
+        teacherPane.setVisible(false);
+        teacherPane.getChildren().clear();
+        loadDashboardData();
     }
 
     private void setActiveButton(Button selected) {
         for (Button b : List.of(
                 btnDashboard, btnMyStudents, btnAttendance, btnExams,
                 btnResults, btnMySubjects, btnMyClasses, btnLeaveRequests,
-                btnAnnouncements, btnProfile
-        )) {
-            if (b != null) {
-                b.setStyle(b == selected ? ACTIVE : NORMAL);
-            }
+                btnAnnouncements, btnProfile)) {
+            if (b != null) b.setStyle(b == selected ? ACTIVE : NORMAL);
         }
     }
 
@@ -226,20 +309,39 @@ public class TeacherDashboardController implements Initializable {
         dashboardScrollPane.setVisible(true);
     }
 
-    // ---------- Navigation methods (empty stubs) ----------
-    @FXML public void openMyStudents(ActionEvent e) { /* later */ }
-    @FXML public void openAttendance(ActionEvent e) { /* later */ }
-    @FXML public void openExams(ActionEvent e) { /* later */ }
-    @FXML public void openResults(ActionEvent e) { /* later */ }
-    @FXML public void openMySubjects(ActionEvent e) { /* later */ }
-    @FXML public void openMyClasses(ActionEvent e) { /* later */ }
-    @FXML public void openLeaveRequests(ActionEvent e) { /* later */ }
-    @FXML public void openAnnouncements(ActionEvent e) { /* later */ }
-
     @FXML
-    public void openProfile(ActionEvent e) {
-        // You can load a profile view later
+    public void openMyStudents(ActionEvent e) {
+        setActiveButton(btnMyStudents);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Teacher/TeacherStudents.fxml"));
+            Parent view = loader.load();
+
+            TeacherStudentsController ctrl = loader.getController();
+            ctrl.setTeacherInfo(teacherInfo);
+
+            teacherPane.getChildren().setAll(view);
+            AnchorPane.setTopAnchor(view, 0.0);
+            AnchorPane.setBottomAnchor(view, 0.0);
+            AnchorPane.setLeftAnchor(view, 0.0);
+            AnchorPane.setRightAnchor(view, 0.0);
+
+            dashboardScrollPane.setVisible(false);
+            teacherPane.setVisible(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
+    @FXML public void openAttendance(ActionEvent e)   { }
+    @FXML public void openExams(ActionEvent e)        { }
+    @FXML public void openResults(ActionEvent e)      { }
+    @FXML public void openMySubjects(ActionEvent e)   { }
+    @FXML public void openMyClasses(ActionEvent e)    { }
+    @FXML public void openLeaveRequests(ActionEvent e){ }
+    @FXML public void openAnnouncements(ActionEvent e){ }
+    @FXML public void openProfile(ActionEvent e)      { }
 
     @FXML
     public void logout(ActionEvent e) {
@@ -255,10 +357,9 @@ public class TeacherDashboardController implements Initializable {
         }
         final Stage currentStage = stage;
 
-        // Show logout toast
-        if (lblToastTitle != null) lblToastTitle.setText("LOGOUT SUCCESS");
-        if (lblToastHeading != null) lblToastHeading.setText("Signed out");
-        if (lblDashboardWelcome != null) lblDashboardWelcome.setText("You have been logged out successfully.");
+        lblToastTitle.setText("LOGOUT SUCCESS");
+        lblToastHeading.setText("Signed out");
+        lblDashboardWelcome.setText("You have been logged out successfully.");
 
         welcomeToast.setManaged(true);
         welcomeToast.setVisible(true);
@@ -268,11 +369,9 @@ public class TeacherDashboardController implements Initializable {
         delay.setOnFinished(event -> {
             try {
                 FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/com/example/student_management_system/View/Login.fxml")
-                );
+                        getClass().getResource("/com/example/student_management_system/View/Login.fxml"));
                 Parent loginRoot = loader.load();
-                Scene scene = new Scene(loginRoot);
-                currentStage.setScene(scene);
+                currentStage.setScene(new Scene(loginRoot));
                 currentStage.setMaximized(true);
                 currentStage.show();
             } catch (Exception ex) {

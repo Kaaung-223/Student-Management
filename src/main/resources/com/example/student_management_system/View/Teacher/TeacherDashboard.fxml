@@ -21,15 +21,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane minHeight="650" minWidth="1000" style="-fx-background-color:#f6f8fc;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.student_management_system.Controller.Teacher.TeacherDashboardController">
+<BorderPane minHeight="650" minWidth="1000" style="-fx-background-color:#f6f8fc;"
+            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Teacher.TeacherDashboardController">
 
     <!-- LEFT SIDEBAR -->
     <left>
-        <VBox maxWidth="260" minWidth="235" prefWidth="250" style="-fx-background-color:linear-gradient(to bottom,#111827,#1e293b);">
+        <VBox maxWidth="260" minWidth="235" prefWidth="250"
+              style="-fx-background-color:linear-gradient(to bottom,#111827,#1e293b);">
             <padding><Insets bottom="20" left="16" right="16" top="25"/></padding>
 
             <HBox spacing="12" style="-fx-padding:0 4 25 4;">
-                <StackPane minHeight="43" minWidth="43" style="-fx-background-color:#4f46e5; -fx-background-radius:13; -fx-effect:dropshadow(gaussian,rgba(79,70,229,.35),12,0,0,3);">
+                <StackPane minHeight="43" minWidth="43"
+                           style="-fx-background-color:#4f46e5; -fx-background-radius:13; -fx-effect:dropshadow(gaussian,rgba(79,70,229,.35),12,0,0,3);">
                     <Label style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;" text="T"/>
                 </StackPane>
                 <VBox spacing="2">
@@ -41,28 +45,40 @@
             <Label style="-fx-text-fill:#64748b; -fx-font-size:10px; -fx-font-weight:bold; -fx-padding:2 8 8 8;" text="MAIN MENU"/>
 
             <VBox spacing="5">
-                <Button fx:id="btnDashboard" maxWidth="Infinity" minHeight="44" onAction="#refreshDashboard" style="-fx-background-color:#4f46e5; -fx-background-radius:10; -fx-text-fill:white; -fx-font-size:13px; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Dashboard"/>
-                <Button fx:id="btnMyStudents" maxWidth="Infinity" minHeight="44" onAction="#openMyStudents" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="My Students"/>
-                <Button fx:id="btnAttendance" maxWidth="Infinity" minHeight="44" onAction="#openAttendance" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Attendance"/>
-                <Button fx:id="btnExams" maxWidth="Infinity" minHeight="44" onAction="#openExams" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Exams"/>
-                <Button fx:id="btnResults" maxWidth="Infinity" minHeight="44" onAction="#openResults" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Results / Reports"/>
-                <Button fx:id="btnMySubjects" maxWidth="Infinity" minHeight="44" onAction="#openMySubjects" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="My Subjects"/>
-                <Button fx:id="btnMyClasses" maxWidth="Infinity" minHeight="44" onAction="#openMyClasses" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="My Classes"/>
-                <Button fx:id="btnLeaveRequests" maxWidth="Infinity" minHeight="44" onAction="#openLeaveRequests" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Leave Requests"/>
-                <Button fx:id="btnAnnouncements" maxWidth="Infinity" minHeight="44" onAction="#openAnnouncements" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Announcements"/>
-                <Button fx:id="btnProfile" maxWidth="Infinity" minHeight="44" onAction="#openProfile" style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Profile"/>
+                <Button fx:id="btnDashboard" maxWidth="Infinity" minHeight="44" onAction="#refreshDashboard"
+                        style="-fx-background-color:#4f46e5; -fx-background-radius:10; -fx-text-fill:white; -fx-font-size:13px; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Dashboard"/>
+                <Button fx:id="btnMyStudents" maxWidth="Infinity" minHeight="44" onAction="#openMyStudents"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="My Students"/>
+                <Button fx:id="btnAttendance" maxWidth="Infinity" minHeight="44" onAction="#openAttendance"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Attendance"/>
+                <Button fx:id="btnExams" maxWidth="Infinity" minHeight="44" onAction="#openExams"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Exams"/>
+                <Button fx:id="btnResults" maxWidth="Infinity" minHeight="44" onAction="#openResults"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Results / Reports"/>
+                <Button fx:id="btnMySubjects" maxWidth="Infinity" minHeight="44" onAction="#openMySubjects"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="My Subjects"/>
+                <Button fx:id="btnMyClasses" maxWidth="Infinity" minHeight="44" onAction="#openMyClasses"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="My Classes"/>
+                <Button fx:id="btnLeaveRequests" maxWidth="Infinity" minHeight="44" onAction="#openLeaveRequests"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Leave Requests"/>
+                <Button fx:id="btnAnnouncements" maxWidth="Infinity" minHeight="44" onAction="#openAnnouncements"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Announcements"/>
+                <Button fx:id="btnProfile" maxWidth="Infinity" minHeight="44" onAction="#openProfile"
+                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Profile"/>
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <Button fx:id="btnLogout" maxWidth="Infinity" minHeight="44" onAction="#logout" style="-fx-background-color:#312e3f; -fx-text-fill:#fda4af; -fx-background-radius:10; -fx-cursor:hand; -fx-font-weight:bold;" text="Logout"/>
+            <Button fx:id="btnLogout" maxWidth="Infinity" minHeight="44" onAction="#logout"
+                    style="-fx-background-color:#312e3f; -fx-text-fill:#fda4af; -fx-background-radius:10; -fx-cursor:hand; -fx-font-weight:bold;" text="Logout"/>
         </VBox>
     </left>
 
     <!-- CENTER CONTENT -->
     <center>
         <StackPane fx:id="contentPane">
-            <ScrollPane fx:id="dashboardScrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background:#f6f8fc; -fx-border-color:transparent;">
+            <ScrollPane fx:id="dashboardScrollPane" fitToWidth="true" hbarPolicy="NEVER"
+                        style="-fx-background:#f6f8fc; -fx-border-color:transparent;">
                 <content>
                     <VBox spacing="24" style="-fx-background-color:#f6f8fc;">
                         <padding><Insets bottom="35" left="34" right="34" top="30"/></padding>
@@ -71,7 +87,8 @@
                         <HBox alignment="CENTER_LEFT" spacing="16">
                             <VBox spacing="6" HBox.hgrow="ALWAYS">
                                 <HBox alignment="CENTER_LEFT" spacing="12">
-                                    <Region minHeight="34" minWidth="6" style="-fx-background-color:linear-gradient(to bottom,#4f46e5,#6366f1); -fx-background-radius:8;"/>
+                                    <Region minHeight="34" minWidth="6"
+                                            style="-fx-background-color:linear-gradient(to bottom,#4f46e5,#6366f1); -fx-background-radius:8;"/>
                                     <VBox spacing="3">
                                         <Label style="-fx-text-fill:#0f172a; -fx-font-size:30px; -fx-font-weight:bold;" text="Dashboard"/>
                                         <Label style="-fx-text-fill:#64748b; -fx-font-size:13px;" text="Overview of your students, attendance, exams, and more"/>
@@ -79,7 +96,8 @@
                                 </HBox>
                             </VBox>
 
-                            <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color:white; -fx-background-radius:14; -fx-padding:10 16; -fx-border-color:#e9edf5; -fx-border-radius:14; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),12,0,0,3);">
+                            <HBox alignment="CENTER_LEFT" spacing="12"
+                                  style="-fx-background-color:white; -fx-background-radius:14; -fx-padding:10 16; -fx-border-color:#e9edf5; -fx-border-radius:14; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),12,0,0,3);">
                                 <StackPane minHeight="38" minWidth="38" prefHeight="38" prefWidth="38">
                                     <Circle radius="19" fill="#eef2ff"/>
                                     <ImageView fx:id="teacherPhoto" fitHeight="38" fitWidth="38" preserveRatio="false">
@@ -101,7 +119,10 @@
                                 <ColumnConstraints percentWidth="25"/>
                                 <ColumnConstraints percentWidth="25"/>
                             </columnConstraints>
-                            <VBox spacing="12" style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:18; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);" GridPane.columnIndex="0">
+
+                            <VBox spacing="12"
+                                  style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:18; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);"
+                                  GridPane.columnIndex="0">
                                 <HBox alignment="CENTER_LEFT" spacing="12">
                                     <StackPane minHeight="40" minWidth="40" style="-fx-background-color:#eef2ff; -fx-background-radius:12;">
                                         <Label style="-fx-text-fill:#6366f1; -fx-font-size:14px; -fx-font-weight:bold;" text="ST"/>
@@ -111,7 +132,10 @@
                                 <Label fx:id="lblTotalStudents" style="-fx-text-fill:#0f172a; -fx-font-size:30px; -fx-font-weight:bold;" text="0"/>
                                 <Region minHeight="4" style="-fx-background-color:linear-gradient(to right,#6366f1,#a5b4fc); -fx-background-radius:4;"/>
                             </VBox>
-                            <VBox spacing="12" style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:18; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);" GridPane.columnIndex="1">
+
+                            <VBox spacing="12"
+                                  style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:18; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);"
+                                  GridPane.columnIndex="1">
                                 <HBox alignment="CENTER_LEFT" spacing="12">
                                     <StackPane minHeight="40" minWidth="40" style="-fx-background-color:#ecfeff; -fx-background-radius:12;">
                                         <Label style="-fx-text-fill:#0891b2; -fx-font-size:14px; -fx-font-weight:bold;" text="CL"/>
@@ -121,7 +145,10 @@
                                 <Label fx:id="lblTotalClasses" style="-fx-text-fill:#0f172a; -fx-font-size:30px; -fx-font-weight:bold;" text="0"/>
                                 <Region minHeight="4" style="-fx-background-color:linear-gradient(to right,#0891b2,#67e8f9); -fx-background-radius:4;"/>
                             </VBox>
-                            <VBox spacing="12" style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:18; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);" GridPane.columnIndex="2">
+
+                            <VBox spacing="12"
+                                  style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:18; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);"
+                                  GridPane.columnIndex="2">
                                 <HBox alignment="CENTER_LEFT" spacing="12">
                                     <StackPane minHeight="40" minWidth="40" style="-fx-background-color:#f0fdf4; -fx-background-radius:12;">
                                         <Label style="-fx-text-fill:#16a34a; -fx-font-size:14px; -fx-font-weight:bold;" text="SB"/>
@@ -131,7 +158,10 @@
                                 <Label fx:id="lblTotalSubjects" style="-fx-text-fill:#0f172a; -fx-font-size:30px; -fx-font-weight:bold;" text="0"/>
                                 <Region minHeight="4" style="-fx-background-color:linear-gradient(to right,#16a34a,#86efac); -fx-background-radius:4;"/>
                             </VBox>
-                            <VBox spacing="12" style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:18; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);" GridPane.columnIndex="3">
+
+                            <VBox spacing="12"
+                                  style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:18; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);"
+                                  GridPane.columnIndex="3">
                                 <HBox alignment="CENTER_LEFT" spacing="12">
                                     <StackPane minHeight="40" minWidth="40" style="-fx-background-color:#fff7ed; -fx-background-radius:12;">
                                         <Label style="-fx-text-fill:#ea580c; -fx-font-size:14px; -fx-font-weight:bold;" text="LR"/>
@@ -141,6 +171,7 @@
                                 <Label fx:id="lblPendingLeave" style="-fx-text-fill:#0f172a; -fx-font-size:30px; -fx-font-weight:bold;" text="0"/>
                                 <Region minHeight="4" style="-fx-background-color:linear-gradient(to right,#ea580c,#fdba74); -fx-background-radius:4;"/>
                             </VBox>
+
                             <rowConstraints><RowConstraints/></rowConstraints>
                         </GridPane>
 
@@ -150,7 +181,10 @@
                                 <ColumnConstraints percentWidth="50"/>
                                 <ColumnConstraints percentWidth="50"/>
                             </columnConstraints>
-                            <VBox spacing="14" style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:22; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);" GridPane.columnIndex="0">
+
+                            <VBox spacing="14"
+                                  style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:22; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);"
+                                  GridPane.columnIndex="0">
                                 <HBox alignment="CENTER_LEFT">
                                     <VBox spacing="3" HBox.hgrow="ALWAYS">
                                         <Label style="-fx-text-fill:#0f172a; -fx-font-size:18px; -fx-font-weight:bold;" text="Attendance Overview"/>
@@ -178,7 +212,10 @@
                                     </VBox>
                                 </HBox>
                             </VBox>
-                            <VBox spacing="14" style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:22; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);" GridPane.columnIndex="1">
+
+                            <VBox spacing="14"
+                                  style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:22; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);"
+                                  GridPane.columnIndex="1">
                                 <HBox alignment="CENTER_LEFT">
                                     <VBox spacing="3" HBox.hgrow="ALWAYS">
                                         <Label style="-fx-text-fill:#0f172a; -fx-font-size:18px; -fx-font-weight:bold;" text="Exam Results"/>
@@ -199,20 +236,22 @@
                                     </VBox>
                                 </HBox>
                             </VBox>
+
                             <rowConstraints><RowConstraints/></rowConstraints>
                         </GridPane>
 
                         <!-- CLASS PERFORMANCE BAR CHART -->
-                        <VBox spacing="16" style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:22; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);">
+                        <VBox spacing="16"
+                              style="-fx-background-color:white; -fx-background-radius:18; -fx-padding:22; -fx-border-color:#e9edf5; -fx-border-radius:18; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.05),14,0,0,3);">
                             <HBox alignment="CENTER_LEFT" spacing="16">
                                 <VBox spacing="3" HBox.hgrow="ALWAYS">
                                     <Label style="-fx-text-fill:#0f172a; -fx-font-size:18px; -fx-font-weight:bold;" text="Class Performance"/>
-                                    <Label style="-fx-text-fill:#94a3b8; -fx-font-size:11px;" text="Average marks per class for selected exam"/>
+                                    <Label style="-fx-text-fill:#94a3b8; -fx-font-size:11px;" text="Average marks per subject for each class (filtered by exam)"/>
                                 </VBox>
                                 <ComboBox fx:id="cmbPerformanceExam" prefHeight="38" prefWidth="210" promptText="Select Exam"/>
                             </HBox>
                             <BarChart fx:id="performanceBarChart" animated="false" legendVisible="true" minHeight="260" prefHeight="280">
-                                <xAxis><CategoryAxis label="Class"/></xAxis>
+                                <xAxis><CategoryAxis label="Subject"/></xAxis>
                                 <yAxis><NumberAxis label="Average Marks"/></yAxis>
                             </BarChart>
                         </VBox>
@@ -222,7 +261,10 @@
             </ScrollPane>
 
             <AnchorPane fx:id="teacherPane" visible="false"/>
-            <VBox fx:id="welcomeToast" managed="false" maxWidth="420" prefWidth="420" spacing="8" style="-fx-background-color:white; -fx-background-radius:15; -fx-padding:15 17 15 15; -fx-border-color:#e2e8f0; -fx-border-radius:15; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);" translateX="-24" translateY="24" visible="false" StackPane.alignment="TOP_RIGHT">
+
+            <VBox fx:id="welcomeToast" managed="false" maxWidth="420" prefWidth="420" spacing="8"
+                  style="-fx-background-color:white; -fx-background-radius:15; -fx-padding:15 17 15 15; -fx-border-color:#e2e8f0; -fx-border-radius:15; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);"
+                  translateX="-24" translateY="24" visible="false" StackPane.alignment="TOP_RIGHT">
                 <HBox alignment="CENTER_LEFT" spacing="12">
                     <StackPane minHeight="38" minWidth="38" style="-fx-background-color:#dcfce7; -fx-background-radius:19;">
                         <Label style="-fx-text-fill:#16a34a; -fx-font-size:17px; -fx-font-weight:bold;" text="✓"/>
