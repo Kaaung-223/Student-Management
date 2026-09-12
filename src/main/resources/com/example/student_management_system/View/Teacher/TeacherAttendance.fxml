@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.student_management_system.Controller.Teacher.TeacherAttendanceController"
+           style="-fx-background-color:#f6f8fc;">
+
+    <AnchorPane>
+        <VBox spacing="20"
+              AnchorPane.topAnchor="0"
+              AnchorPane.rightAnchor="0"
+              AnchorPane.bottomAnchor="0"
+              AnchorPane.leftAnchor="0">
+
+            <padding>
+                <Insets top="28" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- HEADER -->
+            <HBox alignment="CENTER_LEFT">
+                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="Attendance"
+                           style="-fx-text-fill:#0f172a;-fx-font-size:28px;-fx-font-weight:bold;"/>
+                    <Label text="Mark attendance for your classes by date."
+                           style="-fx-text-fill:#64748b;-fx-font-size:13px;"/>
+                </VBox>
+                <Label fx:id="lblStudentCount"
+                       text="0 students"
+                       style="-fx-text-fill:#4f46e5;-fx-background-color:#eef2ff;-fx-background-radius:12;-fx-padding:8 12;-fx-font-size:11px;-fx-font-weight:bold;"/>
+            </HBox>
+
+            <!-- FILTER BAR -->
+            <HBox alignment="CENTER_LEFT"
+                  spacing="14"
+                  style="-fx-background-color:white;-fx-background-radius:16;-fx-padding:16;-fx-border-color:#e8edf5;-fx-border-radius:16;">
+
+                <VBox spacing="5">
+                    <Label text="BATCH"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                    <ComboBox fx:id="cmbBatch"
+                              prefWidth="230"
+                              prefHeight="38"
+                              promptText="All Batches"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="DATE"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                    <DatePicker fx:id="dpDate"
+                                prefWidth="180"
+                                prefHeight="38"
+                                promptText="Pick a date"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text=" " style="-fx-font-size:10px;"/>
+                    <Button onAction="#loadStudents"
+                            minHeight="38"
+                            style="-fx-background-color:#4f46e5;-fx-text-fill:white;-fx-background-radius:9;-fx-font-size:11px;-fx-font-weight:bold;-fx-padding:0 18;"
+                            text="Load"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text=" " style="-fx-font-size:10px;"/>
+                    <Button onAction="#markAllPresent"
+                            minHeight="38"
+                            style="-fx-background-color:#eef2ff;-fx-text-fill:#4f46e5;-fx-background-radius:9;-fx-font-size:11px;-fx-font-weight:bold;-fx-padding:0 18;"
+                            text="Mark All Present"/>
+                </VBox>
+            </HBox>
+
+            <!-- MAIN -->
+            <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+                <!-- ATTENDANCE TABLE -->
+                <VBox spacing="14"
+                      style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:20;-fx-border-color:#e8edf5;-fx-border-radius:18;"
+                      HBox.hgrow="ALWAYS">
+
+                    <VBox spacing="3">
+                        <Label text="Student List"
+                               style="-fx-text-fill:#0f172a;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                        <Label text="Select a status for each student. Leave blank to skip."
+                               style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                    </VBox>
+
+                    <TableView fx:id="attendanceTable"
+                               prefHeight="520"
+                               VBox.vgrow="ALWAYS"
+                               style="-fx-background-color:white;-fx-border-color:#e2e8f0;-fx-border-radius:10;-fx-background-radius:10;">
+                        <columns>
+                            <TableColumn fx:id="colCode"    prefWidth="90"  text="Code"/>
+                            <TableColumn fx:id="colName"    prefWidth="180" text="Student"/>
+                            <TableColumn fx:id="colStatus"  prefWidth="140" text="Status"/>
+                            <TableColumn fx:id="colRemarks" prefWidth="260" text="Remarks"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <!-- SUMMARY PANEL -->
+                <VBox minWidth="280"
+                      prefWidth="300"
+                      spacing="16"
+                      style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:22;-fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                    <VBox spacing="3">
+                        <Label text="Summary"
+                               style="-fx-text-fill:#0f172a;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                        <Label text="Based on current selection"
+                               style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                    </VBox>
+
+                    <GridPane hgap="10" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0"
+                              style="-fx-background-color:#ecfdf5;-fx-background-radius:11;-fx-padding:14;">
+                            <Label text="PRESENT"
+                                   style="-fx-text-fill:#059669;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblPresentCount" text="0"
+                                   style="-fx-text-fill:#065f46;-fx-font-size:24px;-fx-font-weight:bold;"/>
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0"
+                              style="-fx-background-color:#fff1f2;-fx-background-radius:11;-fx-padding:14;">
+                            <Label text="ABSENT"
+                                   style="-fx-text-fill:#e11d48;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblAbsentCount" text="0"
+                                   style="-fx-text-fill:#9f1239;-fx-font-size:24px;-fx-font-weight:bold;"/>
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="1"
+                              style="-fx-background-color:#fffbeb;-fx-background-radius:11;-fx-padding:14;">
+                            <Label text="LATE"
+                                   style="-fx-text-fill:#d97706;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblLateCount" text="0"
+                                   style="-fx-text-fill:#92400e;-fx-font-size:24px;-fx-font-weight:bold;"/>
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"
+                              style="-fx-background-color:#f1f5f9;-fx-background-radius:11;-fx-padding:14;">
+                            <Label text="UNMARKED"
+                                   style="-fx-text-fill:#64748b;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblUnmarkedCount" text="0"
+                                   style="-fx-text-fill:#334155;-fx-font-size:24px;-fx-font-weight:bold;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <Button onAction="#saveAttendance"
+                            prefHeight="42"
+                            maxWidth="Infinity"
+                            style="-fx-background-color:#4f46e5;-fx-text-fill:white;-fx-background-radius:10;-fx-font-size:12px;-fx-font-weight:bold;-fx-cursor:hand;"
+                            text="Save Attendance"/>
+                </VBox>
+            </HBox>
+
+        </VBox>
+    </AnchorPane>
+
+    <!-- ============================= TOAST ============================= -->
+    <VBox fx:id="attendanceToast"
+          managed="false"
+          visible="false"
+          maxWidth="420" prefWidth="420"
+          spacing="8"
+          translateX="-24" translateY="24"
+          StackPane.alignment="TOP_RIGHT"
+          style="-fx-background-color:white; -fx-background-radius:15; -fx-padding:15 17 15 15;
+                 -fx-border-color:#e2e8f0; -fx-border-radius:15;
+                 -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);">
+
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <StackPane styleClass="toast-icon"
+                       minHeight="38" minWidth="38"
+                       style="-fx-background-color:#dcfce7; -fx-background-radius:19;">
+                <Label styleClass="toast-icon-label"
+                       text="✓"
+                       style="-fx-text-fill:#16a34a; -fx-font-size:17px; -fx-font-weight:bold;"/>
+            </StackPane>
+
+            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblToastTitle"
+                       text="SAVE SUCCESSFUL"
+                       style="-fx-text-fill:#64748b;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                <Label fx:id="lblToastHeading"
+                       text="Attendance saved"
+                       style="-fx-text-fill:#0f172a;-fx-font-size:14px;-fx-font-weight:bold;"/>
+                <Label fx:id="lblToastMessage"
+                       text="Saved successfully."
+                       wrapText="true"
+                       style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+            </VBox>
+        </HBox>
+
+        <Region styleClass="toast-bar"
+                maxHeight="3" minHeight="3"
+                style="-fx-background-color:#22c55e; -fx-background-radius:3;"/>
+    </VBox>
+
+</StackPane>

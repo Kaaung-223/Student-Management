@@ -1,5 +1,5 @@
 <DataSourcesHistory>
-  <DataSourceFromHistory isRemovedFromProject="false">
+  <DataSourceFromHistory isRemovedFromProject="true">
     <data-source source="LOCAL" name="MySql" uuid="f14aafee-95de-4160-8ee8-48474df4cbab">
       <database-info product="MySQL" version="8.0.44" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-9.7.0 (Revision: 0aade1f13bcc98faf7dda5c02e782481eb291f62)" dbms="MYSQL" exact-version="8.0.44" exact-driver-version="9.7">
         <extra-name-characters>$</extra-name-characters>
