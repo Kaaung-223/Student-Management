@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Teacher.TeacherResultsController"
+            style="-fx-background-color:#f6f8fc;">
+
+    <VBox spacing="20"
+          AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
+          AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
+        <padding><Insets top="28" right="30" bottom="30" left="30"/></padding>
+
+        <!-- HEADER -->
+        <HBox alignment="CENTER_LEFT">
+            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                <Label text="Results &amp; Reports"
+                       style="-fx-text-fill:#0f172a;-fx-font-size:28px;-fx-font-weight:bold;"/>
+                <Label text="Review exam results and performance for your students."
+                       style="-fx-text-fill:#64748b;-fx-font-size:13px;"/>
+            </VBox>
+            <Label fx:id="lblStudentCount" text="0 students"
+                   style="-fx-text-fill:#4f46e5;-fx-background-color:#eef2ff;-fx-background-radius:12;-fx-padding:8 12;-fx-font-size:11px;-fx-font-weight:bold;"/>
+        </HBox>
+
+        <!-- FILTER BAR -->
+        <HBox alignment="CENTER_LEFT" spacing="14"
+              style="-fx-background-color:white;-fx-background-radius:16;-fx-padding:16;-fx-border-color:#e8edf5;-fx-border-radius:16;">
+
+            <VBox spacing="5">
+                <Label text="EXAM"
+                       style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                <ComboBox fx:id="cmbExam" prefWidth="220" prefHeight="38" promptText="All Exams"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="BATCH"
+                       style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                <ComboBox fx:id="cmbBatch" prefWidth="220" prefHeight="38" promptText="All Batches"/>
+            </VBox>
+
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="SEARCH"
+                       style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                <TextField fx:id="txtSearch" prefHeight="38"
+                           promptText="Search by student name or code"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text=" " style="-fx-font-size:10px;"/>
+                <Button onAction="#refresh" minHeight="38"
+                        style="-fx-background-color:#4f46e5;-fx-text-fill:white;-fx-background-radius:9;-fx-font-size:11px;-fx-font-weight:bold;-fx-padding:0 18;"
+                        text="Refresh"/>
+            </VBox>
+        </HBox>
+
+        <!-- MAIN -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+            <!-- LEFT -->
+            <VBox spacing="14"
+                  style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:20;-fx-border-color:#e8edf5;-fx-border-radius:18;"
+                  HBox.hgrow="ALWAYS">
+
+                <VBox spacing="3">
+                    <Label text="Student Results"
+                           style="-fx-text-fill:#0f172a;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                    <Label text="Select a student to view their subject marks."
+                           style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                </VBox>
+
+                <TableView fx:id="resultTable" prefHeight="520" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color:white;-fx-border-color:#e2e8f0;-fx-border-radius:10;-fx-background-radius:10;">
+                    <columns>
+                        <TableColumn fx:id="colCode"     prefWidth="85"  text="Code"/>
+                        <TableColumn fx:id="colName"     prefWidth="150" text="Student"/>
+                        <TableColumn fx:id="colBatch"    prefWidth="140" text="Batch"/>
+                        <TableColumn fx:id="colSubjects" prefWidth="70"  text="Subj"/>
+                        <TableColumn fx:id="colAvg"      prefWidth="80"  text="Avg Percent"/>
+                        <TableColumn fx:id="colGpa"      prefWidth="70"  text="GPA"/>
+                        <TableColumn fx:id="colResult"   prefWidth="80"  text="Result"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- RIGHT -->
+            <VBox minWidth="360" prefWidth="400" spacing="16">
+
+                <VBox spacing="14"
+                      style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:22;-fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                    <HBox alignment="CENTER_LEFT" spacing="14">
+                        <StackPane minHeight="58" minWidth="58"
+                                   style="-fx-background-color:#e0e7ff;-fx-background-radius:29;">
+                            <Label fx:id="lblAvatar" text="--"
+                                   style="-fx-text-fill:#4f46e5;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                        </StackPane>
+                        <VBox spacing="3">
+                            <Label fx:id="lblStudentName" text="No student selected"
+                                   style="-fx-text-fill:#0f172a;-fx-font-size:17px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblStudentCode" text="Select a row to view details"
+                                   style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+
+                    <Label fx:id="lblBatch" text="Batch: --"
+                           style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+
+                    <Region minHeight="1" style="-fx-background-color:#eef2ff;"/>
+
+                    <Label text="OVERALL SUMMARY"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <GridPane hgap="10" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0"
+                              style="-fx-background-color:#eef2ff;-fx-background-radius:11;-fx-padding:12;">
+                            <Label text="STUDENTS"
+                                   style="-fx-text-fill:#4f46e5;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblTotalStudents" text="0"
+                                   style="-fx-text-fill:#312e81;-fx-font-size:20px;-fx-font-weight:bold;"/>
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0"
+                              style="-fx-background-color:#ecfdf5;-fx-background-radius:11;-fx-padding:12;">
+                            <Label text="PASS"
+                                   style="-fx-text-fill:#059669;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblTotalPass" text="0"
+                                   style="-fx-text-fill:#065f46;-fx-font-size:20px;-fx-font-weight:bold;"/>
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="1"
+                              style="-fx-background-color:#fff1f2;-fx-background-radius:11;-fx-padding:12;">
+                            <Label text="FAIL"
+                                   style="-fx-text-fill:#e11d48;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblTotalFail" text="0"
+                                   style="-fx-text-fill:#9f1239;-fx-font-size:20px;-fx-font-weight:bold;"/>
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"
+                              style="-fx-background-color:#fffbeb;-fx-background-radius:11;-fx-padding:12;">
+                            <Label text="PASS RATE"
+                                   style="-fx-text-fill:#d97706;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblPassRate" text="0.0 percent"
+                                   style="-fx-text-fill:#92400e;-fx-font-size:20px;-fx-font-weight:bold;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <HBox spacing="12">
+                        <VBox HBox.hgrow="ALWAYS"
+                              style="-fx-background-color:#ecfdf5;-fx-background-radius:11;-fx-padding:12;">
+                            <Label text="AVG GPA"
+                                   style="-fx-text-fill:#059669;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblAvgGpa" text="0.00"
+                                   style="-fx-text-fill:#065f46;-fx-font-size:20px;-fx-font-weight:bold;"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS"
+                              style="-fx-background-color:#eef2ff;-fx-background-radius:11;-fx-padding:12;">
+                            <Label text="AVG PERCENT"
+                                   style="-fx-text-fill:#4f46e5;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblAvgPercent" text="0.0 percent"
+                                   style="-fx-text-fill:#312e81;-fx-font-size:20px;-fx-font-weight:bold;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <VBox spacing="10" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:20;-fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                    <Label text="SUBJECT MARKS"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <TableView fx:id="subjectTable" prefHeight="240" VBox.vgrow="ALWAYS"
+                               style="-fx-background-color:white;-fx-border-color:#e2e8f0;-fx-border-radius:10;-fx-background-radius:10;">
+                        <columns>
+                            <TableColumn fx:id="colSubject"    prefWidth="130" text="Subject"/>
+                            <TableColumn fx:id="colMarks"      prefWidth="70"  text="Marks"/>
+                            <TableColumn fx:id="colPercent"    prefWidth="70"  text="Percent"/>
+                            <TableColumn fx:id="colGrade"      prefWidth="60"  text="Grade"/>
+                            <TableColumn fx:id="colMarkResult" prefWidth="70"  text="Result"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </HBox>
+    </VBox>
+</AnchorPane>

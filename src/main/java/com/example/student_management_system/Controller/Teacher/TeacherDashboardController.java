@@ -384,7 +384,31 @@ public class TeacherDashboardController implements Initializable {
             ex.printStackTrace();
         }
     }
-    @FXML public void openResults(ActionEvent e)      { }
+    @FXML
+    public void openResults(ActionEvent e) {
+        setActiveButton(btnResults);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/Teacher/TeacherResult.fxml"));
+            Parent view = loader.load();
+
+            TeacherResultsController ctrl = loader.getController();
+            ctrl.setTeacherInfo(teacherInfo);
+
+            teacherPane.getChildren().setAll(view);
+            AnchorPane.setTopAnchor(view, 0.0);
+            AnchorPane.setBottomAnchor(view, 0.0);
+            AnchorPane.setLeftAnchor(view, 0.0);
+            AnchorPane.setRightAnchor(view, 0.0);
+
+            dashboardScrollPane.setVisible(false);
+            teacherPane.setVisible(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     @FXML public void openMySubjects(ActionEvent e)   { }
     @FXML public void openMyClasses(ActionEvent e)    { }
     @FXML public void openLeaveRequests(ActionEvent e){ }
