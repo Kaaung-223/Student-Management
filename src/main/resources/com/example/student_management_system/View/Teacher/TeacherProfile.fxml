@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.student_management_system.Controller.Teacher.TeacherProfileController"
+           style="-fx-background-color:#f6f8fc;">
+
+    <AnchorPane>
+        <VBox spacing="20"
+              AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
+              AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
+            <padding><Insets top="28" right="30" bottom="30" left="30"/></padding>
+
+            <!-- HEADER -->
+            <HBox alignment="CENTER_LEFT">
+                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="My Profile"
+                           style="-fx-text-fill:#0f172a;-fx-font-size:28px;-fx-font-weight:bold;"/>
+                    <Label text="Manage your account details and password."
+                           style="-fx-text-fill:#64748b;-fx-font-size:13px;"/>
+                </VBox>
+            </HBox>
+
+            <!-- MAIN -->
+            <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+                <!-- LEFT: profile summary -->
+                <VBox prefWidth="330" minWidth="300" spacing="16"
+                      style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:22;
+                             -fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                    <StackPane minHeight="110" minWidth="110" maxHeight="110" maxWidth="110"
+                               style="-fx-background-color:#eef2ff;-fx-background-radius:55;">
+                        <ImageView fx:id="profilePhoto" fitHeight="110" fitWidth="110" preserveRatio="false">
+                            <clip><Circle radius="55" centerX="55" centerY="55"/></clip>
+                        </ImageView>
+                    </StackPane>
+
+                    <VBox spacing="4" alignment="CENTER">
+                        <Label fx:id="lblDisplayName" text="Teacher"
+                               style="-fx-text-fill:#0f172a;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                        <Label fx:id="lblTeacherCode" text="Code: --"
+                               style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+                        <Label fx:id="lblRole" text="Teacher"
+                               style="-fx-text-fill:#4f46e5;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                    </VBox>
+
+                    <Region minHeight="1" style="-fx-background-color:#eef2ff;"/>
+
+                    <Label fx:id="lblEmail" text="Email: --"
+                           wrapText="true"
+                           style="-fx-text-fill:#334155;-fx-font-size:12px;"/>
+                    <Label fx:id="lblPhone" text="Phone: --"
+                           style="-fx-text-fill:#334155;-fx-font-size:12px;"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <!-- RIGHT: forms -->
+                <VBox spacing="20" HBox.hgrow="ALWAYS">
+
+                    <!-- Update Name card -->
+                    <VBox spacing="14"
+                          style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:22;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                        <VBox spacing="3">
+                            <Label text="Account Name"
+                                   style="-fx-text-fill:#0f172a;-fx-font-size:16px;-fx-font-weight:bold;"/>
+                            <Label text="Change the name shown on your dashboard."
+                                   style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                        </VBox>
+
+                        <HBox spacing="12" alignment="BOTTOM_LEFT">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="FULL NAME"
+                                       style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                                <TextField fx:id="txtFullName" prefHeight="38"
+                                           promptText="e.g. John Smith"/>
+                            </VBox>
+
+                            <Button onAction="#updateName"
+                                    prefHeight="38" minWidth="140"
+                                    style="-fx-background-color:#4f46e5;-fx-text-fill:white;
+                                           -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
+                                           -fx-cursor:hand;"
+                                    text="Save Name"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Update Password card -->
+                    <VBox spacing="14" VBox.vgrow="ALWAYS"
+                          style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:22;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                        <VBox spacing="3">
+                            <Label text="Change Password"
+                                   style="-fx-text-fill:#0f172a;-fx-font-size:16px;-fx-font-weight:bold;"/>
+                            <Label text="Choose a strong password that meets all rules."
+                                   style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                        </VBox>
+
+                        <HBox spacing="14">
+                            <!-- CURRENT -->
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="CURRENT PASSWORD"
+                                       style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                                <StackPane prefHeight="40">
+                                    <!-- hidden field (default) -->
+                                    <PasswordField fx:id="txtCurrentPwd"
+                                                   prefHeight="40"
+                                                   style="-fx-padding:0 44 0 12; -fx-background-radius:9;"
+                                                   promptText="Enter current password"/>
+
+                                    <!-- visible field -->
+                                    <TextField fx:id="txtCurrentPwdVisible"
+                                               prefHeight="40"
+                                               visible="false" managed="false"
+                                               style="-fx-padding:0 44 0 12; -fx-background-radius:9;"
+                                               promptText="Enter current password"/>
+
+                                    <!-- eye button anchored INSIDE, right edge -->
+                                    <Button fx:id="btnToggleCurrent"
+                                            onAction="#toggleCurrent"
+                                            maxHeight="26" minHeight="26"
+                                            maxWidth="26" minWidth="26"
+                                            StackPane.alignment="CENTER_RIGHT"
+                                            translateX="-8"
+                                            focusTraversable="false"
+                                            style="-fx-background-color:transparent;
+                                                   -fx-text-fill:#64748b;
+                                                   -fx-font-size:14px;
+                                                   -fx-cursor:hand;
+                                                   -fx-padding:0;
+                                                   -fx-border-color:transparent;"
+                                            text="👁"/>
+                                </StackPane>
+                            </VBox>
+
+                            <!-- NEW -->
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="NEW PASSWORD"
+                                       style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                                <StackPane prefHeight="40">
+                                    <PasswordField fx:id="txtNewPwd"
+                                                   prefHeight="40"
+                                                   style="-fx-padding:0 44 0 12; -fx-background-radius:9;"
+                                                   promptText="Enter new password"/>
+
+                                    <TextField fx:id="txtNewPwdVisible"
+                                               prefHeight="40"
+                                               visible="false" managed="false"
+                                               style="-fx-padding:0 44 0 12; -fx-background-radius:9;"
+                                               promptText="Enter new password"/>
+
+                                    <Button fx:id="btnToggleNew"
+                                            onAction="#toggleNew"
+                                            maxHeight="26" minHeight="26"
+                                            maxWidth="26" minWidth="26"
+                                            StackPane.alignment="CENTER_RIGHT"
+                                            translateX="-8"
+                                            focusTraversable="false"
+                                            style="-fx-background-color:transparent;
+                                                   -fx-text-fill:#64748b;
+                                                   -fx-font-size:14px;
+                                                   -fx-cursor:hand;
+                                                   -fx-padding:0;
+                                                   -fx-border-color:transparent;"
+                                            text="👁"/>
+                                </StackPane>
+                            </VBox>
+
+                            <!-- CONFIRM -->
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="CONFIRM NEW PASSWORD"
+                                       style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                                <StackPane prefHeight="40">
+                                    <PasswordField fx:id="txtConfirmPwd"
+                                                   prefHeight="40"
+                                                   style="-fx-padding:0 44 0 12; -fx-background-radius:9;"
+                                                   promptText="Re-enter new password"/>
+
+                                    <TextField fx:id="txtConfirmPwdVisible"
+                                               prefHeight="40"
+                                               visible="false" managed="false"
+                                               style="-fx-padding:0 44 0 12; -fx-background-radius:9;"
+                                               promptText="Re-enter new password"/>
+
+                                    <Button fx:id="btnToggleConfirm"
+                                            onAction="#toggleConfirm"
+                                            maxHeight="26" minHeight="26"
+                                            maxWidth="26" minWidth="26"
+                                            StackPane.alignment="CENTER_RIGHT"
+                                            translateX="-8"
+                                            focusTraversable="false"
+                                            style="-fx-background-color:transparent;
+                                                   -fx-text-fill:#64748b;
+                                                   -fx-font-size:14px;
+                                                   -fx-cursor:hand;
+                                                   -fx-padding:0;
+                                                   -fx-border-color:transparent;"
+                                            text="👁"/>
+                                </StackPane>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Live rule checklist -->
+                        <VBox spacing="4"
+                              style="-fx-background-color:#f8fafc;-fx-background-radius:11;-fx-padding:12;">
+                            <Label text="PASSWORD RULES"
+                                   style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                            <GridPane hgap="20" vgap="4">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="50"/>
+                                    <ColumnConstraints percentWidth="50"/>
+                                </columnConstraints>
+                                <Label fx:id="ruleLength"  GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                <Label fx:id="ruleUpper"   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                <Label fx:id="ruleLower"   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                <Label fx:id="ruleSpecial" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            </GridPane>
+                        </VBox>
+
+                        <HBox alignment="CENTER_RIGHT" spacing="10">
+                            <Button onAction="#updatePassword"
+                                    prefHeight="42" minWidth="180"
+                                    style="-fx-background-color:linear-gradient(to right,#4f46e5,#6366f1);
+                                           -fx-text-fill:white;-fx-background-radius:10;
+                                           -fx-font-size:12px;-fx-font-weight:bold;
+                                           -fx-padding:0 26;-fx-cursor:hand;
+                                           -fx-effect:dropshadow(gaussian,rgba(79,70,229,.35),10,0,0,3);"
+                                    text="Update Password"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </AnchorPane>
+
+    <!-- TOAST -->
+    <VBox fx:id="profileToast" managed="false" visible="false"
+          maxWidth="420" prefWidth="420" spacing="8"
+          translateX="-24" translateY="24" StackPane.alignment="TOP_RIGHT"
+          style="-fx-background-color:white; -fx-background-radius:15;
+                 -fx-padding:15 17 15 15; -fx-border-color:#e2e8f0; -fx-border-radius:15;
+                 -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);">
+
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <StackPane styleClass="toast-icon" minHeight="38" minWidth="38"
+                       style="-fx-background-color:#dcfce7; -fx-background-radius:19;">
+                <Label styleClass="toast-icon-label" text="✓"
+                       style="-fx-text-fill:#16a34a; -fx-font-size:17px; -fx-font-weight:bold;"/>
+            </StackPane>
+            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblToastTitle" text="UPDATE SUCCESSFUL"
+                       style="-fx-text-fill:#64748b;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                <Label fx:id="lblToastHeading" text="Success"
+                       style="-fx-text-fill:#0f172a;-fx-font-size:14px;-fx-font-weight:bold;"/>
+                <Label fx:id="lblToastMessage" text="Update complete." wrapText="true"
+                       style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+            </VBox>
+        </HBox>
+        <Region styleClass="toast-bar" maxHeight="3" minHeight="3"
+                style="-fx-background-color:#22c55e; -fx-background-radius:3;"/>
+    </VBox>
+
+</StackPane>
