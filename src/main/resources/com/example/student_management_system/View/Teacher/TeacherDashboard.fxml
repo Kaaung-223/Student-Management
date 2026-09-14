@@ -262,6 +262,7 @@
 
             <AnchorPane fx:id="teacherPane" visible="false"/>
 
+            <!-- WELCOME TOAST -->
             <VBox fx:id="welcomeToast" managed="false" maxWidth="420" prefWidth="420" spacing="8"
                   style="-fx-background-color:white; -fx-background-radius:15; -fx-padding:15 17 15 15; -fx-border-color:#e2e8f0; -fx-border-radius:15; -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);"
                   translateX="-24" translateY="24" visible="false" StackPane.alignment="TOP_RIGHT">
@@ -276,6 +277,39 @@
                     </VBox>
                 </HBox>
                 <Region maxHeight="3" minHeight="3" style="-fx-background-color:#22c55e; -fx-background-radius:3;"/>
+            </VBox>
+
+            <!-- ✅ NEW: ANNOUNCEMENT TOAST (shown after the welcome toast, if any today) -->
+            <VBox fx:id="announcementToast" managed="false" visible="false"
+                  maxWidth="420" prefWidth="420" spacing="8"
+                  translateX="-24" translateY="24"
+                  StackPane.alignment="TOP_RIGHT"
+                  style="-fx-background-color:white; -fx-background-radius:15;
+                         -fx-padding:15 17 15 15;
+                         -fx-border-color:#e2e8f0; -fx-border-radius:15;
+                         -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);">
+
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <StackPane minHeight="38" minWidth="38"
+                               style="-fx-background-color:#fef3c7; -fx-background-radius:19;">
+                        <Label text="!"
+                               style="-fx-text-fill:#d97706; -fx-font-size:17px; -fx-font-weight:bold;"/>
+                    </StackPane>
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label fx:id="lblAnnToastTitle"
+                               text="NEW ANNOUNCEMENT"
+                               style="-fx-text-fill:#64748b; -fx-font-size:9px; -fx-font-weight:bold;"/>
+                        <Label fx:id="lblAnnToastHeading"
+                               text="You have new announcements"
+                               style="-fx-text-fill:#0f172a; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <Label fx:id="lblAnnToastMessage"
+                               text="Open the Announcements page to read them."
+                               wrapText="true"
+                               style="-fx-text-fill:#64748b; -fx-font-size:11px;"/>
+                    </VBox>
+                </HBox>
+                <Region maxHeight="3" minHeight="3"
+                        style="-fx-background-color:#f59e0b; -fx-background-radius:3;"/>
             </VBox>
 
         </StackPane>

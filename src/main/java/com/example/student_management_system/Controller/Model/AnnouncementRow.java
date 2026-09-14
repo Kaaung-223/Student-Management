@@ -8,9 +8,9 @@ public class AnnouncementRow {
     private int announcementId;
     private String title;
     private String reason;
-    private String targetAudience;   // TEACHER / STAFF / ALL
+    private String targetAudience;
     private LocalDate announcementDate;
-    private String createdBy;         // admin full name
+    private String createdBy;
     private LocalDateTime createdAt;
 
     public int getAnnouncementId() { return announcementId; }

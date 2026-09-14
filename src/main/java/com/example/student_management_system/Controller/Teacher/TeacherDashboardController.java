@@ -1,7 +1,9 @@
 package com.example.student_management_system.Controller.Teacher;
 
+import com.example.student_management_system.Controller.DAO.TeacherAnnouncementsDAO;
 import com.example.student_management_system.Controller.DAO.TeacherDashboardDAO;
-import com.example.student_management_system.Controller.Model.TeacherInfo;   // <-- fixed
+import com.example.student_management_system.Controller.Model.AnnouncementNotice;
+import com.example.student_management_system.Controller.Model.TeacherInfo;
 
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
@@ -39,8 +41,14 @@ public class TeacherDashboardController implements Initializable {
     @FXML private StackPane contentPane;
     @FXML private ScrollPane dashboardScrollPane;
     @FXML private AnchorPane teacherPane;
+
+    // Welcome toast
     @FXML private VBox welcomeToast;
     @FXML private Label lblToastTitle, lblToastHeading, lblDashboardWelcome;
+
+    // Announcement toast
+    @FXML private VBox announcementToast;
+    @FXML private Label lblAnnToastTitle, lblAnnToastHeading, lblAnnToastMessage;
 
     // Header
     @FXML private ImageView teacherPhoto;
@@ -65,9 +73,12 @@ public class TeacherDashboardController implements Initializable {
     @FXML private BarChart<String, Number> performanceBarChart;
 
     // DAO + session
-    private final TeacherDashboardDAO dao = new TeacherDashboardDAO();
+    private final TeacherDashboardDAO     dao    = new TeacherDashboardDAO();
+    private final TeacherAnnouncementsDAO annDao = new TeacherAnnouncementsDAO();
+
     private TeacherInfo teacherInfo;
     private PauseTransition welcomeTimer;
+    private PauseTransition announcementTimer;
     private Map<Integer, String> teacherClassMap;
 
     private static final String ACTIVE =
@@ -101,7 +112,6 @@ public class TeacherDashboardController implements Initializable {
         setActiveButton(btnDashboard);
     }
 
-    /** Called from LoginController. */
     public void setLoggedInTeacher(String username) {
         teacherInfo = dao.getTeacherByUsername(username);
 
@@ -262,6 +272,9 @@ public class TeacherDashboardController implements Initializable {
         }
     }
 
+    // ==================================================
+    //  WELCOME TOAST  →  chains ANNOUNCEMENT TOAST
+    // ==================================================
     private void showWelcomeToast(String name) {
         if (name == null || name.trim().isEmpty()) name = "Teacher";
         welcomeToast.setPrefWidth(420);
@@ -279,11 +292,52 @@ public class TeacherDashboardController implements Initializable {
 
         if (welcomeTimer != null) welcomeTimer.stop();
         welcomeTimer = new PauseTransition(Duration.seconds(5));
+
         welcomeTimer.setOnFinished(e -> {
             welcomeToast.setVisible(false);
             welcomeToast.setManaged(false);
+            showAnnouncementToastIfAny();
         });
+
         welcomeTimer.play();
+    }
+
+    // ==================================================
+    //  ANNOUNCEMENT TOAST — only shows unread items
+    // ==================================================
+    private void showAnnouncementToastIfAny() {
+        if (announcementToast == null || annDao == null || teacherInfo == null) return;
+
+        AnnouncementNotice notice =
+                annDao.getUnreadAnnouncementNotice(teacherInfo.getUserId());
+
+        if (notice == null || notice.getCount() == 0) return;
+
+        announcementToast.setPrefWidth(420);
+        announcementToast.setMinWidth(420);
+        announcementToast.setMaxWidth(420);
+        announcementToast.setPrefHeight(125);
+        announcementToast.setMinHeight(125);
+        announcementToast.setMaxHeight(125);
+
+        String heading = (notice.getCount() == 1)
+                ? "You have 1 new announcement"
+                : "You have " + notice.getCount() + " new announcements";
+
+        lblAnnToastTitle.setText("NEW ANNOUNCEMENT");
+        lblAnnToastHeading.setText(heading);
+        lblAnnToastMessage.setText(notice.getTitle());
+
+        announcementToast.setManaged(true);
+        announcementToast.setVisible(true);
+
+        if (announcementTimer != null) announcementTimer.stop();
+        announcementTimer = new PauseTransition(Duration.seconds(5));
+        announcementTimer.setOnFinished(e -> {
+            announcementToast.setVisible(false);
+            announcementToast.setManaged(false);
+        });
+        announcementTimer.play();
     }
 
     @FXML
@@ -304,212 +358,160 @@ public class TeacherDashboardController implements Initializable {
         }
     }
 
-    private void showDashboard() {
-        teacherPane.setVisible(false);
-        dashboardScrollPane.setVisible(true);
-    }
-
+    // ---------------- Sub-view loaders ----------------
     @FXML
     public void openMyStudents(ActionEvent e) {
         setActiveButton(btnMyStudents);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/student_management_system/View/Teacher/TeacherStudents.fxml"));
             Parent view = loader.load();
-
             TeacherStudentsController ctrl = loader.getController();
             ctrl.setTeacherInfo(teacherInfo);
-
             teacherPane.getChildren().setAll(view);
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-
             dashboardScrollPane.setVisible(false);
             teacherPane.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
+
     @FXML
     public void openAttendance(ActionEvent e) {
         setActiveButton(btnAttendance);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/student_management_system/View/Teacher/TeacherAttendance.fxml"));
             Parent view = loader.load();
-
             TeacherAttendanceController ctrl = loader.getController();
             ctrl.setTeacherInfo(teacherInfo);
-
             teacherPane.getChildren().setAll(view);
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-
             dashboardScrollPane.setVisible(false);
             teacherPane.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
+
     @FXML
     public void openExams(ActionEvent e) {
         setActiveButton(btnExams);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/student_management_system/View/Teacher/TeacherExam.fxml"));
             Parent view = loader.load();
-
             TeacherExamController ctrl = loader.getController();
             ctrl.setTeacherInfo(teacherInfo);
-
             teacherPane.getChildren().setAll(view);
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-
             dashboardScrollPane.setVisible(false);
             teacherPane.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
+
     @FXML
     public void openResults(ActionEvent e) {
         setActiveButton(btnResults);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/student_management_system/View/Teacher/TeacherResult.fxml"));
             Parent view = loader.load();
-
             TeacherResultsController ctrl = loader.getController();
             ctrl.setTeacherInfo(teacherInfo);
-
             teacherPane.getChildren().setAll(view);
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-
             dashboardScrollPane.setVisible(false);
             teacherPane.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
+
     @FXML
     public void openMySubjects(ActionEvent e) {
         setActiveButton(btnMySubjects);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/student_management_system/View/Teacher/TeacherSubjects.fxml"));
             Parent view = loader.load();
-
             TeacherSubjectsController ctrl = loader.getController();
             ctrl.setTeacherInfo(teacherInfo);
-
             teacherPane.getChildren().setAll(view);
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-
             dashboardScrollPane.setVisible(false);
             teacherPane.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
+
     @FXML
     public void openMyClasses(ActionEvent e) {
         setActiveButton(btnMyClasses);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/student_management_system/View/Teacher/TeacherClasses.fxml"));
             Parent view = loader.load();
-
             TeacherClassesController ctrl = loader.getController();
             ctrl.setTeacherInfo(teacherInfo);
-
             teacherPane.getChildren().setAll(view);
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-
             dashboardScrollPane.setVisible(false);
             teacherPane.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
+
     @FXML
     public void openLeaveRequests(ActionEvent e) {
         setActiveButton(btnLeaveRequests);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/student_management_system/View/Teacher/TeacherLeaveRequests.fxml"));
             Parent view = loader.load();
-
             TeacherLeaveRequestsController ctrl = loader.getController();
             ctrl.setTeacherInfo(teacherInfo);
-
             teacherPane.getChildren().setAll(view);
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-
             dashboardScrollPane.setVisible(false);
             teacherPane.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
+
     @FXML
     public void openAnnouncements(ActionEvent e) {
         setActiveButton(btnAnnouncements);
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/student_management_system/View/Teacher/TeacherAnnouncements.fxml"));
             Parent view = loader.load();
-
             TeacherAnnouncementsController ctrl = loader.getController();
             ctrl.setTeacherInfo(teacherInfo);
-
             teacherPane.getChildren().setAll(view);
             AnchorPane.setTopAnchor(view, 0.0);
             AnchorPane.setBottomAnchor(view, 0.0);
             AnchorPane.setLeftAnchor(view, 0.0);
             AnchorPane.setRightAnchor(view, 0.0);
-
             dashboardScrollPane.setVisible(false);
             teacherPane.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
-    @FXML public void openProfile(ActionEvent e)      { }
+
+    @FXML public void openProfile(ActionEvent e) { }
 
     @FXML
     public void logout(ActionEvent e) {
@@ -532,6 +534,7 @@ public class TeacherDashboardController implements Initializable {
         welcomeToast.setManaged(true);
         welcomeToast.setVisible(true);
         if (welcomeTimer != null) welcomeTimer.stop();
+        if (announcementTimer != null) announcementTimer.stop();
 
         PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
         delay.setOnFinished(event -> {

@@ -18,14 +18,10 @@ import java.util.ResourceBundle;
 
 public class TeacherAnnouncementsController implements Initializable {
 
-    // Filter bar
     @FXML private TextField txtSearch;
-
-    // List
     @FXML private ListView<AnnouncementRow> announcementList;
     @FXML private Label lblAnnouncementCount;
 
-    // Details card
     @FXML private Label lblTitle;
     @FXML private Label lblMeta;
     @FXML private Label lblAudience;
@@ -40,7 +36,6 @@ public class TeacherAnnouncementsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // Custom cell to show title + date in the list
         announcementList.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(AnnouncementRow a, boolean empty) {
@@ -60,13 +55,11 @@ public class TeacherAnnouncementsController implements Initializable {
         announcementList.getSelectionModel().selectedItemProperty()
                 .addListener((o, a, b) -> showDetails(b));
 
-        // Debounced search
         PauseTransition debounce = new PauseTransition(Duration.millis(250));
         debounce.setOnFinished(e -> refresh());
         txtSearch.textProperty().addListener((o, a, b) -> debounce.play());
     }
 
-    /** Called by TeacherDashboardController. */
     public void setTeacherInfo(TeacherInfo info) {
         this.teacherInfo = info;
         refresh();
@@ -81,6 +74,11 @@ public class TeacherAnnouncementsController implements Initializable {
 
         if (!list.isEmpty()) announcementList.getSelectionModel().selectFirst();
         else                 clearDetails();
+
+        // ✅ Mark all as read for this teacher after viewing
+        if (teacherInfo != null) {
+            dao.markAllAsRead(teacherInfo.getUserId());
+        }
     }
 
     // -------------------------------------------------

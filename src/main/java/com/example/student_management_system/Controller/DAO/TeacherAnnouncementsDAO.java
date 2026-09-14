@@ -1,5 +1,6 @@
 package com.example.student_management_system.Controller.DAO;
 
+import com.example.student_management_system.Controller.Model.AnnouncementNotice;
 import com.example.student_management_system.Controller.Model.AnnouncementRow;
 
 import java.sql.*;
@@ -8,10 +9,9 @@ import java.util.List;
 
 public class TeacherAnnouncementsDAO {
 
-    /**
-     * Returns announcements targeted to TEACHER or ALL.
-     * Read-only — teachers never insert / update / delete announcements.
-     */
+    // ==================================================
+    //  List of announcements (for the page)
+    // ==================================================
     public List<AnnouncementRow> findAnnouncements(String search) {
         List<AnnouncementRow> list = new ArrayList<>();
 
@@ -53,5 +53,71 @@ public class TeacherAnnouncementsDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    // ==================================================
+    //  Unread count + latest title for the login toast
+    //  Uses users.last_seen_announcement_id
+    // ==================================================
+    public AnnouncementNotice getUnreadAnnouncementNotice(int userId) {
+
+        String sql =
+                "SELECT a.title FROM announcements a " +
+                        "WHERE a.target_audience IN ('TEACHER','ALL') " +
+                        "AND a.announcement_id > ( " +
+                        "    SELECT COALESCE(last_seen_announcement_id, 0) " +
+                        "    FROM users WHERE user_id = ? " +
+                        ") " +
+                        "ORDER BY a.announcement_id DESC";
+
+        try (Connection con = DBConnention.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return null;
+
+                String latestTitle = rs.getString("title");
+                int count = 1;
+                while (rs.next()) count++;
+
+                return new AnnouncementNotice(count, latestTitle);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // ==================================================
+    //  Mark everything as read for this user
+    // ==================================================
+    public void markAllAsRead(int userId) {
+        String maxSql =
+                "SELECT COALESCE(MAX(announcement_id), 0) AS max_id " +
+                        "FROM announcements " +
+                        "WHERE target_audience IN ('TEACHER','ALL')";
+
+        String updateSql =
+                "UPDATE users SET last_seen_announcement_id = ? WHERE user_id = ?";
+
+        try (Connection con = DBConnention.getConnection()) {
+
+            int maxId = 0;
+            try (PreparedStatement ps = con.prepareStatement(maxSql);
+                 ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) maxId = rs.getInt("max_id");
+            }
+
+            try (PreparedStatement ps = con.prepareStatement(updateSql)) {
+                ps.setInt(1, maxId);
+                ps.setInt(2, userId);
+                ps.executeUpdate();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
