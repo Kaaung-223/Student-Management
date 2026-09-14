@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Teacher.TeacherAnnouncementsController"
+            style="-fx-background-color:#f6f8fc;">
+
+    <VBox spacing="20"
+          AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
+          AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
+        <padding><Insets top="28" right="30" bottom="30" left="30"/></padding>
+
+        <!-- HEADER -->
+        <HBox alignment="CENTER_LEFT">
+            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                <Label text="Announcements"
+                       style="-fx-text-fill:#0f172a;-fx-font-size:28px;-fx-font-weight:bold;"/>
+                <Label text="Notices and updates from the administration."
+                       style="-fx-text-fill:#64748b;-fx-font-size:13px;"/>
+            </VBox>
+            <Label fx:id="lblAnnouncementCount" text="0 announcements"
+                   style="-fx-text-fill:#4f46e5;-fx-background-color:#eef2ff;-fx-background-radius:12;-fx-padding:8 12;-fx-font-size:11px;-fx-font-weight:bold;"/>
+        </HBox>
+
+        <!-- SEARCH BAR -->
+        <HBox alignment="CENTER_LEFT" spacing="14"
+              style="-fx-background-color:white;-fx-background-radius:16;-fx-padding:16;-fx-border-color:#e8edf5;-fx-border-radius:16;">
+
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="SEARCH"
+                       style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                <TextField fx:id="txtSearch" prefHeight="38"
+                           promptText="Search by title or content"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text=" " style="-fx-font-size:10px;"/>
+                <Button onAction="#refresh" minHeight="38"
+                        style="-fx-background-color:#4f46e5;-fx-text-fill:white;-fx-background-radius:9;-fx-font-size:11px;-fx-font-weight:bold;-fx-padding:0 18;"
+                        text="Refresh"/>
+            </VBox>
+        </HBox>
+
+        <!-- MAIN -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+            <!-- LEFT: list -->
+            <VBox spacing="14"
+                  style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:20;-fx-border-color:#e8edf5;-fx-border-radius:18;"
+                  HBox.hgrow="ALWAYS" prefWidth="520">
+
+                <VBox spacing="3">
+                    <Label text="Latest Announcements"
+                           style="-fx-text-fill:#0f172a;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                    <Label text="Select one to read the full message."
+                           style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                </VBox>
+
+                <ListView fx:id="announcementList"
+                          VBox.vgrow="ALWAYS" prefHeight="520"
+                          style="-fx-background-color:white;-fx-border-color:#e2e8f0;-fx-border-radius:10;-fx-background-radius:10;"/>
+            </VBox>
+
+            <!-- RIGHT: details -->
+            <VBox minWidth="360" prefWidth="420" spacing="16">
+
+                <!-- Header card -->
+                <VBox spacing="10"
+                      style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:22;-fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                    <StackPane minHeight="46" minWidth="46" maxHeight="46" maxWidth="46"
+                               style="-fx-background-color:#eef2ff;-fx-background-radius:12;">
+                        <Label text="i"
+                               style="-fx-text-fill:#4f46e5;-fx-font-size:20px;-fx-font-weight:bold;"/>
+                    </StackPane>
+
+                    <Label fx:id="lblTitle" text="No announcement selected"
+                           wrapText="true"
+                           style="-fx-text-fill:#0f172a;-fx-font-size:20px;-fx-font-weight:bold;"/>
+
+                    <Label fx:id="lblMeta" text="Select an announcement to view details"
+                           style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+
+                    <Region minHeight="1" style="-fx-background-color:#eef2ff;"/>
+
+                    <Label fx:id="lblAudience" text="Audience: --"
+                           style="-fx-text-fill:#4f46e5;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                    <Label fx:id="lblPostedBy" text="Posted by: --"
+                           style="-fx-text-fill:#334155;-fx-font-size:12px;"/>
+                </VBox>
+
+                <!-- Message card -->
+                <VBox spacing="8" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:20;-fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                    <Label text="MESSAGE"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <TextArea fx:id="txtReason" editable="false" wrapText="true"
+                              VBox.vgrow="ALWAYS"
+                              style="-fx-background-color:#f8fafc;-fx-border-color:#e2e8f0;-fx-border-radius:8;-fx-background-radius:8;-fx-font-size:13px;"/>
+                </VBox>
+            </VBox>
+        </HBox>
+    </VBox>
+</AnchorPane>
