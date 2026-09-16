@@ -1014,7 +1014,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-09-16.09:13:06</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-09-16.10:18:25</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="294" parent="1" name="sys">
@@ -1996,7 +1996,7 @@ installment_no</ColNames>
     <column id="494" parent="311" name="payment_method">
       <DefaultExpression>&apos;CASH&apos;</DefaultExpression>
       <Position>7</Position>
-      <StoredType>enum(&apos;CASH&apos;, &apos;BANK&apos;, &apos;KBZ_PAY&apos;, &apos;WAVE_PAY&apos;, &apos;OTHER&apos;)|0e</StoredType>
+      <StoredType>enum(&apos;CASH&apos;, &apos;CREDIT_CARD&apos;, &apos;BANK&apos;, &apos;AYA_PAY&apos;, &apos;KBZ_PAY&apos;, &apos;WAVE_PAY&apos;, &apos;OTHER&apos;)|0e</StoredType>
     </column>
     <column id="495" parent="311" name="receipt_no">
       <Position>8</Position>

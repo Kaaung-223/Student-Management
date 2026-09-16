@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.student_management_system.Controller.Staff.StaffPaymentsController"
+           style="-fx-background-color:#f6f8fc;">
+
+    <AnchorPane>
+        <VBox spacing="16"
+              AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
+              AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
+            <padding><Insets top="24" right="28" bottom="28" left="28"/></padding>
+
+            <HBox alignment="CENTER_LEFT">
+                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="Payments"
+                           style="-fx-text-fill:#0f172a;-fx-font-size:28px;-fx-font-weight:bold;"/>
+                    <Label text="Record student payments and download receipts."
+                           style="-fx-text-fill:#64748b;-fx-font-size:13px;"/>
+                </VBox>
+                <Label fx:id="lblStudentCount" text="0 students"
+                       style="-fx-text-fill:#4f46e5;-fx-background-color:#eef2ff;
+                              -fx-background-radius:12;-fx-padding:8 12;
+                              -fx-font-size:11px;-fx-font-weight:bold;"/>
+            </HBox>
+
+            <HBox spacing="18" VBox.vgrow="ALWAYS">
+
+                <!-- LEFT -->
+                <VBox prefWidth="440" minWidth="380" spacing="12">
+
+                    <HBox spacing="10"
+                          style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:12;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:14;">
+                        <ComboBox fx:id="cmbBatch" prefWidth="180" minWidth="150" prefHeight="36"
+                                  promptText="All Batches"/>
+                        <TextField fx:id="txtSearch" prefHeight="36" HBox.hgrow="ALWAYS"
+                                   minWidth="120" promptText="Search by name or code"/>
+                        <Button fx:id="btnReset"
+                                onAction="#resetFilters"
+                                text="Reset"
+                                prefHeight="36" minWidth="80" maxHeight="36"
+                                style="-fx-background-color:#eef2ff;-fx-text-fill:#4f46e5;
+                                       -fx-background-radius:9;-fx-font-size:11px;-fx-font-weight:bold;
+                                       -fx-padding:0 14;-fx-cursor:hand;
+                                       -fx-border-color:#c7d2fe;-fx-border-radius:9;"/>
+                    </HBox>
+
+                    <CheckBox fx:id="chkOnlyActive" text="Show active students only"
+                              style="-fx-text-fill:#334155;-fx-font-size:12px;"/>
+
+                    <VBox spacing="10" VBox.vgrow="ALWAYS"
+                          style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:14;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                        <Label text="STUDENTS"
+                               style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                        <TableView fx:id="studentTable" VBox.vgrow="ALWAYS" prefHeight="560"
+                                   style="-fx-background-color:white;-fx-border-color:#e2e8f0;
+                                          -fx-border-radius:10;-fx-background-radius:10;">
+                            <columns>
+                                <TableColumn fx:id="colCode"   prefWidth="80"  text="Code"/>
+                                <TableColumn fx:id="colName"   prefWidth="170" text="Name"/>
+                                <TableColumn fx:id="colBatch"  prefWidth="120" text="Batch"/>
+                                <TableColumn fx:id="colStatus" prefWidth="80"  text="Status"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+
+                <!-- RIGHT -->
+                <VBox spacing="14" HBox.hgrow="ALWAYS" minWidth="420">
+
+                    <!-- PAYMENT FORM -->
+                    <VBox spacing="12"
+                          style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                        <Label text="PAYMENT DETAILS"
+                               style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                        <VBox spacing="4"
+                              style="-fx-background-color:#eef2ff;-fx-background-radius:11;-fx-padding:12;">
+                            <Label fx:id="lblSelectedStudent" text="No student selected"
+                                   style="-fx-text-fill:#312e81;-fx-font-size:14px;-fx-font-weight:bold;"/>
+                            <Label fx:id="lblSelectedStudentCode" text="Choose a student to record a payment"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#4f46e5;-fx-font-size:11px;"/>
+                            <Label fx:id="lblFeeSummary" text="Paid: --    •    Outstanding: --"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#475569;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                        </VBox>
+
+                        <!-- BATCH PRICE CARD -->
+                        <VBox fx:id="batchPriceCard"
+                              visible="false" managed="false"
+                              spacing="4"
+                              style="-fx-background-color:linear-gradient(to right,#4f46e5,#6366f1);
+                                     -fx-background-radius:11;-fx-padding:14;
+                                     -fx-effect:dropshadow(gaussian,rgba(79,70,229,.35),10,0,0,3);">
+
+                            <Label fx:id="lblBatchPriceBatch" text="Batch: --"
+                                   style="-fx-text-fill:#c7d2fe;-fx-font-size:11px;-fx-font-weight:bold;"/>
+
+                            <Label fx:id="lblBatchPriceAmount" text="0 MMK"
+                                   style="-fx-text-fill:white;-fx-font-size:24px;-fx-font-weight:bold;"/>
+
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label fx:id="lblBatchPricePerMonth"
+                                       text="≈ 0 MMK / month"
+                                       style="-fx-text-fill:#e0e7ff;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblBatchPriceHint"
+                                       text="Full course fee"
+                                       style="-fx-text-fill:#c7d2fe;-fx-font-size:10px;"/>
+                            </HBox>
+                        </VBox>
+
+                        <HBox spacing="10">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="Amount (MMK)"
+                                       style="-fx-text-fill:#334155;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                                <TextField fx:id="txtAmount" prefHeight="36" minWidth="120"
+                                           promptText="e.g. 250000"/>
+                                <Label fx:id="lblAmountError" text="" visible="false" managed="false"
+                                       wrapText="true"
+                                       style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                            </VBox>
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="Payment Date"
+                                       style="-fx-text-fill:#334155;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                                <DatePicker fx:id="dpPaymentDate" prefHeight="36" maxWidth="Infinity"/>
+                            </VBox>
+                        </HBox>
+
+                        <HBox spacing="10">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="Payment Method"
+                                       style="-fx-text-fill:#334155;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                                <ComboBox fx:id="cmbMethod" prefHeight="36" maxWidth="Infinity"/>
+                            </VBox>
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="Payment Period"
+                                       style="-fx-text-fill:#334155;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                                <ComboBox fx:id="cmbPeriod" prefHeight="36" maxWidth="Infinity"/>
+                            </VBox>
+                        </HBox>
+
+                        <VBox spacing="4">
+                            <Label text="Receipt No."
+                                   style="-fx-text-fill:#334155;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtReceiptNo" prefHeight="36" maxWidth="Infinity"/>
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label text="Note (optional)"
+                                   style="-fx-text-fill:#334155;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                            <TextArea fx:id="txtNote" prefRowCount="2" wrapText="true"
+                                      promptText="e.g. Paid by cash at the office"/>
+                        </VBox>
+
+                        <GridPane hgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Button fx:id="btnToggleStatus"
+                                    GridPane.columnIndex="0"
+                                    onAction="#toggleStatus"
+                                    text="Deactivate Student"
+                                    prefHeight="42" minWidth="150" maxWidth="Infinity"
+                                    style="-fx-background-color:#fee2e2;-fx-text-fill:#dc2626;
+                                           -fx-background-radius:10;-fx-font-size:12px;-fx-font-weight:bold;
+                                           -fx-padding:0 20;-fx-cursor:hand;
+                                           -fx-border-color:#fecaca;-fx-border-radius:10;"/>
+
+                            <Button fx:id="btnSavePayment"
+                                    GridPane.columnIndex="1"
+                                    onAction="#savePayment"
+                                    text="Save Payment"
+                                    prefHeight="42" minWidth="150" maxWidth="Infinity"
+                                    style="-fx-background-color:linear-gradient(to right,#4f46e5,#6366f1);
+                                           -fx-text-fill:white;-fx-background-radius:10;
+                                           -fx-font-size:13px;-fx-font-weight:bold;
+                                           -fx-padding:0 24;-fx-cursor:hand;
+                                           -fx-effect:dropshadow(gaussian,rgba(79,70,229,.35),10,0,0,3);"/>
+                        </GridPane>
+                    </VBox>
+
+                    <!-- HISTORY -->
+                    <VBox spacing="10" VBox.vgrow="ALWAYS"
+                          style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:14;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="PAYMENT HISTORY"
+                                   style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"
+                                   HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="btnDownloadReceipt"
+                                    onAction="#downloadReceipt"
+                                    text="Download Receipt"
+                                    prefHeight="32" minWidth="150"
+                                    style="-fx-background-color:#eef2ff;-fx-text-fill:#4f46e5;
+                                           -fx-background-radius:9;-fx-font-size:11px;-fx-font-weight:bold;
+                                           -fx-padding:0 14;-fx-cursor:hand;
+                                           -fx-border-color:#c7d2fe;-fx-border-radius:9;"/>
+                        </HBox>
+
+                        <TableView fx:id="historyTable" prefHeight="220" VBox.vgrow="ALWAYS"
+                                   style="-fx-background-color:white;-fx-border-color:#e2e8f0;
+                                          -fx-border-radius:10;-fx-background-radius:10;">
+                            <columns>
+                                <TableColumn fx:id="colHReceipt" prefWidth="100" text="Receipt"/>
+                                <TableColumn fx:id="colHDate"    prefWidth="100" text="Date"/>
+                                <TableColumn fx:id="colHMethod"  prefWidth="110" text="Method"/>
+                                <TableColumn fx:id="colHPeriod"  prefWidth="130" text="Period"/>
+                                <TableColumn fx:id="colHAmount"  prefWidth="120" text="Amount"/>
+                                <TableColumn fx:id="colHNote"    prefWidth="200" text="Note"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </AnchorPane>
+
+    <!-- TOAST -->
+    <VBox fx:id="paymentToast" managed="false" visible="false"
+          maxWidth="420" prefWidth="420" spacing="8"
+          translateX="-24" translateY="24" StackPane.alignment="TOP_RIGHT"
+          style="-fx-background-color:white; -fx-background-radius:15;
+                 -fx-padding:15 17 15 15; -fx-border-color:#e2e8f0; -fx-border-radius:15;
+                 -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);">
+
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <StackPane styleClass="toast-icon" minHeight="38" minWidth="38"
+                       style="-fx-background-color:#dcfce7; -fx-background-radius:19;">
+                <Label styleClass="toast-icon-label" text="✓"
+                       style="-fx-text-fill:#16a34a; -fx-font-size:17px; -fx-font-weight:bold;"/>
+            </StackPane>
+            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblToastTitle" text="SUCCESS"
+                       style="-fx-text-fill:#64748b;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                <Label fx:id="lblToastHeading" text="Payment recorded"
+                       style="-fx-text-fill:#0f172a;-fx-font-size:14px;-fx-font-weight:bold;"/>
+                <Label fx:id="lblToastMessage" text="Payment saved." wrapText="true"
+                       style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+            </VBox>
+        </HBox>
+        <Region styleClass="toast-bar" maxHeight="3" minHeight="3"
+                style="-fx-background-color:#22c55e; -fx-background-radius:3;"/>
+    </VBox>
+
+</StackPane>
