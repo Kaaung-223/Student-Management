@@ -48,8 +48,6 @@
                         style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Payments"/>
                 <Button fx:id="btnLeaveRequests" maxWidth="Infinity" minHeight="44" onAction="#openLeaveRequests"
                         style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Leave Requests"/>
-                <Button fx:id="btnAttendance" maxWidth="Infinity" minHeight="44" onAction="#openAttendance"
-                        style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Attendance"/>
                 <Button fx:id="btnAnnouncements" maxWidth="Infinity" minHeight="44" onAction="#openAnnouncements"
                         style="-fx-background-color:transparent; -fx-text-fill:#cbd5e1; -fx-font-size:13px; -fx-alignment:CENTER_LEFT; -fx-padding:0 16; -fx-cursor:hand;" text="Announcements"/>
                 <Button fx:id="btnProfile" maxWidth="Infinity" minHeight="44" onAction="#openProfile"
