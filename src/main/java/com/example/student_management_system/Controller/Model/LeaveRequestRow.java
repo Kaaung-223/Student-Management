@@ -13,8 +13,9 @@ public class LeaveRequestRow {
     private LocalDate leaveTo;
     private int daysCount;
     private String reason;
-    private String status;        // Pending / Approved / Rejected
-    private String approvedBy;    // user full name, may be null
+    private String status;         // Pending / Approved / Rejected
+    private String approvedBy;     // full_name from users, null if pending
+    private LocalDate createdAt;
 
     public int getLeaveId() { return leaveId; }
     public void setLeaveId(int leaveId) { this.leaveId = leaveId; }
@@ -48,4 +49,18 @@ public class LeaveRequestRow {
 
     public String getApprovedBy() { return approvedBy; }
     public void setApprovedBy(String approvedBy) { this.approvedBy = approvedBy; }
+
+    public LocalDate getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDate createdAt) { this.createdAt = createdAt; }
+
+    public boolean isPending() {
+        return "Pending".equalsIgnoreCase(status);
+    }
+
+    public String getInitials() {
+        if (studentName == null || studentName.isBlank()) return "--";
+        String[] parts = studentName.trim().split("\\s+");
+        if (parts.length == 1) return parts[0].substring(0, 1).toUpperCase();
+        return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1)).toUpperCase();
+    }
 }

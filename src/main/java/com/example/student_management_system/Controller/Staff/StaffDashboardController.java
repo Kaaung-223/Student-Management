@@ -33,7 +33,7 @@ public class StaffDashboardController implements Initializable {
 
     // Sidebar buttons
     @FXML private Button btnDashboard, btnStudents, btnPayments, btnLeaveRequests,
-            btnAttendance, btnAnnouncements, btnProfile, btnLogout;
+             btnAnnouncements, btnProfile, btnLogout;
 
     // Center content
     @FXML private StackPane contentPane;
@@ -229,7 +229,6 @@ public class StaffDashboardController implements Initializable {
     @FXML public void openStudents(ActionEvent e)      { openSubView("/com/example/student_management_system/View/Staff/StaffStudent.fxml",   btnStudents); }
     @FXML public void openPayments(ActionEvent e)      { openSubView("/com/example/student_management_system/View/Staff/StaffPayment.fxml",   btnPayments); }
     @FXML public void openLeaveRequests(ActionEvent e) { openSubView("/com/example/student_management_system/View/Staff/StaffLeave.fxml",      btnLeaveRequests); }
-    @FXML public void openAttendance(ActionEvent e)    { openSubView("/com/example/student_management_system/View/Staff/StaffAttendance.fxml", btnAttendance); }
     @FXML public void openAnnouncements(ActionEvent e) { openSubView("/com/example/student_management_system/View/Staff/StaffAnnouncements.fxml", btnAnnouncements); }
     @FXML public void openProfile(ActionEvent e)       { openSubView("/com/example/student_management_system/View/Staff/StaffProfile.fxml",    btnProfile); }
 
@@ -265,8 +264,8 @@ public class StaffDashboardController implements Initializable {
 
     private void setActiveButton(Button selected) {
         for (Button b : List.of(
-                btnDashboard, btnStudents, btnPayments, btnLeaveRequests,
-                btnAttendance, btnAnnouncements, btnProfile)) {
+                btnDashboard, btnStudents, btnPayments, btnLeaveRequests
+                , btnAnnouncements, btnProfile)) {
             if (b != null) b.setStyle(b == selected ? ACTIVE : NORMAL);
         }
     }

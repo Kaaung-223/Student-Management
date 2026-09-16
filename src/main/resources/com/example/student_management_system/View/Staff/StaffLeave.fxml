@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.student_management_system.Controller.Staff.StaffLeaveController"
+           style="-fx-background-color:#f6f8fc;">
+
+    <AnchorPane>
+        <VBox spacing="16"
+              AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
+              AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
+            <padding><Insets top="24" right="28" bottom="28" left="28"/></padding>
+
+            <!-- HEADER -->
+            <HBox alignment="CENTER_LEFT">
+                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="Leave Requests"
+                           style="-fx-text-fill:#0f172a;-fx-font-size:28px;-fx-font-weight:bold;"/>
+                    <Label text="Review and approve student leave requests."
+                           style="-fx-text-fill:#64748b;-fx-font-size:13px;"/>
+                </VBox>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label fx:id="lblLeaveCount" text="0 requests"
+                           style="-fx-text-fill:#4f46e5;-fx-background-color:#eef2ff;
+                                  -fx-background-radius:12;-fx-padding:8 12;
+                                  -fx-font-size:11px;-fx-font-weight:bold;"/>
+                    <Button fx:id="btnAddLeave"
+                            onAction="#openAddLeaveDialog"
+                            text="+  New Leave Request"
+                            prefHeight="38" minWidth="170"
+                            style="-fx-background-color:#2563EB;-fx-text-fill:white;
+                                   -fx-font-size:12px;-fx-font-weight:bold;
+                                   -fx-background-radius:10;-fx-padding:0 20;-fx-cursor:hand;"/>
+                </HBox>
+            </HBox>
+
+            <!-- FILTER BAR -->
+            <HBox alignment="CENTER_LEFT" spacing="14"
+                  style="-fx-background-color:white;-fx-background-radius:16;-fx-padding:14;
+                         -fx-border-color:#e8edf5;-fx-border-radius:16;">
+
+                <VBox spacing="4">
+                    <Label text="BATCH"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                    <ComboBox fx:id="cmbBatch" prefWidth="200" prefHeight="36" promptText="All Batches"/>
+                </VBox>
+
+                <VBox spacing="4">
+                    <Label text="STATUS"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                    <ComboBox fx:id="cmbStatus" prefWidth="150" prefHeight="36"/>
+                </VBox>
+
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="SEARCH"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                    <TextField fx:id="txtSearch" prefHeight="36" minWidth="120"
+                               promptText="Student name, code, or reason"/>
+                </VBox>
+
+                <VBox spacing="4">
+                    <Label text=" " style="-fx-font-size:10px;"/>
+                    <Button onAction="#resetFilters"
+                            text="Reset"
+                            prefHeight="36" minWidth="90"
+                            style="-fx-background-color:#eef2ff;-fx-text-fill:#4f46e5;
+                                   -fx-background-radius:9;-fx-font-size:11px;-fx-font-weight:bold;
+                                   -fx-padding:0 14;-fx-cursor:hand;
+                                   -fx-border-color:#c7d2fe;-fx-border-radius:9;"/>
+                </VBox>
+            </HBox>
+
+            <!-- MAIN -->
+            <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+                <!-- LEFT: TABLE -->
+                <VBox spacing="12" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:18;
+                             -fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                    <VBox spacing="3">
+                        <Label text="All Requests"
+                               style="-fx-text-fill:#0f172a;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                        <Label text="Select a request to review its details."
+                               style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                    </VBox>
+
+                    <TableView fx:id="leaveTable" prefHeight="520" VBox.vgrow="ALWAYS"
+                               style="-fx-background-color:white;-fx-border-color:#e2e8f0;
+                                      -fx-border-radius:10;-fx-background-radius:10;">
+                        <columns>
+                            <TableColumn fx:id="colCode"   prefWidth="80"  text="Code"/>
+                            <TableColumn fx:id="colName"   prefWidth="150" text="Student"/>
+                            <TableColumn fx:id="colBatch"  prefWidth="140" text="Batch"/>
+                            <TableColumn fx:id="colFrom"   prefWidth="110" text="From"/>
+                            <TableColumn fx:id="colTo"     prefWidth="110" text="To"/>
+                            <TableColumn fx:id="colStatus" prefWidth="100" text="Status"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <!-- RIGHT: DETAILS -->
+                <VBox minWidth="340" prefWidth="380" spacing="14">
+
+                    <!-- Details card -->
+                    <VBox spacing="12"
+                          style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:20;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <StackPane minHeight="52" minWidth="52"
+                                       style="-fx-background-color:#e0e7ff;-fx-background-radius:26;">
+                                <Label fx:id="lblAvatar" text="--"
+                                       style="-fx-text-fill:#4f46e5;-fx-font-size:17px;-fx-font-weight:bold;"/>
+                            </StackPane>
+                            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                                <Label fx:id="lblStudentName" text="No request selected"
+                                       style="-fx-text-fill:#0f172a;-fx-font-size:15px;-fx-font-weight:bold;"/>
+                                <Label fx:id="lblStudentCode" text="Select a row to view details"
+                                       style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+                            </VBox>
+                        </HBox>
+
+                        <Region minHeight="1" style="-fx-background-color:#eef2ff;"/>
+
+                        <Label fx:id="lblBatch" text="Batch: --"
+                               style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                        <Label fx:id="lblDates" text="From: --    To: --"
+                               style="-fx-text-fill:#334155;-fx-font-size:12px;"/>
+                        <Label fx:id="lblDays" text="--"
+                               style="-fx-text-fill:#4f46e5;-fx-font-size:14px;-fx-font-weight:bold;"/>
+                        <Label fx:id="lblStatus" text="Status: --"
+                               style="-fx-text-fill:#d97706;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                        <Label fx:id="lblApprovedBy" text="Handled by: --"
+                               style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+                    </VBox>
+
+                    <!-- Reason card -->
+                    <VBox spacing="8"
+                          style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:18;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                        <Label text="REASON"
+                               style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+                        <TextArea fx:id="txtReason" editable="false" wrapText="true"
+                                  prefRowCount="4"
+                                  style="-fx-background-color:#f8fafc;-fx-border-color:#e2e8f0;
+                                         -fx-border-radius:8;-fx-background-radius:8;-fx-font-size:12px;"/>
+                    </VBox>
+
+                    <!-- Action buttons -->
+                    <GridPane hgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <Button fx:id="btnReject"
+                                GridPane.columnIndex="0"
+                                onAction="#reject"
+                                text="Reject"
+                                prefHeight="42" minWidth="120" maxWidth="Infinity"
+                                style="-fx-background-color:#fee2e2;-fx-text-fill:#dc2626;
+                                       -fx-background-radius:10;-fx-font-size:12px;-fx-font-weight:bold;
+                                       -fx-padding:0 20;-fx-cursor:hand;
+                                       -fx-border-color:#fecaca;-fx-border-radius:10;"/>
+
+                        <Button fx:id="btnApprove"
+                                GridPane.columnIndex="1"
+                                onAction="#approve"
+                                text="Approve"
+                                prefHeight="42" minWidth="120" maxWidth="Infinity"
+                                style="-fx-background-color:linear-gradient(to right,#16a34a,#22c55e);
+                                       -fx-text-fill:white;-fx-background-radius:10;
+                                       -fx-font-size:12px;-fx-font-weight:bold;
+                                       -fx-padding:0 20;-fx-cursor:hand;
+                                       -fx-effect:dropshadow(gaussian,rgba(22,163,74,.35),10,0,0,3);"/>
+                    </GridPane>
+
+                    <!-- Counters -->
+                    <VBox spacing="10"
+                          style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:16;
+                                 -fx-border-color:#e8edf5;-fx-border-radius:18;">
+
+                        <Label text="SUMMARY"
+                               style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                        <HBox spacing="10">
+                            <VBox HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color:#eef2ff;-fx-background-radius:10;-fx-padding:10;">
+                                <Label text="TOTAL"
+                                       style="-fx-text-fill:#4f46e5;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                                <Label fx:id="lblTotal" text="0"
+                                       style="-fx-text-fill:#312e81;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color:#fffbeb;-fx-background-radius:10;-fx-padding:10;">
+                                <Label text="PENDING"
+                                       style="-fx-text-fill:#d97706;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                                <Label fx:id="lblPending" text="0"
+                                       style="-fx-text-fill:#92400e;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                            </VBox>
+                        </HBox>
+
+                        <HBox spacing="10">
+                            <VBox HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color:#ecfdf5;-fx-background-radius:10;-fx-padding:10;">
+                                <Label text="APPROVED"
+                                       style="-fx-text-fill:#059669;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                                <Label fx:id="lblApproved" text="0"
+                                       style="-fx-text-fill:#065f46;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color:#fef2f2;-fx-background-radius:10;-fx-padding:10;">
+                                <Label text="REJECTED"
+                                       style="-fx-text-fill:#dc2626;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                                <Label fx:id="lblRejected" text="0"
+                                       style="-fx-text-fill:#991b1b;-fx-font-size:18px;-fx-font-weight:bold;"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </AnchorPane>
+
+    <!-- TOAST -->
+    <VBox fx:id="leaveToast" managed="false" visible="false"
+          maxWidth="420" prefWidth="420" spacing="8"
+          translateX="-24" translateY="24" StackPane.alignment="TOP_RIGHT"
+          style="-fx-background-color:white; -fx-background-radius:15;
+                 -fx-padding:15 17 15 15; -fx-border-color:#e2e8f0; -fx-border-radius:15;
+                 -fx-effect:dropshadow(gaussian,rgba(15,23,42,.20),22,0,0,6);">
+
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <StackPane styleClass="toast-icon" minHeight="38" minWidth="38"
+                       style="-fx-background-color:#dcfce7; -fx-background-radius:19;">
+                <Label styleClass="toast-icon-label" text="✓"
+                       style="-fx-text-fill:#16a34a; -fx-font-size:17px; -fx-font-weight:bold;"/>
+            </StackPane>
+            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblToastTitle" text="SUCCESS"
+                       style="-fx-text-fill:#64748b;-fx-font-size:9px;-fx-font-weight:bold;"/>
+                <Label fx:id="lblToastHeading" text="Leave approved"
+                       style="-fx-text-fill:#0f172a;-fx-font-size:14px;-fx-font-weight:bold;"/>
+                <Label fx:id="lblToastMessage" text="The request has been handled." wrapText="true"
+                       style="-fx-text-fill:#64748b;-fx-font-size:11px;"/>
+            </VBox>
+        </HBox>
+        <Region styleClass="toast-bar" maxHeight="3" minHeight="3"
+                style="-fx-background-color:#22c55e; -fx-background-radius:3;"/>
+    </VBox>
+
+</StackPane>

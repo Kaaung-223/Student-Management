@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Staff.AddLeaveRequestDialogController"
+            style="-fx-background-color: #f6f8fc;">
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                style="-fx-background-color: transparent;">
+        <content>
+            <VBox spacing="18" style="-fx-padding: 24;">
+
+                <!-- HEADER -->
+                <VBox spacing="4">
+                    <Label fx:id="lblDialogTitle" text="New Leave Request"
+                           style="-fx-text-fill:#172033;-fx-font-size:22px;-fx-font-weight:bold;"/>
+                    <Label fx:id="lblDialogSubtitle" text="Submit a leave request on behalf of a student"
+                           style="-fx-text-fill:#8995aa;-fx-font-size:13px;"/>
+                </VBox>
+
+                <!-- STUDENT PICKER -->
+                <VBox spacing="12"
+                      style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
+                             -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                    <Label text="SELECT STUDENT"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <HBox spacing="10">
+                        <ComboBox fx:id="cmbBatch" prefWidth="200" prefHeight="36"
+                                  promptText="All Batches"/>
+                        <TextField fx:id="txtSearch" prefHeight="36" HBox.hgrow="ALWAYS"
+                                   promptText="Search by name or code"/>
+                    </HBox>
+
+                    <ListView fx:id="studentList" prefHeight="180"
+                              style="-fx-background-color:white;
+                                     -fx-border-color:#e2e8f0;
+                                     -fx-border-radius:10;
+                                     -fx-background-radius:10;"/>
+
+                    <Label fx:id="lblStudentError" text="" visible="false" managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                </VBox>
+
+                <!-- LEAVE DATES -->
+                <VBox spacing="12"
+                      style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
+                             -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                    <Label text="LEAVE PERIOD"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <GridPane hgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0">
+                            <Label text="From"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <DatePicker fx:id="dpFrom" prefHeight="36" maxWidth="Infinity"/>
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1">
+                            <Label text="To"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <DatePicker fx:id="dpTo" prefHeight="36" maxWidth="Infinity"/>
+                        </VBox>
+                    </GridPane>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="Total:"
+                               style="-fx-text-fill:#64748b;-fx-font-size:11px;-fx-font-weight:bold;"/>
+                        <Label fx:id="lblDaysBadge" text="--"
+                               style="-fx-background-color:#eef2ff;-fx-text-fill:#4f46e5;
+                                      -fx-background-radius:10;-fx-padding:4 12;
+                                      -fx-font-size:11px;-fx-font-weight:bold;"/>
+                    </HBox>
+
+                    <Label fx:id="lblDatesError" text="" visible="false" managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                </VBox>
+
+                <!-- REASON -->
+                <VBox spacing="12"
+                      style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
+                             -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                    <Label text="REASON"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <TextArea fx:id="txtReason" prefRowCount="4" wrapText="true"
+                              promptText="e.g. Family event out of town"/>
+                    <Label fx:id="lblReasonError" text="" visible="false" managed="false"
+                           wrapText="true"
+                           style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                </VBox>
+
+                <!-- ACTIONS -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="btnCancel" onAction="#cancel" text="Cancel"
+                            prefHeight="40" minWidth="110"
+                            style="-fx-background-color:#f0f2f6;-fx-text-fill:#344563;
+                                   -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
+                                   -fx-padding:0 20;-fx-cursor:hand;"/>
+                    <Button fx:id="btnSave" onAction="#save" text="Submit Request"
+                            prefHeight="40" minWidth="160"
+                            style="-fx-background-color:linear-gradient(to right,#4f46e5,#6366f1);
+                                   -fx-text-fill:white;
+                                   -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
+                                   -fx-padding:0 22;-fx-cursor:hand;
+                                   -fx-effect:dropshadow(gaussian,rgba(79,70,229,.35),10,0,0,3);"/>
+                </HBox>
+            </VBox>
+        </content>
+    </ScrollPane>
+</AnchorPane>
