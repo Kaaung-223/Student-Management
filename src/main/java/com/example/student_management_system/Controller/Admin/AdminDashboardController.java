@@ -33,7 +33,7 @@ import java.util.List;
 public class AdminDashboardController implements Initializable {
     @FXML private Label lblToastTitle;
     @FXML private Label lblToastHeading;
-    @FXML private Button btnDashboard, btnStudents, btnTeachers, btnClasses,
+    @FXML private Button btnDashboard, btnStudents, btnTeachers, btnStaff, btnClasses,
             btnClassFees, btnSubjects, btnExams, btnGrades,
             btnAttendance, btnAnnouncements, btnProfile, btnLogout;
 
@@ -378,7 +378,7 @@ public class AdminDashboardController implements Initializable {
 
     private void setActiveButton(Button selected) {
         for (Button b : List.of(
-                btnDashboard, btnStudents, btnTeachers, btnClasses,
+                btnDashboard, btnStudents, btnTeachers, btnStaff, btnClasses,
                 btnClassFees, btnSubjects, btnExams, btnGrades,
                 btnAttendance, btnAnnouncements, btnProfile
         )) {
@@ -400,6 +400,7 @@ public class AdminDashboardController implements Initializable {
 
     @FXML public void openStudents(ActionEvent event) { loadPage("/com/example/student_management_system/View/Admin/AdminStudent.fxml", btnStudents); }
     @FXML public void openTeachers(ActionEvent e) { loadPage("/com/example/student_management_system/View/Admin/AdminTeacher.fxml", btnTeachers); }
+    @FXML public void openStaff(ActionEvent e) { loadPage("/com/example/student_management_system/View/Admin/AdminStaff.fxml", btnStaff); }
     @FXML public void openClasses(ActionEvent e) { loadPage("/com/example/student_management_system/View/Admin/AdminClass.fxml", btnClasses); }
     @FXML public void openClassFees(ActionEvent e) { loadPage("/com/example/student_management_system/View/Admin/AdminClassFee.fxml", btnClassFees); }
     @FXML public void openSubjects(ActionEvent e) { loadPage("/com/example/student_management_system/View/Admin/AdminSubject.fxml", btnSubjects); }
@@ -449,7 +450,6 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     public void logout(ActionEvent e) {
-        // 1. Synchronously obtain the target Stage reference before starting the timer
         Stage stage = null;
         if (e != null && e.getSource() instanceof Node) {
             stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
@@ -464,7 +464,6 @@ public class AdminDashboardController implements Initializable {
 
         final Stage currentStage = stage;
 
-        // 2. Show logout toast feedback
         if (lblToastTitle != null) lblToastTitle.setText("LOGOUT SUCCESS");
         if (lblToastHeading != null) lblToastHeading.setText("Signed out");
         if (lblDashboardWelcome != null) lblDashboardWelcome.setText("You have been logged out successfully.");
@@ -475,7 +474,6 @@ public class AdminDashboardController implements Initializable {
         }
         if (welcomeTimer != null) welcomeTimer.stop();
 
-        // 3. Delayed scene switch to Login window
         PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
         delay.setOnFinished(event -> {
             try {

@@ -8,7 +8,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.student_management_system.Controller.Admin.AddTeacherDialogController"
+            fx:controller="com.example.student_management_system.Controller.Admin.AddStaffDialogController"
             style="-fx-background-color: #f6f8fc;">
 
     <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
@@ -20,13 +20,13 @@
 
                 <!-- HEADER -->
                 <VBox spacing="4">
-                    <Label fx:id="lblDialogTitle" text="Add New Teacher"
+                    <Label fx:id="lblDialogTitle" text="Add New Staff"
                            style="-fx-text-fill:#172033;-fx-font-size:22px;-fx-font-weight:bold;"/>
-                    <Label fx:id="lblDialogSubtitle" text="Create a teacher account and profile"
+                    <Label fx:id="lblDialogSubtitle" text="Create a staff account and profile"
                            style="-fx-text-fill:#8995aa;-fx-font-size:13px;"/>
                 </VBox>
 
-                <!-- PHOTO CARD -->
+                <!-- ✅ PHOTO CARD -->
                 <VBox spacing="12"
                       style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
                              -fx-border-color:#e8edf5;-fx-border-radius:14;">
@@ -72,40 +72,37 @@
                     <Label text="ACCOUNT"
                            style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
 
-                    <!-- Full name + Teacher code -->
                     <HBox spacing="12">
                         <VBox spacing="4" HBox.hgrow="ALWAYS">
                             <Label text="Full name"
                                    style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
                             <TextField fx:id="txtFullName" prefHeight="36"
-                                       promptText="e.g. John Smith"/>
+                                       promptText="e.g. Aung Aung"/>
                             <Label fx:id="lblFullNameError" text="" visible="false" managed="false"
                                    wrapText="true"
                                    style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
                         </VBox>
                         <VBox spacing="4" HBox.hgrow="ALWAYS">
-                            <Label text="Teacher code"
+                            <Label text="Staff code"
                                    style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
-                            <TextField fx:id="txtTeacherCode" prefHeight="36"
-                                       promptText="e.g. T001"/>
-                            <Label fx:id="lblTeacherCodeError" text="" visible="false" managed="false"
+                            <TextField fx:id="txtStaffCode" prefHeight="36"
+                                       promptText="e.g. S001"/>
+                            <Label fx:id="lblStaffCodeError" text="" visible="false" managed="false"
                                    wrapText="true"
                                    style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
                         </VBox>
                     </HBox>
 
-                    <!-- Username -->
                     <VBox spacing="4">
                         <Label text="Username"
                                style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
                         <TextField fx:id="txtUsername" prefHeight="36"
-                                   promptText="e.g. jsmith"/>
+                                   promptText="e.g. aungaung"/>
                         <Label fx:id="lblUsernameError" text="" visible="false" managed="false"
                                wrapText="true"
                                style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
                     </VBox>
 
-                    <!-- Password + Confirm -->
                     <HBox spacing="12">
                         <VBox spacing="4" HBox.hgrow="ALWAYS">
                             <Label text="Password"
@@ -182,13 +179,12 @@
                     <Label text="PROFILE"
                            style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
 
-                    <!-- Email + Phone -->
                     <HBox spacing="12">
                         <VBox spacing="4" HBox.hgrow="ALWAYS">
                             <Label text="Email"
                                    style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
                             <TextField fx:id="txtEmail" prefHeight="36"
-                                       promptText="teacher@school.com"/>
+                                       promptText="staff@school.com"/>
                             <Label fx:id="lblEmailError" text="" visible="false" managed="false"
                                    wrapText="true"
                                    style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
@@ -204,7 +200,6 @@
                         </VBox>
                     </HBox>
 
-                    <!-- Gender + Hire date + Salary -->
                     <HBox spacing="12">
                         <VBox spacing="4" HBox.hgrow="ALWAYS">
                             <Label text="Gender"
@@ -221,38 +216,22 @@
                                    style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
                         </VBox>
                         <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <!-- ✅ Salary -->
                             <Label text="Salary (MMK)"
                                    style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
                             <TextField fx:id="txtSalary" prefHeight="36"
-                                       promptText="e.g. 750000"/>
+                                       promptText="e.g. 500000"/>
                             <Label fx:id="lblSalaryError" text="" visible="false" managed="false"
                                    wrapText="true"
                                    style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
                         </VBox>
                     </HBox>
 
-                    <!-- Class leader -->
-                    <VBox spacing="4">
-                        <Label text="Class leader of"
-                               style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
-                        <ComboBox fx:id="cmbClassLeaderOf" prefHeight="36" maxWidth="Infinity"
-                                  promptText="Select a class (or None)"/>
-                    </VBox>
-
-                    <!-- Address -->
                     <VBox spacing="4">
                         <Label text="Address"
                                style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
                         <TextArea fx:id="txtAddress" prefRowCount="3" wrapText="true"
                                   promptText="Optional address"/>
-                    </VBox>
-
-                    <!-- Subjects taught -->
-                    <VBox spacing="6">
-                        <Label text="Subjects taught"
-                               style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
-                        <VBox fx:id="subjectsBox" spacing="4"
-                              style="-fx-background-color:#f8fafc;-fx-background-radius:10;-fx-padding:12;"/>
                     </VBox>
                 </VBox>
 
@@ -263,8 +242,8 @@
                             style="-fx-background-color:#f0f2f6;-fx-text-fill:#344563;
                                    -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
                                    -fx-padding:0 20;-fx-cursor:hand;"/>
-                    <Button fx:id="btnSave" onAction="#save" text="Save Teacher"
-                            prefHeight="40" minWidth="160"
+                    <Button fx:id="btnSave" onAction="#save" text="Save Staff"
+                            prefHeight="40" minWidth="150"
                             style="-fx-background-color:#2563EB;-fx-text-fill:white;
                                    -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
                                    -fx-padding:0 22;-fx-cursor:hand;"/>

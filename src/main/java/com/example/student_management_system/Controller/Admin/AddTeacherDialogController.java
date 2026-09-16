@@ -6,15 +6,12 @@ import com.example.student_management_system.Controller.DAO.TeacherDAO;
 import com.example.student_management_system.Controller.Model.Batch;
 import com.example.student_management_system.Controller.Model.SubjectOption;
 import com.example.student_management_system.Controller.Model.Teacher;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -41,13 +38,18 @@ public class AddTeacherDialogController implements Initializable {
 
     public enum DialogMode { ADD, EDIT, VIEW }
 
+    // Header
     @FXML private Label lblDialogTitle;
     @FXML private Label lblDialogSubtitle;
+
+    // Photo
     @FXML private Circle photoPlaceholderCircle;
     @FXML private ImageView photoPreview;
     @FXML private Button btnChoosePhoto;
     @FXML private Label lblPhotoFileName;
     @FXML private Label lblPhotoError;
+
+    // Account
     @FXML private TextField txtFullName;
     @FXML private Label lblFullNameError;
     @FXML private TextField txtTeacherCode;
@@ -55,7 +57,6 @@ public class AddTeacherDialogController implements Initializable {
     @FXML private TextField txtUsername;
     @FXML private Label lblUsernameError;
 
-    // ---- Password fields (with visible toggles) ----
     @FXML private PasswordField txtPassword;
     @FXML private TextField visiblePasswordField;
     @FXML private PasswordField txtConfirmPassword;
@@ -69,6 +70,8 @@ public class AddTeacherDialogController implements Initializable {
     @FXML private Label lblPasswordRules;
     @FXML private Label lblPasswordError;
     @FXML private Label lblConfirmPasswordError;
+
+    // Profile
     @FXML private TextField txtEmail;
     @FXML private Label lblEmailError;
     @FXML private TextField txtPhone;
@@ -81,6 +84,8 @@ public class AddTeacherDialogController implements Initializable {
     @FXML private ComboBox<Batch> cmbClassLeaderOf;
     @FXML private TextArea txtAddress;
     @FXML private VBox subjectsBox;
+
+    // Actions
     @FXML private Button btnCancel;
     @FXML private Button btnSave;
 
@@ -108,66 +113,34 @@ public class AddTeacherDialogController implements Initializable {
     public void setDialogMode(DialogMode mode) { this.dialogMode = mode; applyDialogMode(); }
     public boolean wasSaved() { return saved; }
 
-    public void loadTeacher(Teacher teacher) {
-        if (teacher == null) return;
-        editingTeacherId = teacher.getId();
-        editingUserId = teacher.getUserId();
-
-        txtFullName.setText(valueOrEmpty(teacher.getTeacherName()));
-        txtTeacherCode.setText(valueOrEmpty(teacher.getTeacherCode()));
-        txtUsername.setText(valueOrEmpty(teacher.getUsername()));
-        txtEmail.setText(valueOrEmpty(teacher.getEmail()));
-        txtPhone.setText(valueOrEmpty(teacher.getPhone()));
-        txtAddress.setText(valueOrEmpty(teacher.getAddress()));
-
-        if (teacher.getGender() != null && !teacher.getGender().isBlank()) {
-            cmbGender.setValue(teacher.getGender());
-        }
-        dpHireDate.setValue(teacher.getHireDate());
-        if (teacher.getSalary() != null) {
-            txtSalary.setText(teacher.getSalary().toPlainString());
-        } else {
-            txtSalary.clear();
-        }
-
-        existingPhotoPath = teacher.getPhotoPath();
-        selectedPhotoPath = existingPhotoPath;
-        showPhotoPreview(existingPhotoPath);
-
-        List<Integer> selectedSubjectIds = teacherDAO.getTeacherSubjectIds(teacher.getId());
-        if (subjectOptions != null) {
-            for (SubjectOption option : subjectOptions) {
-                option.setSelected(selectedSubjectIds.contains(option.getSubjectId()));
-            }
-        }
-
-        int classLeaderId = teacherDAO.getClassLeaderClassId(teacher.getId());
-        selectClassLeader(classLeaderId);
-
-        applyDialogMode();
-    }
-
+    // =========================================================
+    // INIT
+    // =========================================================
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cmbGender.setItems(FXCollections.observableArrayList("Male", "Female"));
 
+        // Classes for the class-leader combo
         List<Batch> batches = classDAO.getAllBatches();
         List<Batch> classLeaderItems = new ArrayList<>();
         classLeaderItems.add(NO_CLASS_LEADER);
-        classLeaderItems.addAll(batches);
+        if (batches != null) classLeaderItems.addAll(batches);
         cmbClassLeaderOf.setItems(FXCollections.observableArrayList(classLeaderItems));
         cmbClassLeaderOf.getSelectionModel().select(NO_CLASS_LEADER);
 
+        // Subjects checkboxes
         subjectOptions = subjectDAO.getAllSubjects();
         subjectsBox.getChildren().clear();
-        for (SubjectOption option : subjectOptions) {
-            CheckBox checkBox = new CheckBox(option.getSubjectName());
-            checkBox.setStyle("-fx-font-size: 12px; -fx-text-fill: #344563;");
-            checkBox.selectedProperty().bindBidirectional(option.selectedProperty());
-            subjectsBox.getChildren().add(checkBox);
+        if (subjectOptions != null) {
+            for (SubjectOption option : subjectOptions) {
+                CheckBox cb = new CheckBox(option.getSubjectName());
+                cb.setStyle("-fx-font-size: 12px; -fx-text-fill: #344563;");
+                cb.selectedProperty().bindBidirectional(option.selectedProperty());
+                subjectsBox.getChildren().add(cb);
+            }
         }
 
-        // Bind visible password fields with real password fields
+        // Bind hidden ↔ visible password fields
         visiblePasswordField.textProperty().bindBidirectional(txtPassword.textProperty());
         visibleConfirmPasswordField.textProperty().bindBidirectional(txtConfirmPassword.textProperty());
 
@@ -178,7 +151,9 @@ public class AddTeacherDialogController implements Initializable {
         applyDialogMode();
     }
 
-    // ---- Password visibility toggles ----
+    // =========================================================
+    // PASSWORD VISIBILITY
+    // =========================================================
     @FXML
     private void togglePasswordVisibility() {
         boolean show = !visiblePasswordField.isVisible();
@@ -199,27 +174,58 @@ public class AddTeacherDialogController implements Initializable {
         confirmEyeIcon.setIconLiteral(show ? "fas-eye-slash" : "fas-eye");
     }
 
-    // ---- rest of the controller (unchanged except small tweaks) ----
-    private void setupFieldErrorClearing() {
-        bindClearError(txtFullName, lblFullNameError);
-        bindClearError(txtTeacherCode, lblTeacherCodeError);
-        bindClearError(txtUsername, lblUsernameError);
-        bindClearError(txtPassword, lblPasswordError);
-        bindClearError(txtConfirmPassword, lblConfirmPasswordError);
-        bindClearError(txtEmail, lblEmailError);
-        bindClearError(txtPhone, lblPhoneError);
-        bindClearError(txtSalary, lblSalaryError);
-        dpHireDate.valueProperty().addListener((obs, oldVal, newVal) -> clearFieldError(lblHireDateError));
+    // =========================================================
+    // LOAD
+    // =========================================================
+    public void loadTeacher(Teacher teacher) {
+        if (teacher == null) return;
+
+        editingTeacherId = teacher.getId();
+        editingUserId = teacher.getUserId();
+
+        txtFullName.setText(valueOrEmpty(teacher.getTeacherName()));
+        txtTeacherCode.setText(valueOrEmpty(teacher.getTeacherCode()));
+        txtUsername.setText(valueOrEmpty(teacher.getUsername()));
+        txtEmail.setText(valueOrEmpty(teacher.getEmail()));
+        txtPhone.setText(valueOrEmpty(teacher.getPhone()));
+        txtAddress.setText(valueOrEmpty(teacher.getAddress()));
+
+        if (teacher.getGender() != null && !teacher.getGender().isBlank()) {
+            cmbGender.setValue(teacher.getGender());
+        }
+        dpHireDate.setValue(teacher.getHireDate());
+
+        if (teacher.getSalary() != null) {
+            txtSalary.setText(teacher.getSalary().toPlainString());
+        } else {
+            txtSalary.clear();
+        }
+
+        existingPhotoPath = teacher.getPhotoPath();
+        selectedPhotoPath = existingPhotoPath;
+        showPhotoPreview(existingPhotoPath);
+
+        // Subjects
+        List<Integer> selectedSubjectIds = teacherDAO.getTeacherSubjectIds(teacher.getId());
+        if (subjectOptions != null) {
+            for (SubjectOption option : subjectOptions) {
+                option.setSelected(selectedSubjectIds.contains(option.getSubjectId()));
+            }
+        }
+
+        // Class leader
+        int classLeaderId = teacherDAO.getClassLeaderClassId(teacher.getId());
+        selectClassLeader(classLeaderId);
+
+        applyDialogMode();
     }
 
-    private void bindClearError(TextInputControl field, Label errorLabel) {
-        field.textProperty().addListener((obs, oldVal, newVal) -> clearFieldError(errorLabel));
-    }
-
+    // =========================================================
+    // MODE
+    // =========================================================
     private void applyDialogMode() {
         boolean isView = (dialogMode == DialogMode.VIEW);
         boolean isEdit = (dialogMode == DialogMode.EDIT);
-        boolean isAdd = (dialogMode == DialogMode.ADD);
 
         if (lblDialogTitle != null) {
             if (isView) lblDialogTitle.setText("Teacher Details");
@@ -235,8 +241,8 @@ public class AddTeacherDialogController implements Initializable {
             lblPasswordHint.setText(isEdit ? "Leave blank to keep current password" : "Minimum 8 characters");
         }
         if (lblPasswordRules != null) {
-            lblPasswordRules.setManaged(isAdd || isEdit);
-            lblPasswordRules.setVisible(isAdd || isEdit);
+            lblPasswordRules.setVisible(!isView);
+            lblPasswordRules.setManaged(!isView);
         }
         if (btnSave != null) {
             btnSave.setText(isEdit ? "Update Teacher" : "Save Teacher");
@@ -263,39 +269,74 @@ public class AddTeacherDialogController implements Initializable {
         txtSalary.setEditable(editable);
         cmbClassLeaderOf.setDisable(!editable);
         txtAddress.setEditable(editable);
-        for (javafx.scene.Node node : subjectsBox.getChildren()) {
+        btnEye.setDisable(!editable);
+        btnConfirmEye.setDisable(!editable);
+        for (Node node : subjectsBox.getChildren()) {
             if (node instanceof CheckBox) node.setDisable(!editable);
         }
     }
 
+    // =========================================================
+    // PHOTO
+    // =========================================================
     @FXML
     private void choosePhoto() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Choose Teacher Photo");
         chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
+
         File selectedFile = chooser.showOpenDialog(dialogStage);
         if (selectedFile == null) return;
 
         try {
             Path photoDirectory = Paths.get(System.getProperty("user.dir"), "teacher_photos");
             Files.createDirectories(photoDirectory);
+
             String originalFileName = selectedFile.getName();
-            int extensionIndex = originalFileName.lastIndexOf(".");
-            String extension = extensionIndex >= 0 ? originalFileName.substring(extensionIndex) : ".png";
+            int dot = originalFileName.lastIndexOf(".");
+            String extension = dot >= 0 ? originalFileName.substring(dot) : ".png";
             String newFileName = "teacher_" + System.currentTimeMillis() + extension;
             Path destination = photoDirectory.resolve(newFileName);
+
             Files.copy(selectedFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
+
             selectedPhotoPath = destination.toAbsolutePath().toString();
             showPhotoPreview(selectedPhotoPath);
             lblPhotoFileName.setText(selectedFile.getName());
+
         } catch (IOException e) {
             e.printStackTrace();
             showFieldError(lblPhotoError, btnChoosePhoto, "Could not copy the selected photo.");
         }
     }
 
+    private void showPhotoPreview(String photoPath) {
+        if (photoPath == null || photoPath.isBlank()) {
+            photoPreview.setImage(null);
+            photoPreview.setVisible(false);
+            photoPlaceholderCircle.setVisible(true);
+            lblPhotoFileName.setText("No photo selected");
+            return;
+        }
+        File imageFile = new File(photoPath);
+        if (!imageFile.exists()) {
+            photoPreview.setImage(null);
+            photoPreview.setVisible(false);
+            photoPlaceholderCircle.setVisible(true);
+            lblPhotoFileName.setText("Photo file not found");
+            return;
+        }
+        Image image = new Image(imageFile.toURI().toString(), 160, 160, false, true, true);
+        photoPreview.setImage(image);
+        photoPreview.setVisible(true);
+        photoPlaceholderCircle.setVisible(false);
+        lblPhotoFileName.setText(imageFile.getName());
+    }
+
+    // =========================================================
+    // SAVE
+    // =========================================================
     @FXML
     private void save() {
         if (dialogMode == DialogMode.VIEW) return;
@@ -313,6 +354,8 @@ public class AddTeacherDialogController implements Initializable {
         String salaryText = getText(txtSalary);
         String address = emptyToNull(txtAddress.getText());
 
+        boolean isEdit = (dialogMode == DialogMode.EDIT);
+
         if (fullName.isEmpty()) {
             showFieldError(lblFullNameError, txtFullName, "Full name is required.");
             return;
@@ -322,7 +365,6 @@ public class AddTeacherDialogController implements Initializable {
             return;
         }
 
-        boolean isEdit = (dialogMode == DialogMode.EDIT);
         if (!isEdit) {
             if (password.isEmpty()) {
                 showFieldError(lblPasswordError, txtPassword, "Password is required.");
@@ -336,9 +378,10 @@ public class AddTeacherDialogController implements Initializable {
 
         if (!USERNAME_PATTERN.matcher(username).matches()) {
             showFieldError(lblUsernameError, txtUsername,
-                    "Username must contain 3 to 30 characters. Use only letters, numbers, dot, underscore, or hyphen.");
+                    "Username must contain 3-30 characters. Use letters, numbers, dot, underscore, or hyphen.");
             return;
         }
+
         int excludeUserId = isEdit ? editingUserId : -1;
         if (teacherDAO.isUsernameTaken(username, excludeUserId)) {
             showFieldError(lblUsernameError, txtUsername, "This username is already taken.");
@@ -366,7 +409,7 @@ public class AddTeacherDialogController implements Initializable {
         if (!teacherCode.isEmpty()) {
             if (!TEACHER_CODE_PATTERN.matcher(teacherCode).matches()) {
                 showFieldError(lblTeacherCodeError, txtTeacherCode,
-                        "Teacher code must contain 2 to 20 letters, numbers, or hyphens.");
+                        "Teacher code must contain 2-20 letters, numbers, or hyphens.");
                 return;
             }
             int excludeTeacherId = isEdit ? editingTeacherId : -1;
@@ -378,7 +421,7 @@ public class AddTeacherDialogController implements Initializable {
 
         if (!email.isEmpty() && !EMAIL_PATTERN.matcher(email).matches()) {
             showFieldError(lblEmailError, txtEmail,
-                    "Please enter a valid email address, for example teacher@gmail.com.");
+                    "Please enter a valid email address, e.g. teacher@gmail.com.");
             return;
         }
         if (!phone.isEmpty() && !PHONE_PATTERN.matcher(phone).matches()) {
@@ -400,7 +443,7 @@ public class AddTeacherDialogController implements Initializable {
                 }
             } catch (NumberFormatException e) {
                 showFieldError(lblSalaryError, txtSalary,
-                        "Salary must be a valid number, for example 750000.");
+                        "Salary must be a valid number, e.g. 750000.");
                 return;
             }
         }
@@ -426,8 +469,7 @@ public class AddTeacherDialogController implements Initializable {
                     emptyToNull(email),
                     emptyToNull(phone),
                     gender, address, hireDate, salary,
-                    photoPath, subjectIds, classLeaderId
-            );
+                    photoPath, subjectIds, classLeaderId);
             if (!success) {
                 showFieldError(lblUsernameError, txtUsername,
                         "Could not update this teacher. The username or teacher code may already exist.");
@@ -444,8 +486,7 @@ public class AddTeacherDialogController implements Initializable {
                     emptyToNull(email),
                     emptyToNull(phone),
                     gender, address, hireDate, salary,
-                    photoPath, subjectIds, classLeaderId
-            );
+                    photoPath, subjectIds, classLeaderId);
             if (newTeacherId == -1) {
                 showFieldError(lblUsernameError, txtUsername,
                         "Could not save this teacher. The username or teacher code may already exist.");
@@ -457,6 +498,14 @@ public class AddTeacherDialogController implements Initializable {
         if (dialogStage != null) dialogStage.close();
     }
 
+    @FXML
+    private void cancel() {
+        if (dialogStage != null) dialogStage.close();
+    }
+
+    // =========================================================
+    // HELPERS
+    // =========================================================
     private String validatePassword(String password) {
         if (password.length() < 8) return "Password must contain at least 8 characters.";
         if (!password.matches(".*[A-Z].*")) return "Password must contain at least one uppercase letter.";
@@ -464,30 +513,6 @@ public class AddTeacherDialogController implements Initializable {
         if (!password.matches(".*\\d.*")) return "Password must contain at least one number.";
         if (!password.matches(".*[^A-Za-z0-9\\s].*")) return "Password must contain at least one special character.";
         return null;
-    }
-
-    private void showPhotoPreview(String photoPath) {
-        if (photoPath == null || photoPath.isBlank()) {
-            photoPreview.setImage(null);
-            photoPreview.setVisible(false);
-            photoPlaceholderCircle.setVisible(true);
-            lblPhotoFileName.setText("No photo selected");
-            return;
-        }
-        File imageFile = new File(photoPath);
-        if (!imageFile.exists()) {
-            photoPreview.setImage(null);
-            photoPreview.setVisible(false);
-            photoPlaceholderCircle.setVisible(true);
-            lblPhotoFileName.setText("Photo file not found");
-            return;
-        }
-        Image image = new Image(imageFile.toURI().toString(), 72, 72, true, true);
-        photoPreview.setImage(image);
-        photoPreview.setClip(new Circle(36, 36, 36));
-        photoPreview.setVisible(true);
-        photoPlaceholderCircle.setVisible(false);
-        lblPhotoFileName.setText(imageFile.getName());
     }
 
     private void selectClassLeader(int classLeaderId) {
@@ -504,18 +529,27 @@ public class AddTeacherDialogController implements Initializable {
         cmbClassLeaderOf.getSelectionModel().select(NO_CLASS_LEADER);
     }
 
-    private String getText(TextField field) {
-        return (field == null || field.getText() == null) ? "" : field.getText().trim();
+    private void setupFieldErrorClearing() {
+        bindClearError(txtFullName, lblFullNameError);
+        bindClearError(txtTeacherCode, lblTeacherCodeError);
+        bindClearError(txtUsername, lblUsernameError);
+        bindClearError(txtPassword, lblPasswordError);
+        bindClearError(txtConfirmPassword, lblConfirmPasswordError);
+        bindClearError(txtEmail, lblEmailError);
+        bindClearError(txtPhone, lblPhoneError);
+        bindClearError(txtSalary, lblSalaryError);
+        dpHireDate.valueProperty().addListener((o, a, b) -> clearFieldError(lblHireDateError));
     }
 
-    private String emptyToNull(String value) {
-        if (value == null) return null;
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed;
+    private void bindClearError(TextInputControl field, Label errorLabel) {
+        field.textProperty().addListener((o, a, b) -> clearFieldError(errorLabel));
     }
 
-    private String valueOrEmpty(String value) {
-        return value == null ? "" : value;
+    private void clearFieldError(Label errorLabel) {
+        if (errorLabel == null) return;
+        errorLabel.setText("");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
     }
 
     private void hideAllErrors() {
@@ -531,14 +565,7 @@ public class AddTeacherDialogController implements Initializable {
         clearFieldError(lblSalaryError);
     }
 
-    private void clearFieldError(Label errorLabel) {
-        if (errorLabel == null) return;
-        errorLabel.setText("");
-        errorLabel.setVisible(false);
-        errorLabel.setManaged(false);
-    }
-
-    private void showFieldError(Label errorLabel, javafx.scene.Node focusNode, String message) {
+    private void showFieldError(Label errorLabel, Node focusNode, String message) {
         hideAllErrors();
         errorLabel.setText(message);
         errorLabel.setVisible(true);
@@ -546,8 +573,17 @@ public class AddTeacherDialogController implements Initializable {
         if (focusNode != null) focusNode.requestFocus();
     }
 
-    @FXML
-    private void cancel() {
-        if (dialogStage != null) dialogStage.close();
+    private String getText(TextField field) {
+        return (field == null || field.getText() == null) ? "" : field.getText().trim();
+    }
+
+    private String emptyToNull(String value) {
+        if (value == null) return null;
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private String valueOrEmpty(String value) {
+        return value == null ? "" : value;
     }
 }
