@@ -26,5 +26,7 @@ module com.example.student_management_system {
 
 
     exports com.example.student_management_system.Controller.Model;
+    opens com.example.student_management_system.Controller.DAO to javafx.fxml;
+    opens com.example.student_management_system.Controller.Staff to javafx.fxml;
 
 }

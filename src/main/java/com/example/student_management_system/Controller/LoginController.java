@@ -1,6 +1,7 @@
 package com.example.student_management_system.Controller;
 
 import com.example.student_management_system.Controller.Admin.AdminDashboardController;
+import com.example.student_management_system.Controller.Staff.StaffDashboardController;   // ✅ NEW
 import com.example.student_management_system.Controller.Teacher.TeacherDashboardController;
 import com.example.student_management_system.Controller.DAO.DBConnention;
 
@@ -243,6 +244,8 @@ public class LoginController {
                         openAdminDashboard(username);
                     } else if ("TEACHER".equalsIgnoreCase(role)) {
                         openTeacherDashboard(username);
+                    } else if ("STAFF".equalsIgnoreCase(role)) {           // ✅ NEW
+                        openStaffDashboard(username);                      // ✅ NEW
                     } else {
                         showErrorToast(
                                 "ACCESS DENIED",
@@ -475,6 +478,39 @@ public class LoginController {
             showErrorToast(
                     "DASHBOARD ERROR",
                     "Unable to open teacher dashboard",
+                    "Please try again."
+            );
+        }
+    }
+
+    // ✅ NEW METHOD
+    private void openStaffDashboard(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/student_management_system/View/Staff/StaffDashboard.fxml")
+            );
+            Parent root = loader.load();
+
+            StaffDashboardController controller = loader.getController();
+            controller.setLoggedInStaff(username);
+
+            Stage stage = (Stage) txtUsername.getScene().getWindow();
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+
+            Scene scene = new Scene(root, bounds.getWidth(), bounds.getHeight());
+            stage.setScene(scene);
+            stage.setX(bounds.getMinX());
+            stage.setY(bounds.getMinY());
+            stage.setWidth(bounds.getWidth());
+            stage.setHeight(bounds.getHeight());
+            stage.setMaximized(true);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorToast(
+                    "DASHBOARD ERROR",
+                    "Unable to open staff dashboard",
                     "Please try again."
             );
         }
