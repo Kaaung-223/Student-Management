@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.student_management_system.Controller.Staff.AddStudentDialogController"
+            style="-fx-background-color: #f6f8fc;">
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                style="-fx-background-color: transparent;">
+        <content>
+            <VBox spacing="18" style="-fx-padding: 24;">
+
+                <!-- HEADER -->
+                <VBox spacing="4">
+                    <Label fx:id="lblDialogTitle" text="Add New Student"
+                           style="-fx-text-fill:#172033;-fx-font-size:22px;-fx-font-weight:bold;"/>
+                    <Label fx:id="lblDialogSubtitle" text="Create a new student profile"
+                           style="-fx-text-fill:#8995aa;-fx-font-size:13px;"/>
+                </VBox>
+
+                <!-- PHOTO CARD -->
+                <VBox spacing="12"
+                      style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
+                             -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                    <Label text="PROFILE PHOTO"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <HBox spacing="16" alignment="CENTER_LEFT">
+                        <StackPane minHeight="80" minWidth="80" maxHeight="80" maxWidth="80"
+                                   style="-fx-background-color:#eef2ff;-fx-background-radius:40;">
+                            <Circle fx:id="photoPlaceholderCircle" radius="40" fill="#eef2ff"/>
+                            <ImageView fx:id="photoPreview"
+                                       fitHeight="80" fitWidth="80" preserveRatio="false"
+                                       visible="false">
+                                <clip>
+                                    <Circle radius="40" centerX="40" centerY="40"/>
+                                </clip>
+                            </ImageView>
+                        </StackPane>
+
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Button fx:id="btnChoosePhoto" onAction="#choosePhoto"
+                                    text="Choose Photo"
+                                    prefHeight="36" minWidth="150"
+                                    style="-fx-background-color:#eef2ff;-fx-text-fill:#4f46e5;
+                                           -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
+                                           -fx-padding:0 20;-fx-cursor:hand;
+                                           -fx-border-color:#c7d2fe;-fx-border-radius:9;"/>
+                            <Label fx:id="lblPhotoFileName" text="No photo selected"
+                                   style="-fx-text-fill:#94a3b8;-fx-font-size:11px;"/>
+                            <Label fx:id="lblPhotoError" text="" visible="false" managed="false"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- IDENTITY CARD -->
+                <VBox spacing="12"
+                      style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
+                             -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                    <Label text="IDENTITY"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <HBox spacing="12">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Student code"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtStudentCode" prefHeight="36"
+                                       promptText="e.g. J005"/>
+                            <Label fx:id="lblStudentCodeError" text="" visible="false" managed="false"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                        </VBox>
+
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Full name"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtStudentName" prefHeight="36"
+                                       promptText="e.g. Aung Kyaw"/>
+                            <Label fx:id="lblStudentNameError" text="" visible="false" managed="false"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Age"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtAge" prefHeight="36"
+                                       promptText="e.g. 20"/>
+                            <Label fx:id="lblAgeError" text="" visible="false" managed="false"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Gender"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <ComboBox fx:id="cmbGender" prefHeight="36" maxWidth="Infinity"
+                                      promptText="Select gender"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Status"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <ComboBox fx:id="cmbStatus" prefHeight="36" maxWidth="Infinity"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- ENROLLMENT CARD -->
+                <VBox spacing="12"
+                      style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
+                             -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                    <Label text="ENROLLMENT"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <HBox spacing="12">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Batch"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <ComboBox fx:id="cmbClass" prefHeight="36" maxWidth="Infinity"
+                                      promptText="Select a batch"/>
+                            <Label fx:id="lblClassError" text="" visible="false" managed="false"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Admission date"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <DatePicker fx:id="dpAdmissionDate" prefHeight="36" maxWidth="Infinity"/>
+                            <Label fx:id="lblAdmissionDateError" text="" visible="false" managed="false"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- CONTACT CARD -->
+                <VBox spacing="12"
+                      style="-fx-background-color:white;-fx-background-radius:14;-fx-padding:18;
+                             -fx-border-color:#e8edf5;-fx-border-radius:14;">
+
+                    <Label text="CONTACT"
+                           style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
+
+                    <HBox spacing="12">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Email"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtEmail" prefHeight="36"
+                                       promptText="student@gmail.com"/>
+                            <Label fx:id="lblEmailError" text="" visible="false" managed="false"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Phone"
+                                   style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                            <TextField fx:id="txtPhone" prefHeight="36"
+                                       promptText="09xxxxxxxxx"/>
+                            <Label fx:id="lblPhoneError" text="" visible="false" managed="false"
+                                   wrapText="true"
+                                   style="-fx-text-fill:#dc2626;-fx-font-size:11px;"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="4">
+                        <Label text="Address"
+                               style="-fx-text-fill:#334155;-fx-font-size:12px;-fx-font-weight:bold;"/>
+                        <TextArea fx:id="txtAddress" prefRowCount="3" wrapText="true"
+                                  promptText="Optional address"/>
+                    </VBox>
+                </VBox>
+
+                <!-- ACTIONS -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="btnCancel" onAction="#cancel" text="Cancel"
+                            prefHeight="40" minWidth="110"
+                            style="-fx-background-color:#f0f2f6;-fx-text-fill:#344563;
+                                   -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
+                                   -fx-padding:0 20;-fx-cursor:hand;"/>
+                    <Button fx:id="btnSave" onAction="#save" text="Save Student"
+                            prefHeight="40" minWidth="160"
+                            style="-fx-background-color:#2563EB;-fx-text-fill:white;
+                                   -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
+                                   -fx-padding:0 22;-fx-cursor:hand;"/>
+                </HBox>
+            </VBox>
+        </content>
+    </ScrollPane>
+</AnchorPane>

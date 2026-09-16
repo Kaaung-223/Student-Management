@@ -2,44 +2,52 @@ package com.example.student_management_system.Controller.Model;
 
 public class Student {
 
-    private int id;
+    private int studentId;
     private String studentCode;
-    private String studentName;   // maps to students.student_name
+    private String studentName;
     private String email;
-    private String status;        // students.status: 'ACTIVE' / 'INACTIVE'
-    private int batchId;          // students.class_id
-    private String batchName;     // classes.class_name
+    private String status;
+    private int classId;
+    private String className;
 
     public Student() {}
 
-    public Student(int id, String studentCode, String studentName, String email, String status, int batchId, String batchName) {
-        this.id = id;
+    public Student(int studentId, String studentCode, String studentName, String email,
+                   String status, int classId, String className) {
+        this.studentId = studentId;
         this.studentCode = studentCode;
         this.studentName = studentName;
         this.email = email;
         this.status = status;
-        this.batchId = batchId;
-        this.batchName = batchName;
+        this.classId = classId;
+        this.className = className;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
+    // ---------- primary getters ----------
+    public int getStudentId() { return studentId; }
     public String getStudentCode() { return studentCode; }
-    public void setStudentCode(String studentCode) { this.studentCode = studentCode; }
-
     public String getStudentName() { return studentName; }
-    public void setStudentName(String studentName) { this.studentName = studentName; }
-
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
     public String getStatus() { return status; }
+    public int getClassId() { return classId; }
+    public String getClassName() { return className; }
+
+    // ---------- alias getters (compatibility) ----------
+    public int getId() { return studentId; }
+    public String getName() { return studentName; }
+    public String getBatchName() { return className; }
+
+    // ---------- setters ----------
+    public void setStudentId(int studentId) { this.studentId = studentId; }
+    public void setStudentCode(String studentCode) { this.studentCode = studentCode; }
+    public void setStudentName(String studentName) { this.studentName = studentName; }
+    public void setEmail(String email) { this.email = email; }
     public void setStatus(String status) { this.status = status; }
+    public void setClassId(int classId) { this.classId = classId; }
+    public void setClassName(String className) { this.className = className; }
 
-    public int getBatchId() { return batchId; }
-    public void setBatchId(int batchId) { this.batchId = batchId; }
-
-    public String getBatchName() { return batchName; }
-    public void setBatchName(String batchName) { this.batchName = batchName; }
+    @Override
+    public String toString() {
+        return studentCode + " - " + studentName;
+    }
 }

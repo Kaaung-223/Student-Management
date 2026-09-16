@@ -226,7 +226,7 @@ public class StaffDashboardController implements Initializable {
         loadDashboardData();
     }
 
-    @FXML public void openStudents(ActionEvent e)      { openSubView("/com/example/student_management_system/View/Staff/StaffStudents.fxml",   btnStudents); }
+    @FXML public void openStudents(ActionEvent e)      { openSubView("/com/example/student_management_system/View/Staff/StaffStudent.fxml",   btnStudents); }
     @FXML public void openPayments(ActionEvent e)      { openSubView("/com/example/student_management_system/View/Staff/StaffPayments.fxml",   btnPayments); }
     @FXML public void openLeaveRequests(ActionEvent e) { openSubView("/com/example/student_management_system/View/Staff/StaffLeave.fxml",      btnLeaveRequests); }
     @FXML public void openAttendance(ActionEvent e)    { openSubView("/com/example/student_management_system/View/Staff/StaffAttendance.fxml", btnAttendance); }
