@@ -1,6 +1,7 @@
 package com.example.student_management_system.Controller.Staff;
 
 import com.example.student_management_system.Controller.DAO.StaffDashboardDAO;
+import com.example.student_management_system.Controller.DAO.StaffDashboardDAO.AnnouncementNotice;
 import com.example.student_management_system.Controller.Model.StaffInfo;
 
 import javafx.animation.PauseTransition;
@@ -33,7 +34,7 @@ public class StaffDashboardController implements Initializable {
 
     // Sidebar buttons
     @FXML private Button btnDashboard, btnStudents, btnPayments, btnLeaveRequests,
-             btnAnnouncements, btnProfile, btnLogout;
+            btnAttendance, btnAnnouncements, btnProfile, btnLogout;
 
     // Center content
     @FXML private StackPane contentPane;
@@ -43,6 +44,10 @@ public class StaffDashboardController implements Initializable {
     // Welcome toast
     @FXML private VBox welcomeToast;
     @FXML private Label lblToastTitle, lblToastHeading, lblDashboardWelcome;
+
+    // Announcement toast
+    @FXML private VBox announcementToast;
+    @FXML private Label lblAnnToastTitle, lblAnnToastHeading, lblAnnToastMessage;
 
     // Header
     @FXML private ImageView staffPhoto;
@@ -56,16 +61,17 @@ public class StaffDashboardController implements Initializable {
     @FXML private PieChart feePieChart;
     @FXML private PieChart methodPieChart;
 
-    // Finance summary
+    // Finance labels
     @FXML private Label lblPaidCount, lblUnpaidCount, lblTotalCollected;
 
     // DAO + session
     private final StaffDashboardDAO dao = new StaffDashboardDAO();
     private StaffInfo staffInfo;
-    private PauseTransition welcomeTimer;
 
-    private static final NumberFormat MONEY =
-            NumberFormat.getNumberInstance(Locale.US);
+    private PauseTransition welcomeTimer;
+    private PauseTransition announcementTimer;
+
+    private static final NumberFormat MONEY = NumberFormat.getNumberInstance(Locale.US);
 
     private static final String ACTIVE =
             "-fx-background-color:#4f46e5; -fx-background-radius:10; -fx-text-fill:white;" +
@@ -80,7 +86,6 @@ public class StaffDashboardController implements Initializable {
         setActiveButton(btnDashboard);
     }
 
-    /** Called from LoginController after a successful STAFF login. */
     public void setLoggedInStaff(String username) {
         staffInfo = dao.getStaffByUsername(username);
 
@@ -96,9 +101,9 @@ public class StaffDashboardController implements Initializable {
         }
     }
 
-    // -------------------------------------------------
-    //  Photo
-    // -------------------------------------------------
+    // =========================================================
+    //  PHOTO
+    // =========================================================
     private void loadPhoto(String path) {
         try {
             if (path != null && !path.isBlank()) {
@@ -126,11 +131,10 @@ public class StaffDashboardController implements Initializable {
         }
     }
 
-    // -------------------------------------------------
-    //  Data
-    // -------------------------------------------------
+    // =========================================================
+    //  DASHBOARD DATA
+    // =========================================================
     private void loadDashboardData() {
-        // Stat cards
         lblTotalStudents.setText(String.valueOf(dao.getTotalStudents()));
         lblTotalClasses.setText(String.valueOf(dao.getTotalClasses()));
 
@@ -158,10 +162,10 @@ public class StaffDashboardController implements Initializable {
         lblPaidCount.setText(String.valueOf(paid));
         lblUnpaidCount.setText(String.valueOf(unpaid));
 
-        BigDecimal totalCollected = dao.getTotalCollected();
-        lblTotalCollected.setText(MONEY.format(totalCollected) + " MMK");
+        BigDecimal total = dao.getTotalCollected();
+        lblTotalCollected.setText(MONEY.format(total) + " MMK");
 
-        // Payment methods pie
+        // Methods pie
         Map<String, Integer> methods = dao.getPaymentMethods();
         if (methods.isEmpty()) {
             methodPieChart.setData(FXCollections.observableArrayList(
@@ -185,9 +189,9 @@ public class StaffDashboardController implements Initializable {
         }
     }
 
-    // -------------------------------------------------
-    //  Welcome toast
-    // -------------------------------------------------
+    // =========================================================
+    //  WELCOME TOAST → chains ANNOUNCEMENT TOAST
+    // =========================================================
     private void showWelcomeToast(String name) {
         if (name == null || name.trim().isEmpty()) name = "Staff";
 
@@ -207,16 +211,52 @@ public class StaffDashboardController implements Initializable {
 
         if (welcomeTimer != null) welcomeTimer.stop();
         welcomeTimer = new PauseTransition(Duration.seconds(5));
+
         welcomeTimer.setOnFinished(e -> {
             welcomeToast.setVisible(false);
             welcomeToast.setManaged(false);
+            showAnnouncementToastIfAny();
         });
+
         welcomeTimer.play();
     }
 
-    // -------------------------------------------------
-    //  Navigation
-    // -------------------------------------------------
+    private void showAnnouncementToastIfAny() {
+        if (announcementToast == null || staffInfo == null) return;
+
+        AnnouncementNotice notice = dao.getUnreadAnnouncementNotice(staffInfo.getUserId());
+        if (notice == null || notice.getCount() == 0) return;
+
+        announcementToast.setPrefWidth(420);
+        announcementToast.setMinWidth(420);
+        announcementToast.setMaxWidth(420);
+        announcementToast.setPrefHeight(125);
+        announcementToast.setMinHeight(125);
+        announcementToast.setMaxHeight(125);
+
+        String heading = (notice.getCount() == 1)
+                ? "You have 1 new announcement"
+                : "You have " + notice.getCount() + " new announcements";
+
+        lblAnnToastTitle.setText("NEW ANNOUNCEMENT");
+        lblAnnToastHeading.setText(heading);
+        lblAnnToastMessage.setText(notice.getTitle());
+
+        announcementToast.setManaged(true);
+        announcementToast.setVisible(true);
+
+        if (announcementTimer != null) announcementTimer.stop();
+        announcementTimer = new PauseTransition(Duration.seconds(5));
+        announcementTimer.setOnFinished(e -> {
+            announcementToast.setVisible(false);
+            announcementToast.setManaged(false);
+        });
+        announcementTimer.play();
+    }
+
+    // =========================================================
+    //  NAVIGATION
+    // =========================================================
     @FXML
     public void refreshDashboard(ActionEvent e) {
         setActiveButton(btnDashboard);
@@ -226,26 +266,49 @@ public class StaffDashboardController implements Initializable {
         loadDashboardData();
     }
 
-    @FXML public void openStudents(ActionEvent e)      { openSubView("/com/example/student_management_system/View/Staff/StaffStudent.fxml",   btnStudents); }
-    @FXML public void openPayments(ActionEvent e)      { openSubView("/com/example/student_management_system/View/Staff/StaffPayment.fxml",   btnPayments); }
-    @FXML public void openLeaveRequests(ActionEvent e) { openSubView("/com/example/student_management_system/View/Staff/StaffLeave.fxml",      btnLeaveRequests); }
-    @FXML public void openAnnouncements(ActionEvent e) { openSubView("/com/example/student_management_system/View/Staff/StaffAnnouncements.fxml", btnAnnouncements); }
-    @FXML public void openProfile(ActionEvent e)       { openSubView("/com/example/student_management_system/View/Staff/StaffProfile.fxml",    btnProfile); }
+    @FXML public void openStudents(ActionEvent e) {
+        setActiveButton(btnStudents);
+        openSubView("/com/example/student_management_system/View/Staff/StaffStudent.fxml");
+    }
+    @FXML public void openPayments(ActionEvent e) {
+        setActiveButton(btnPayments);
+        openSubView("/com/example/student_management_system/View/Staff/StaffPayment.fxml");
+    }
+    @FXML public void openLeaveRequests(ActionEvent e) {
+        setActiveButton(btnLeaveRequests);
+        openSubView("/com/example/student_management_system/View/Staff/StaffLeave.fxml");
+    }
+    @FXML public void openAttendance(ActionEvent e) {
+        setActiveButton(btnAttendance);
+        openSubView("/com/example/student_management_system/View/Staff/StaffAttendance.fxml");
+    }
+    @FXML public void openAnnouncements(ActionEvent e) {
+        setActiveButton(btnAnnouncements);
+        openSubView("/com/example/student_management_system/View/Staff/StaffAnnouncement.fxml");
+    }
+    @FXML public void openProfile(ActionEvent e) {
+        setActiveButton(btnProfile);
+        openSubView("/com/example/student_management_system/View/Staff/StaffProfile.fxml");
+    }
 
-    private void openSubView(String fxmlPath, Button btn) {
-        setActiveButton(btn);
+    private void openSubView(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
 
             Object ctrl = loader.getController();
-            try {
-                var m = ctrl.getClass().getMethod("setStaffInfo", StaffInfo.class);
-                m.invoke(ctrl, staffInfo);
-            } catch (NoSuchMethodException ignored) {
-                // controller doesn't need staffInfo
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (ctrl != null && staffInfo != null) {
+                try {
+                    var m = ctrl.getClass().getMethod("setStaffInfo", StaffInfo.class);
+                    m.invoke(ctrl, staffInfo);
+                } catch (NoSuchMethodException ignored) {
+                    try {
+                        var m = ctrl.getClass().getMethod("setStaffInfo", Object.class);
+                        m.invoke(ctrl, staffInfo);
+                    } catch (Exception ignored2) { /* fine */ }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
 
             staffPane.getChildren().setAll(view);
@@ -264,15 +327,15 @@ public class StaffDashboardController implements Initializable {
 
     private void setActiveButton(Button selected) {
         for (Button b : List.of(
-                btnDashboard, btnStudents, btnPayments, btnLeaveRequests
-                , btnAnnouncements, btnProfile)) {
+                btnDashboard, btnStudents, btnPayments, btnLeaveRequests,
+                btnAttendance, btnAnnouncements, btnProfile)) {
             if (b != null) b.setStyle(b == selected ? ACTIVE : NORMAL);
         }
     }
 
-    // -------------------------------------------------
-    //  Logout
-    // -------------------------------------------------
+    // =========================================================
+    //  LOGOUT
+    // =========================================================
     @FXML
     public void logout(ActionEvent e) {
         Stage stage = null;
@@ -281,10 +344,8 @@ public class StaffDashboardController implements Initializable {
         } else if (btnLogout != null && btnLogout.getScene() != null) {
             stage = (Stage) btnLogout.getScene().getWindow();
         }
-        if (stage == null) {
-            System.err.println("Logout Error: Target Stage could not be determined.");
-            return;
-        }
+        if (stage == null) return;
+
         final Stage currentStage = stage;
 
         lblToastTitle.setText("LOGOUT SUCCESS");
@@ -294,6 +355,7 @@ public class StaffDashboardController implements Initializable {
         welcomeToast.setManaged(true);
         welcomeToast.setVisible(true);
         if (welcomeTimer != null) welcomeTimer.stop();
+        if (announcementTimer != null) announcementTimer.stop();
 
         PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
         delay.setOnFinished(event -> {

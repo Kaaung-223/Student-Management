@@ -10,7 +10,23 @@ import java.util.Map;
 public class StaffDashboardDAO {
 
     // ==================================================
-    //  Staff info by username (for login)
+    //  DTO for the announcement toast
+    // ==================================================
+    public static class AnnouncementNotice {
+        private final int count;
+        private final String title;
+
+        public AnnouncementNotice(int count, String title) {
+            this.count = count;
+            this.title = title;
+        }
+
+        public int getCount() { return count; }
+        public String getTitle() { return title; }
+    }
+
+    // ==================================================
+    //  Staff info by username
     // ==================================================
     public StaffInfo getStaffByUsername(String username) {
         String sql =
@@ -64,7 +80,7 @@ public class StaffDashboardDAO {
     }
 
     // ==================================================
-    //  STAT CARD 2 — total classes
+    //  STAT CARD 2 — total active classes
     // ==================================================
     public int getTotalClasses() {
         String sql = "SELECT COUNT(*) FROM classes WHERE class_status = 'ACTIVE'";
@@ -107,8 +123,7 @@ public class StaffDashboardDAO {
     }
 
     // ==================================================
-    //  FEE COLLECTION PIE — Paid vs Unpaid students
-    //  Based on student_payments existing or not
+    //  Fee collection pie — Paid vs Unpaid students
     // ==================================================
     public Map<String, Integer> getFeePaymentStatus() {
         Map<String, Integer> map = new LinkedHashMap<>();
@@ -139,7 +154,7 @@ public class StaffDashboardDAO {
     }
 
     // ==================================================
-    //  PAYMENT METHODS CHART
+    //  Payment methods chart
     // ==================================================
     public Map<String, Integer> getPaymentMethods() {
         Map<String, Integer> map = new LinkedHashMap<>();
@@ -162,7 +177,7 @@ public class StaffDashboardDAO {
     }
 
     // ==================================================
-    //  Optional: total collected (all-time)
+    //  All-time total collected
     // ==================================================
     public BigDecimal getTotalCollected() {
         String sql = "SELECT COALESCE(SUM(amount), 0) FROM student_payments";
@@ -172,5 +187,36 @@ public class StaffDashboardDAO {
             if (rs.next()) return rs.getBigDecimal(1);
         } catch (Exception e) { e.printStackTrace(); }
         return BigDecimal.ZERO;
+    }
+
+    // ==================================================
+    //  Unread announcement count + latest title (for toast)
+    // ==================================================
+    public AnnouncementNotice getUnreadAnnouncementNotice(int userId) {
+        String sql =
+                "SELECT title FROM announcements " +
+                        "WHERE target_audience IN ('STAFF','ALL') " +
+                        "AND announcement_id > ( " +
+                        "    SELECT COALESCE(last_seen_announcement_id, 0) " +
+                        "    FROM users WHERE user_id = ? " +
+                        ") " +
+                        "ORDER BY announcement_id DESC";
+
+        try (Connection con = DBConnention.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return null;
+
+                String latestTitle = rs.getString("title");
+                int count = 1;
+                while (rs.next()) count++;
+
+                return new AnnouncementNotice(count, latestTitle);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
     }
 }
