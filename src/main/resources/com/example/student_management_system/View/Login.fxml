@@ -180,7 +180,8 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Hyperlink style="-fx-text-fill:#4f46e5;-fx-font-size:12px;-fx-font-weight:bold;"
+                        <Hyperlink onAction="#handleForgotPassword"
+                                   style="-fx-text-fill:#4f46e5;-fx-font-size:12px;-fx-font-weight:bold;"
                                    text="Forgot password?"/>
 
                     </HBox>
@@ -216,7 +217,7 @@
     </AnchorPane>
 
 
-    <!-- LOGIN MESSAGE TOAST (same style as admin dashboard welcome toast) -->
+    <!-- LOGIN MESSAGE TOAST -->
     <VBox fx:id="loginToast"
           managed="false"
           visible="false"

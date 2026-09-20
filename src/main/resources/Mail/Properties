@@ -1,0 +1,6 @@
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=587
+mail.username=kk8264483@gmail.com
+mail.password=bmqbfcphtbjlqwho
+mail.from=kk8264483@gmail.com
+mail.from.name=StudentHub

@@ -182,7 +182,8 @@
                     <Label text="PROFILE"
                            style="-fx-text-fill:#64748b;-fx-font-size:10px;-fx-font-weight:bold;"/>
 
-                    <!-- Email + Phone -->
+                    <!--
+                    Email + Phone -->
                     <HBox spacing="12">
                         <VBox spacing="4" HBox.hgrow="ALWAYS">
                             <Label text="Email"

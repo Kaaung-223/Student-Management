@@ -1,7 +1,7 @@
 package com.example.student_management_system.Controller;
 
 import com.example.student_management_system.Controller.Admin.AdminDashboardController;
-import com.example.student_management_system.Controller.Staff.StaffDashboardController;   // ✅ NEW
+import com.example.student_management_system.Controller.Staff.StaffDashboardController;
 import com.example.student_management_system.Controller.Teacher.TeacherDashboardController;
 import com.example.student_management_system.Controller.DAO.DBConnention;
 
@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -65,44 +66,21 @@ public class LoginController {
                     "-fx-cursor:default;" +
                     "-fx-opacity:0.85;";
 
-    @FXML
-    private Button btnLogin;
+    @FXML private Button btnLogin;
+    @FXML private Button btnEye;
 
-    @FXML
-    private Button btnEye;
+    @FXML private TextField txtUsername;
+    @FXML private TextField visiblePasswordField;
+    @FXML private PasswordField passwordField;
 
-    @FXML
-    private TextField txtUsername;
-
-    @FXML
-    private TextField visiblePasswordField;
-
-    @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private VBox loginToast;
-
-    @FXML
-    private StackPane loginToastIconWrap;
-
-    @FXML
-    private Label loginToastIcon;
-
-    @FXML
-    private Label lblLoginToastTitle;
-
-    @FXML
-    private Label lblLoginToastHeading;
-
-    @FXML
-    private Label lblLoginToastMessage;
-
-    @FXML
-    private Region loginToastAccent;
-
-    @FXML
-    private FontIcon eyeIcon;
+    @FXML private VBox loginToast;
+    @FXML private StackPane loginToastIconWrap;
+    @FXML private Label loginToastIcon;
+    @FXML private Label lblLoginToastTitle;
+    @FXML private Label lblLoginToastHeading;
+    @FXML private Label lblLoginToastMessage;
+    @FXML private Region loginToastAccent;
+    @FXML private FontIcon eyeIcon;
 
     private boolean showPassword = false;
     private int failedAttempts = 0;
@@ -128,6 +106,35 @@ public class LoginController {
 
         btnLogin.setDefaultButton(true);
         applyLoginButtonStyle(true);
+    }
+
+    // =====================================================
+    // FORGOT PASSWORD  <-- opens the reset dialog
+    // =====================================================
+    @FXML
+    private void handleForgotPassword() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/student_management_system/View/ForgotPassword.fxml"));
+
+            Parent root = loader.load();
+
+            Stage dialog = new Stage();
+            dialog.initOwner(txtUsername.getScene().getWindow());
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setTitle("Reset Password");
+            dialog.setResizable(false);
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorToast(
+                    "ERROR",
+                    "Unable to open reset window",
+                    "Please try again later."
+            );
+        }
     }
 
     @FXML
@@ -174,10 +181,7 @@ public class LoginController {
         loginInProgress = true;
         btnLogin.setStyle(BTN_PRESSED_STYLE);
 
-        PauseTransition pressEffect =
-                new PauseTransition(
-                        Duration.millis(160)
-                );
+        PauseTransition pressEffect = new PauseTransition(Duration.millis(160));
 
         pressEffect.setOnFinished(e -> {
             try {
@@ -244,8 +248,8 @@ public class LoginController {
                         openAdminDashboard(username);
                     } else if ("TEACHER".equalsIgnoreCase(role)) {
                         openTeacherDashboard(username);
-                    } else if ("STAFF".equalsIgnoreCase(role)) {           // ✅ NEW
-                        openStaffDashboard(username);                      // ✅ NEW
+                    } else if ("STAFF".equalsIgnoreCase(role)) {
+                        openStaffDashboard(username);
                     } else {
                         showErrorToast(
                                 "ACCESS DENIED",
@@ -334,9 +338,7 @@ public class LoginController {
     }
 
     private void updateLockoutButtonText(int secondsLeft) {
-        btnLogin.setText(
-                "SIGN IN (" + secondsLeft + "s)"
-        );
+        btnLogin.setText("SIGN IN (" + secondsLeft + "s)");
     }
 
     private void setLoginEnabled(boolean enabled) {
@@ -345,32 +347,15 @@ public class LoginController {
     }
 
     private void applyLoginButtonStyle(boolean enabled) {
-        btnLogin.setStyle(
-                enabled
-                        ? BTN_NORMAL_STYLE
-                        : BTN_DISABLED_STYLE
-        );
+        btnLogin.setStyle(enabled ? BTN_NORMAL_STYLE : BTN_DISABLED_STYLE);
     }
 
-    private void showErrorToast(
-            String title,
-            String heading,
-            String message
-    ) {
-        showErrorToast(
-                title,
-                heading,
-                message,
-                5
-        );
+    private void showErrorToast(String title, String heading, String message) {
+        showErrorToast(title, heading, message, 5);
     }
 
-    private void showErrorToast(
-            String title,
-            String heading,
-            String message,
-            int hideAfterSeconds
-    ) {
+    private void showErrorToast(String title, String heading,
+                                String message, int hideAfterSeconds) {
         loginToastIconWrap.setStyle(
                 "-fx-background-color:#fee2e2;" +
                         "-fx-background-radius:19;"
@@ -404,9 +389,7 @@ public class LoginController {
             toastTimer.stop();
         }
 
-        toastTimer = new PauseTransition(
-                Duration.seconds(hideAfterSeconds)
-        );
+        toastTimer = new PauseTransition(Duration.seconds(hideAfterSeconds));
 
         toastTimer.setOnFinished(event -> {
             loginToast.setVisible(false);
@@ -418,12 +401,11 @@ public class LoginController {
 
     private void openAdminDashboard(String username) {
         try {
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/com/example/student_management_system/View/Admin/AdminDashboard.fxml"
-                            )
-                    );
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(
+                            "/com/example/student_management_system/View/Admin/AdminDashboard.fxml"
+                    )
+            );
 
             Parent root = loader.load();
             AdminDashboardController controller = loader.getController();
@@ -454,7 +436,9 @@ public class LoginController {
     private void openTeacherDashboard(String username) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/example/student_management_system/View/Teacher/TeacherDashboard.fxml")
+                    getClass().getResource(
+                            "/com/example/student_management_system/View/Teacher/TeacherDashboard.fxml"
+                    )
             );
             Parent root = loader.load();
 
@@ -483,11 +467,12 @@ public class LoginController {
         }
     }
 
-    // ✅ NEW METHOD
     private void openStaffDashboard(String username) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/example/student_management_system/View/Staff/StaffDashboard.fxml")
+                    getClass().getResource(
+                            "/com/example/student_management_system/View/Staff/StaffDashboard.fxml"
+                    )
             );
             Parent root = loader.load();
 

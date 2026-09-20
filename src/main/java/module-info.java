@@ -14,7 +14,7 @@ module com.example.student_management_system {
     requires java.sql;
     requires java.desktop;
     requires mysql.connector.j;
-
+    requires jakarta.mail;
     // JavaFX can launch your Main class
     exports com.example.student_management_system.Controller;
 
