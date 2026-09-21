@@ -30,7 +30,7 @@
                 <VBox HBox.hgrow="ALWAYS" spacing="4">
                     <Label text="My Profile"
                            style="-fx-text-fill:#0f172a;-fx-font-size:28px;-fx-font-weight:bold;"/>
-                    <Label text="Manage your account details, photo, and password."
+                    <Label text="Manage your account details and password."
                            style="-fx-text-fill:#64748b;-fx-font-size:13px;"/>
                 </VBox>
             </HBox>
@@ -43,7 +43,7 @@
                       style="-fx-background-color:white;-fx-background-radius:18;-fx-padding:22;
                              -fx-border-color:#e8edf5;-fx-border-radius:18;">
 
-                    <!-- High-quality circular photo -->
+                    <!-- High-quality circular photo (read-only) -->
                     <StackPane minHeight="118" minWidth="118" maxHeight="118" maxWidth="118"
                                style="-fx-background-color:#eef2ff;-fx-background-radius:59;
                                       -fx-effect:dropshadow(gaussian,rgba(79,70,229,.18),14,0,0,4);">
@@ -70,21 +70,6 @@
                         <Label fx:id="lblRole" text="Staff"
                                style="-fx-text-fill:#4f46e5;-fx-font-size:11px;-fx-font-weight:bold;"/>
                     </VBox>
-
-                    <!-- ✅ Change Photo button -->
-                    <Button fx:id="btnChoosePhoto"
-                            onAction="#choosePhoto"
-                            text="Change Photo"
-                            prefHeight="36" maxWidth="Infinity"
-                            style="-fx-background-color:#eef2ff;-fx-text-fill:#4f46e5;
-                                   -fx-background-radius:9;-fx-font-size:12px;-fx-font-weight:bold;
-                                   -fx-cursor:hand;
-                                   -fx-border-color:#c7d2fe;-fx-border-radius:9;"/>
-
-                    <Label fx:id="lblPhotoHint"
-                           text="JPG or PNG. Square images work best."
-                           wrapText="true" textAlignment="CENTER"
-                           style="-fx-text-fill:#94a3b8;-fx-font-size:10px;"/>
 
                     <Region minHeight="1" style="-fx-background-color:#eef2ff;"/>
 

@@ -4,9 +4,19 @@ import com.example.student_management_system.Controller.Model.StaffInfo;
 
 import java.sql.*;
 
+/**
+ * Staff profile data access.
+ *
+ * IMPORTANT:
+ *  - Nothing in this class ever writes to the `staff` table any more.
+ *    All updates (name, password) go to the `users` table only.
+ *  - The `staff` table is still READ for displaying code / salary / etc.
+ */
 public class StaffProfileDAO {
 
-    // Load profile
+    // =========================================================
+    //  LOAD PROFILE  (read-only)
+    // =========================================================
     public StaffInfo loadProfile(int staffId) {
         String sql =
                 "SELECT s.staff_id, s.user_id, s.staff_code, s.staff_name, " +
@@ -35,8 +45,9 @@ public class StaffProfileDAO {
                     si.setFullName(rs.getString("full_name"));
                     si.setUsername(rs.getString("username"));
 
-                    String photo = rs.getString("s_photo");
-                    if (photo == null || photo.isBlank()) photo = rs.getString("u_photo");
+                    // Prefer users.photo_path, fall back to staff.photo_path
+                    String photo = rs.getString("u_photo");
+                    if (photo == null || photo.isBlank()) photo = rs.getString("s_photo");
                     si.setPhotoPath(photo);
 
                     return si;
@@ -46,27 +57,18 @@ public class StaffProfileDAO {
         return null;
     }
 
-    // Update name
-    public boolean updateName(int userId, int staffId, String newName) {
-        String userSql  = "UPDATE users SET full_name  = ? WHERE user_id  = ?";
-        String staffSql = "UPDATE staff SET staff_name = ? WHERE staff_id = ?";
+    // =========================================================
+    //  UPDATE NAME  →  users table ONLY
+    // =========================================================
+    public boolean updateName(int userId, String newName) {
+        String sql = "UPDATE users SET full_name = ? WHERE user_id = ?";
 
-        try (Connection con = DBConnention.getConnection()) {
-            con.setAutoCommit(false);
+        try (Connection con = DBConnention.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            try (PreparedStatement ps = con.prepareStatement(userSql)) {
-                ps.setString(1, newName);
-                ps.setInt(2, userId);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = con.prepareStatement(staffSql)) {
-                ps.setString(1, newName);
-                ps.setInt(2, staffId);
-                ps.executeUpdate();
-            }
-
-            con.commit();
-            return true;
+            ps.setString(1, newName);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,35 +76,9 @@ public class StaffProfileDAO {
         }
     }
 
-    // ✅ Save photo path in both staff and users tables
-    public boolean updatePhoto(int staffId, int userId, String photoPath) {
-        String staffSql = "UPDATE staff SET photo_path = ? WHERE staff_id = ?";
-        String userSql  = "UPDATE users SET photo_path = ? WHERE user_id  = ?";
-
-        try (Connection con = DBConnention.getConnection()) {
-            con.setAutoCommit(false);
-
-            try (PreparedStatement ps = con.prepareStatement(staffSql)) {
-                ps.setString(1, photoPath);
-                ps.setInt(2, staffId);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = con.prepareStatement(userSql)) {
-                ps.setString(1, photoPath);
-                ps.setInt(2, userId);
-                ps.executeUpdate();
-            }
-
-            con.commit();
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Verify current password
+    // =========================================================
+    //  VERIFY CURRENT PASSWORD
+    // =========================================================
     public boolean checkPassword(int userId, String password) {
         String sql = "SELECT 1 FROM users WHERE user_id = ? AND password = ?";
         try (Connection con = DBConnention.getConnection();
@@ -116,7 +92,9 @@ public class StaffProfileDAO {
         return false;
     }
 
-    // Update password
+    // =========================================================
+    //  UPDATE PASSWORD  →  users table ONLY
+    // =========================================================
     public boolean updatePassword(int userId, String newPassword) {
         String sql = "UPDATE users SET password = ? WHERE user_id = ?";
         try (Connection con = DBConnention.getConnection();

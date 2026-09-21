@@ -12,19 +12,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
-import javafx.stage.FileChooser;
 import javafx.stage.Screen;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -39,10 +32,6 @@ public class StaffProfileController implements Initializable {
     @FXML private Label lblPhone;
     @FXML private Label lblRole;
     @FXML private Label lblSalary;
-
-    // Photo upload
-    @FXML private Button btnChoosePhoto;
-    @FXML private Label  lblPhotoHint;
 
     // Name form
     @FXML private TextField txtFullName;
@@ -74,12 +63,6 @@ public class StaffProfileController implements Initializable {
 
     private final StaffProfileDAO dao = new StaffProfileDAO();
     private static final NumberFormat MONEY = NumberFormat.getNumberInstance(Locale.US);
-
-    /**
-     * Folder that stores staff profile photos.
-     * The path is relative to the project working directory.
-     */
-    private static final String PHOTO_DIR = "staff_photos";
 
     private StaffInfo staffInfo;
     private PauseTransition toastTimer;
@@ -122,69 +105,6 @@ public class StaffProfileController implements Initializable {
         txtFullName.setText(staffInfo.getDisplayName());
 
         loadPhoto(staffInfo.getPhotoPath());
-    }
-
-    // =========================================================
-    //  ✅ CHOOSE PHOTO — copies file to disk, saves path to DB
-    // =========================================================
-    @FXML
-    public void choosePhoto() {
-        if (staffInfo == null) return;
-
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Choose Profile Photo");
-        chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
-
-        Stage stage = (Stage) btnChoosePhoto.getScene().getWindow();
-        File chosen = chooser.showOpenDialog(stage);
-        if (chosen == null) return;
-
-        try {
-            // ─── STEP 1: Copy the file into <project>/staff_photos/ ───
-            Path targetDir = Paths.get(System.getProperty("user.dir"), PHOTO_DIR);
-            Files.createDirectories(targetDir);
-
-            String original = chosen.getName();
-            int dot = original.lastIndexOf('.');
-            String ext = dot >= 0 ? original.substring(dot) : ".png";
-            String newName = "staff_" + staffInfo.getStaffId() + "_" + System.currentTimeMillis() + ext;
-
-            Path target = targetDir.resolve(newName);
-
-            Files.copy(chosen.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
-
-            // Full absolute path — stored in the DB
-            String storedPath = target.toAbsolutePath().toString();
-
-            // ─── STEP 2: Persist the path to both staff + users tables ───
-            boolean ok = dao.updatePhoto(
-                    staffInfo.getStaffId(),
-                    staffInfo.getUserId(),
-                    storedPath);
-
-            if (!ok) {
-                toast("UPDATE FAILED", "Could not save photo",
-                        "Check the database and try again.", false);
-                return;
-            }
-
-            // ─── STEP 3: Update in-memory + UI ───
-            staffInfo.setPhotoPath(storedPath);
-            loadPhoto(storedPath);
-
-            toast("PHOTO UPDATED", "Success",
-                    "Your profile photo has been changed.", true);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            toast("UPDATE FAILED", "File error",
-                    "Could not copy the selected photo.", false);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            toast("UPDATE FAILED", "Unexpected error",
-                    ex.getMessage(), false);
-        }
     }
 
     // =========================================================
@@ -261,7 +181,7 @@ public class StaffProfileController implements Initializable {
     }
 
     // =========================================================
-    //  UPDATE NAME
+    //  UPDATE NAME  →  users table ONLY
     // =========================================================
     @FXML
     public void updateName() {
@@ -279,11 +199,11 @@ public class StaffProfileController implements Initializable {
             return;
         }
 
-        boolean ok = dao.updateName(staffInfo.getUserId(), staffInfo.getStaffId(), newName);
+        boolean ok = dao.updateName(staffInfo.getUserId(), newName);
 
         if (ok) {
             staffInfo.setFullName(newName);
-            staffInfo.setStaffName(newName);
+            staffInfo.setStaffName(newName);   // keep in-memory copy consistent
             lblDisplayName.setText(newName);
             toast("UPDATE SUCCESSFUL", "Name updated",
                     "Your display name is now \"" + newName + "\".", true);
