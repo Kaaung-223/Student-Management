@@ -10,16 +10,14 @@ import java.sql.SQLException;
 
 /**
  * Handles OTP lifecycle and password reset for ALL roles
- * (ADMIN, TEACHER, STAFF). The lookup uses the users table with
- * NO role filter, so every account type flows through the same code.
+ * (ADMIN, TEACHER, STAFF). Passwords written here are BCrypt-hashed.
  */
 public class PasswordResetService {
 
-    /** OTP validity window (seconds). Change here if you want longer. */
     public static final int OTP_VALID_SECONDS = 30;
 
     private static final int MAX_VERIFY_ATTEMPTS   = 5;
-    private static final int VERIFIED_GRACE_SECONDS = 300; // 5 min to type new password
+    private static final int VERIFIED_GRACE_SECONDS = 300;
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -27,21 +25,17 @@ public class PasswordResetService {
         public int    userId;
         public String fullName;
         public String email;
-        public String role;   // ADMIN / TEACHER / STAFF (for logging/UI only)
+        public String role;
     }
 
     public enum VerifyResult { OK, EXPIRED, WRONG, NO_OTP, TOO_MANY }
 
     // ---------------------------------------------------------
-    // Lookup by email — role-agnostic
-    // ---------------------------------------------------------
     public static UserInfo findUserByEmail(String email) throws SQLException {
-        // ADMIN, TEACHER, STAFF all live in `users`. No role filter here.
         String sql = "SELECT user_id, full_name, email, role, status "
                 + "FROM users "
                 + "WHERE LOWER(email) = LOWER(?) "
-                + "  AND email IS NOT NULL "
-                + "  AND email <> ''";
+                + "  AND email IS NOT NULL AND email <> ''";
         try (Connection c = DBConnention.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -60,8 +54,6 @@ public class PasswordResetService {
         }
     }
 
-    // ---------------------------------------------------------
-    // Create & store a new OTP (deletes previous OTPs for user)
     // ---------------------------------------------------------
     public static String createOtp(UserInfo user) throws SQLException {
         try (Connection c = DBConnention.getConnection()) {
@@ -87,8 +79,6 @@ public class PasswordResetService {
         }
     }
 
-    // ---------------------------------------------------------
-    // Verify submitted OTP
     // ---------------------------------------------------------
     public static VerifyResult verifyOtp(String email, String otp) throws SQLException {
         String sql =
@@ -141,8 +131,7 @@ public class PasswordResetService {
     }
 
     // ---------------------------------------------------------
-    // Replace password — only allowed if a verified, unused,
-    // unexpired OTP exists for that email.
+    // Replace password — NOW HASHES the new password with BCrypt
     // ---------------------------------------------------------
     public static boolean resetPassword(String email, String newPassword) throws SQLException {
         String check =
@@ -159,9 +148,12 @@ public class PasswordResetService {
                 if (!rs.next()) return false;
                 int otpId = rs.getInt("otp_id");
 
+                // ---- HASH the new password before storing ----
+                String hashedPassword = PasswordHasher.hash(newPassword);
+
                 try (PreparedStatement upd = c.prepareStatement(
                         "UPDATE users SET password = ? WHERE LOWER(email) = LOWER(?)")) {
-                    upd.setString(1, newPassword);
+                    upd.setString(1, hashedPassword);
                     upd.setString(2, email.trim());
                     upd.executeUpdate();
                 }

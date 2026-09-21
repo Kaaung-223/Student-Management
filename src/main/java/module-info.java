@@ -15,6 +15,7 @@ module com.example.student_management_system {
     requires java.desktop;
     requires mysql.connector.j;
     requires jakarta.mail;
+    requires jbcrypt;
     // JavaFX can launch your Main class
     exports com.example.student_management_system.Controller;
 

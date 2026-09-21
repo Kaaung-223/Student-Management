@@ -4,6 +4,7 @@ import com.example.student_management_system.Controller.Admin.AdminDashboardCont
 import com.example.student_management_system.Controller.Staff.StaffDashboardController;
 import com.example.student_management_system.Controller.Teacher.TeacherDashboardController;
 import com.example.student_management_system.Controller.DAO.DBConnention;
+import com.example.student_management_system.Controller.Util.PasswordHasher;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -109,7 +110,7 @@ public class LoginController {
     }
 
     // =====================================================
-    // FORGOT PASSWORD  <-- opens the reset dialog
+    // Forgot password dialog
     // =====================================================
     @FXML
     private void handleForgotPassword() {
@@ -154,29 +155,18 @@ public class LoginController {
 
     @FXML
     private void login(ActionEvent event) {
-        if (loginInProgress) {
-            return;
-        }
+        if (loginInProgress) return;
         performLogin();
     }
 
     private void loginWithButtonEffect() {
-        if (loginInProgress) {
-            return;
-        }
+        if (loginInProgress) return;
 
         if (lockoutActive) {
-            showErrorToast(
-                    "SIGN IN LOCKED",
-                    "Please wait",
-                    "Try again shortly."
-            );
+            showErrorToast("SIGN IN LOCKED", "Please wait", "Try again shortly.");
             return;
         }
-
-        if (btnLogin.isDisabled()) {
-            return;
-        }
+        if (btnLogin.isDisabled()) return;
 
         loginInProgress = true;
         btnLogin.setStyle(BTN_PRESSED_STYLE);
@@ -197,10 +187,12 @@ public class LoginController {
         pressEffect.play();
     }
 
+    // =====================================================
+    // Main login flow — uses BCrypt verification
+    // =====================================================
     private void performLogin() {
-        if (lockoutActive || btnLogin.isDisabled()) {
-            return;
-        }
+        if (lockoutActive || btnLogin.isDisabled()) return;
+
         String username = txtUsername.getText().trim();
         String password = showPassword
                 ? visiblePasswordField.getText()
@@ -215,25 +207,21 @@ public class LoginController {
             return;
         }
 
-        String sql =
-                "SELECT * FROM users " +
-                        "WHERE username = ? " +
-                        "AND password = ? " +
-                        "AND status = 'ACTIVE'";
+        // NOTE: we no longer put "password = ?" in the WHERE clause.
+        // We fetch the row by username, then verify the hash in Java.
+        String sql = "SELECT user_id, username, password, role, status "
+                + "FROM users "
+                + "WHERE username = ? AND status = 'ACTIVE'";
 
         try (Connection con = DBConnention.getConnection()) {
             if (con == null) {
-                showErrorToast(
-                        "CONNECTION ERROR",
-                        "Unavailable",
-                        "Check database connection."
-                );
+                showErrorToast("CONNECTION ERROR", "Unavailable",
+                        "Check database connection.");
                 return;
             }
 
             try (PreparedStatement ps = con.prepareStatement(sql)) {
                 ps.setString(1, username);
-                ps.setString(2, password);
 
                 try (ResultSet rs = ps.executeQuery()) {
                     if (!rs.next()) {
@@ -241,8 +229,44 @@ public class LoginController {
                         return;
                     }
 
+                    int    userId         = rs.getInt("user_id");
+                    String storedPassword = rs.getString("password");
+                    String role           = rs.getString("role");
+
+                    boolean passwordOk;
+                    boolean needsUpgrade = false;
+
+                    if (PasswordHasher.isHashed(storedPassword)) {
+                        // Normal path: compare against BCrypt hash
+                        passwordOk = PasswordHasher.verify(password, storedPassword);
+                    } else {
+                        // Legacy plaintext row — compare directly, then upgrade
+                        passwordOk = storedPassword.equals(password);
+                        needsUpgrade = passwordOk;
+                    }
+
+                    if (!passwordOk) {
+                        handleFailedLogin();
+                        return;
+                    }
+
+                    // Auto-upgrade legacy plaintext row to a BCrypt hash
+                    if (needsUpgrade) {
+                        try (PreparedStatement up = con.prepareStatement(
+                                "UPDATE users SET password = ? WHERE user_id = ?")) {
+                            up.setString(1, PasswordHasher.hash(password));
+                            up.setInt(2, userId);
+                            up.executeUpdate();
+                            System.out.println("[Login] Auto-upgraded user '"
+                                    + username + "' to hashed password.");
+                        } catch (Exception ex) {
+                            // Don't block login if the upgrade fails — just log it
+                            System.err.println("[Login] Auto-upgrade failed: "
+                                    + ex.getMessage());
+                        }
+                    }
+
                     failedAttempts = 0;
-                    String role = rs.getString("role");
 
                     if ("ADMIN".equalsIgnoreCase(role)) {
                         openAdminDashboard(username);
@@ -251,21 +275,15 @@ public class LoginController {
                     } else if ("STAFF".equalsIgnoreCase(role)) {
                         openStaffDashboard(username);
                     } else {
-                        showErrorToast(
-                                "ACCESS DENIED",
-                                "Not supported",
-                                "Contact administrator."
-                        );
+                        showErrorToast("ACCESS DENIED", "Not supported",
+                                "Contact administrator.");
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            showErrorToast(
-                    "CONNECTION ERROR",
-                    "Try again",
-                    "Database connection failed."
-            );
+            showErrorToast("CONNECTION ERROR", "Try again",
+                    "Database connection failed.");
         }
     }
 
@@ -278,16 +296,11 @@ public class LoginController {
             return;
         }
 
-        String message =
-                remaining == 1
-                        ? "1 attempt left."
-                        : remaining + " attempts left.";
+        String message = remaining == 1
+                ? "1 attempt left."
+                : remaining + " attempts left.";
 
-        showErrorToast(
-                "LOGIN FAILED",
-                "Invalid credentials",
-                message
-        );
+        showErrorToast("LOGIN FAILED", "Invalid credentials", message);
     }
 
     private void startLockout() {
@@ -302,9 +315,7 @@ public class LoginController {
                 LOCKOUT_SECONDS
         );
 
-        if (lockoutTimeline != null) {
-            lockoutTimeline.stop();
-        }
+        if (lockoutTimeline != null) lockoutTimeline.stop();
 
         final int[] secondsLeft = {LOCKOUT_SECONDS};
         updateLockoutButtonText(secondsLeft[0]);
@@ -385,9 +396,7 @@ public class LoginController {
         loginToast.setManaged(true);
         loginToast.setVisible(true);
 
-        if (toastTimer != null) {
-            toastTimer.stop();
-        }
+        if (toastTimer != null) toastTimer.stop();
 
         toastTimer = new PauseTransition(Duration.seconds(hideAfterSeconds));
 
@@ -425,11 +434,8 @@ public class LoginController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showErrorToast(
-                    "DASHBOARD ERROR",
-                    "Unable to open admin dashboard",
-                    "Please try again."
-            );
+            showErrorToast("DASHBOARD ERROR",
+                    "Unable to open admin dashboard", "Please try again.");
         }
     }
 
@@ -459,11 +465,8 @@ public class LoginController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showErrorToast(
-                    "DASHBOARD ERROR",
-                    "Unable to open teacher dashboard",
-                    "Please try again."
-            );
+            showErrorToast("DASHBOARD ERROR",
+                    "Unable to open teacher dashboard", "Please try again.");
         }
     }
 
@@ -493,19 +496,14 @@ public class LoginController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showErrorToast(
-                    "DASHBOARD ERROR",
-                    "Unable to open staff dashboard",
-                    "Please try again."
-            );
+            showErrorToast("DASHBOARD ERROR",
+                    "Unable to open staff dashboard", "Please try again.");
         }
     }
 
     @FXML
     private void handleLoginPress() {
-        if (btnLogin.isDisabled() || lockoutActive) {
-            return;
-        }
+        if (btnLogin.isDisabled() || lockoutActive) return;
         btnLogin.setStyle(BTN_PRESSED_STYLE);
     }
 
