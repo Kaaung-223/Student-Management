@@ -7,12 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 /**
- * One-time migration: hashes every plaintext password in the users table.
+ * Migration: hashes every plaintext password in users (ALL roles).
+ * Safe to re-run — already-hashed rows are skipped.
  *
- * HOW TO RUN:
- *   In IntelliJ, right-click this file -> Run 'HashExistingPasswords.main()'.
- *   Watch the console; it prints each user as it hashes them.
- *   Safe to re-run — already-hashed rows are skipped.
+ * Right-click this file → Run 'HashExistingPasswords.main()'.
  */
 public class HashExistingPasswords {
 
@@ -26,8 +24,7 @@ public class HashExistingPasswords {
              ResultSet rs = sel.executeQuery();
              PreparedStatement upd = con.prepareStatement(updateSql)) {
 
-            int hashed = 0;
-            int skipped = 0;
+            int hashed = 0, skipped = 0;
 
             while (rs.next()) {
                 int    id       = rs.getInt("user_id");
@@ -36,22 +33,22 @@ public class HashExistingPasswords {
                 String stored   = rs.getString("password");
 
                 if (PasswordHasher.isHashed(stored)) {
-                    System.out.printf("SKIP   [%s] %-15s (already hashed)%n", role, username);
+                    System.out.printf("SKIP   [%s] %-15s%n", role, username);
                     skipped++;
                     continue;
                 }
 
-                String hashedPw = PasswordHasher.hash(stored);
-                upd.setString(1, hashedPw);
+                String hash = PasswordHasher.hash(stored);
+                upd.setString(1, hash);
                 upd.setInt(2, id);
                 upd.executeUpdate();
 
-                System.out.printf("HASHED [%s] %-15s  %s%n", role, username, hashedPw);
+                System.out.printf("HASHED [%s] %-15s  %s%n", role, username, hash);
                 hashed++;
             }
 
             System.out.println("--------------------------------------------");
-            System.out.println("Done.  Hashed = " + hashed + ",  Skipped = " + skipped);
+            System.out.println("Done. Hashed = " + hashed + ", Skipped = " + skipped);
         }
     }
 }

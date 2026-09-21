@@ -9,16 +9,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Handles OTP lifecycle and password reset for ALL roles
- * (ADMIN, TEACHER, STAFF). Passwords written here are BCrypt-hashed.
+ * OTP lifecycle + password reset for ALL roles.
+ * New passwords are BCrypt-hashed via PasswordHasher.hash().
  */
 public class PasswordResetService {
 
     public static final int OTP_VALID_SECONDS = 30;
-
-    private static final int MAX_VERIFY_ATTEMPTS   = 5;
+    private static final int MAX_VERIFY_ATTEMPTS    = 5;
     private static final int VERIFIED_GRACE_SECONDS = 300;
-
     private static final SecureRandom RANDOM = new SecureRandom();
 
     public static class UserInfo {
@@ -30,7 +28,6 @@ public class PasswordResetService {
 
     public enum VerifyResult { OK, EXPIRED, WRONG, NO_OTP, TOO_MANY }
 
-    // ---------------------------------------------------------
     public static UserInfo findUserByEmail(String email) throws SQLException {
         String sql = "SELECT user_id, full_name, email, role, status "
                 + "FROM users "
@@ -38,12 +35,10 @@ public class PasswordResetService {
                 + "  AND email IS NOT NULL AND email <> ''";
         try (Connection c = DBConnention.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-
             ps.setString(1, email.trim());
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
                 if (!"ACTIVE".equalsIgnoreCase(rs.getString("status"))) return null;
-
                 UserInfo u = new UserInfo();
                 u.userId   = rs.getInt("user_id");
                 u.fullName = rs.getString("full_name");
@@ -54,18 +49,14 @@ public class PasswordResetService {
         }
     }
 
-    // ---------------------------------------------------------
     public static String createOtp(UserInfo user) throws SQLException {
         try (Connection c = DBConnention.getConnection()) {
-
             try (PreparedStatement del = c.prepareStatement(
                     "DELETE FROM password_reset_otps WHERE user_id = ?")) {
                 del.setInt(1, user.userId);
                 del.executeUpdate();
             }
-
             String code = String.format("%06d", RANDOM.nextInt(1_000_000));
-
             try (PreparedStatement ps = c.prepareStatement(
                     "INSERT INTO password_reset_otps (user_id, email, otp_code, expires_at) "
                             + "VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL ? SECOND))")) {
@@ -79,7 +70,6 @@ public class PasswordResetService {
         }
     }
 
-    // ---------------------------------------------------------
     public static VerifyResult verifyOtp(String email, String otp) throws SQLException {
         String sql =
                 "SELECT otp_id, otp_code, attempts, "
@@ -90,22 +80,16 @@ public class PasswordResetService {
 
         try (Connection c = DBConnention.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-
             ps.setString(1, email.trim());
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return VerifyResult.NO_OTP;
-
-                int    otpId       = rs.getInt("otp_id");
-                String stored      = rs.getString("otp_code");
-                int    secondsLeft = rs.getInt("seconds_left");
-                int    attempts    = rs.getInt("attempts");
+                int otpId       = rs.getInt("otp_id");
+                String stored   = rs.getString("otp_code");
+                int secondsLeft = rs.getInt("seconds_left");
+                int attempts    = rs.getInt("attempts");
 
                 if (attempts >= MAX_VERIFY_ATTEMPTS) return VerifyResult.TOO_MANY;
-
-                if (secondsLeft <= 0) {
-                    markUsed(c, otpId);
-                    return VerifyResult.EXPIRED;
-                }
+                if (secondsLeft <= 0) { markUsed(c, otpId); return VerifyResult.EXPIRED; }
 
                 if (!stored.equals(otp.trim())) {
                     try (PreparedStatement up = c.prepareStatement(
@@ -130,9 +114,7 @@ public class PasswordResetService {
         }
     }
 
-    // ---------------------------------------------------------
-    // Replace password — NOW HASHES the new password with BCrypt
-    // ---------------------------------------------------------
+    /** HASHES the new password before writing. */
     public static boolean resetPassword(String email, String newPassword) throws SQLException {
         String check =
                 "SELECT otp_id FROM password_reset_otps "
@@ -142,22 +124,20 @@ public class PasswordResetService {
 
         try (Connection c = DBConnention.getConnection();
              PreparedStatement ps = c.prepareStatement(check)) {
-
             ps.setString(1, email.trim());
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return false;
                 int otpId = rs.getInt("otp_id");
 
-                // ---- HASH the new password before storing ----
-                String hashedPassword = PasswordHasher.hash(newPassword);
+                // ---- HASH the new password ----
+                String hashed = PasswordHasher.hash(newPassword);
 
                 try (PreparedStatement upd = c.prepareStatement(
                         "UPDATE users SET password = ? WHERE LOWER(email) = LOWER(?)")) {
-                    upd.setString(1, hashedPassword);
+                    upd.setString(1, hashed);
                     upd.setString(2, email.trim());
                     upd.executeUpdate();
                 }
-
                 markUsed(c, otpId);
                 return true;
             }
