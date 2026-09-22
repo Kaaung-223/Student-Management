@@ -46,9 +46,10 @@ Thumbs.db
 # Uploaded Photos / Files
 # =========================
 uploads/
-student_photos/
-teacher_photos/
-staff_photos/
+uploads/student_photos/
+uploads/teacher_photos/
+uploads/staff_photos/
+uploads/Receive
 
 # =========================
 # Database Backups
@@ -56,3 +57,7 @@ staff_photos/
 *.sql
 *.sql.gz
 *.bak
+
+# =========================
+# Mail
+# =========================
