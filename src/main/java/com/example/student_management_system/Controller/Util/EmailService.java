@@ -22,8 +22,8 @@ public class EmailService {
     // ============================================================
     //  👇👇👇  EDIT ONLY THESE TWO LINES  👇👇👇
     // ============================================================
-    private static final String GMAIL_USER         = "kk8264483@gmail.com";
-    private static final String GMAIL_APP_PASSWORD = "pengtywmyqkzxqqb";
+    private static final String GMAIL_USER         = "Your email address";
+    private static final String GMAIL_APP_PASSWORD = "Your email service";
     // ============================================================
     //  👆👆👆  EDIT ONLY THESE TWO LINES  👆👆👆
     // ============================================================
