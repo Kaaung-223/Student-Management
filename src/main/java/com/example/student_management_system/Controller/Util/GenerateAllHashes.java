@@ -14,7 +14,7 @@ public class GenerateAllHashes {
 
         // full_name, username, plaintext_password, role, email
         String[][] users = {
-                {"Kaung Min Khant", "admin",  "kK2386mm$",   "ADMIN",   "admin@school.com"},
+                {"Kaung Min Khant", "admin",  "admin123",   "ADMIN",   "admin@school.com"},
                 {"John Smith",      "jsmith", "teach123",   "TEACHER", "jsmith@school.com"},
                 {"Emily Chen",      "echen",  "teach123",   "TEACHER", "echen@school.com"},
                 {"Michael Lee",     "mlee",   "teach123",   "TEACHER", "mlee@school.com"},
