@@ -71,6 +71,7 @@ and email-based password recovery with BCrypt-hashed credentials.
 ---
 
 ## Project Structure
+```
 Student_Management_System/
 ├── pom.xml # Maven build (JavaFX + MySQL + BCrypt + Jakarta Mail)
 ├── mvnw # Maven wrapper (Unix)
