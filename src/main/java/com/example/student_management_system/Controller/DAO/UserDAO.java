@@ -1,84 +1,67 @@
 package com.example.student_management_system.Controller.DAO;
 
-
-import com.example.student_management_system.Controller.Model.User;
+import com.example.student_management_system.Controller.Util.PasswordHasher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class UserDAO {
 
-    public User getUserById(int userId) {
-        String query = "SELECT * FROM users WHERE user_id = ?";
-        try (Connection conn = DBConnention.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+    /** Create a user — password is hashed before hitting the DB. */
+    public void createUser(String fullName, String username,
+                           String rawPassword, String role,
+                           String email, String photoPath) throws Exception {
 
-            stmt.setInt(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setUserId(rs.getInt("user_id"));
-                    user.setName(rs.getString("name"));
-                    user.setEmail(rs.getString("email"));
-                    user.setPassword(rs.getString("password"));
-                    user.setRole(rs.getString("role"));
-                    user.setProfileImage(rs.getString("profile_image"));
-                    return user;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        String sql = "INSERT INTO users " +
+                "(full_name, username, password, role, email, photo_path) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection con = DBConnention.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, fullName);
+            ps.setString(2, username);
+            ps.setString(3, PasswordHasher.hash(rawPassword));  // ← HASH
+            ps.setString(4, role);
+            ps.setString(5, email);
+            ps.setString(6, photoPath);
+            ps.executeUpdate();
         }
-        return null;
     }
 
-    public boolean isEmailTakenByOtherUser(String email, int currentUserId) {
-        String query = "SELECT COUNT(*) FROM users WHERE email = ? AND user_id != ?";
-        try (Connection conn = DBConnention.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+    /** Change a user's password — new value is hashed. */
+    public void updatePassword(int userId, String newRawPassword) throws Exception {
+        String sql = "UPDATE users SET password = ? WHERE user_id = ?";
 
-            stmt.setString(1, email);
-            stmt.setInt(2, currentUserId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Connection con = DBConnention.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, PasswordHasher.hash(newRawPassword)); // ← HASH
+            ps.setInt(2, userId);
+            ps.executeUpdate();
         }
-        return false;
     }
 
-    public boolean updateUserProfile(User user, boolean updatePassword) {
-        String query;
-        if (updatePassword) {
-            query = "UPDATE users SET name = ?, email = ?, password = ?, profile_image = ? WHERE user_id = ?";
-        } else {
-            query = "UPDATE users SET name = ?, email = ?, profile_image = ? WHERE user_id = ?";
-        }
+    /** Login check — uses BCrypt verify(). */
+    public boolean login(String username, String rawPassword) throws Exception {
+        String sql = "SELECT password, status FROM users WHERE username = ?";
 
-        try (Connection conn = DBConnention.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection con = DBConnention.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            stmt.setString(1, user.getName());
-            stmt.setString(2, user.getEmail());
+            ps.setString(1, username);
 
-            if (updatePassword) {
-                stmt.setString(3, user.getPassword());
-                stmt.setString(4, user.getProfileImage());
-                stmt.setInt(5, user.getUserId());
-            } else {
-                stmt.setString(3, user.getProfileImage());
-                stmt.setInt(4, user.getUserId());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return false;
+
+                if (!"ACTIVE".equalsIgnoreCase(rs.getString("status"))) {
+                    return false;
+                }
+
+                String stored = rs.getString("password");
+                return PasswordHasher.verify(rawPassword, stored);   // ← VERIFY
             }
-
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 }

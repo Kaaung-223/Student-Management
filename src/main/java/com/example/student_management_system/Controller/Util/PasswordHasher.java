@@ -8,6 +8,7 @@ import org.mindrot.jbcrypt.BCrypt;
  */
 public final class PasswordHasher {
 
+    /** Cost factor: 12 = ~250ms per hash. Good balance for 2025. */
     private static final int WORK_FACTOR = 12;
 
     private PasswordHasher() {}

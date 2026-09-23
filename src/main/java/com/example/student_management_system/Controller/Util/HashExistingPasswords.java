@@ -7,10 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 /**
- * Migration: hashes every plaintext password in users (ALL roles).
+ * One-shot migration: hashes every plaintext password in users (ALL roles).
  * Safe to re-run — already-hashed rows are skipped.
  *
- * Right-click this file → Run 'HashExistingPasswords.main()'.
+ * Right-click → Run 'HashExistingPasswords.main()'.
  */
 public class HashExistingPasswords {
 

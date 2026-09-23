@@ -1,5 +1,6 @@
 package com.example.student_management_system.Controller;
 
+import com.example.student_management_system.Controller.Util.AutoHashOnStartup;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,6 +19,7 @@ public class Main extends Application {
         // primaryStage.setFullScreen(true);    // Use this for true full‑screen
         primaryStage.setTitle("Student Management System");
         primaryStage.show();
+        AutoHashOnStartup.run();
     }
 
     public static void main(String[] args) {
