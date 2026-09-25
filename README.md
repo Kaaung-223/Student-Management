@@ -214,7 +214,7 @@ Student_Management_System/
 │
 └── Mail/
 └── Properties # Mail / SMTP properties file
-
+```
 ---
 
 ## Features
