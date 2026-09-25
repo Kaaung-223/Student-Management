@@ -22,7 +22,8 @@ and email-based password recovery with BCrypt-hashed credentials.
 
 | | |
 |---|---|
-| **Login** ![Login](screenshots/auth-form.png) | **Admin Dashboard** ![Admin Dashboard](screenshots/admin-dashboard.png) |
+| **Login** ![Login](screenshots/auth-form.png) | **Admin Dashboard** ![Admin Dashboard](Screenshots/admin-dashboard.png) 
+| **Admin Dashboard** ![Admin Dashboard](Screenshots/admin-dashboard1.png) |
 | **Financial Statement** ![Financial Statement](screenshots/admin-financial-statement.png) | **Students** ![Students](screenshots/admin-students.png) |
 | **Teachers** ![Teachers](screenshots/admin-teachers.png) | **Add Teacher** ![Add Teacher](screenshots/add-teacher.png) |
 | **Staff** ![Staff](screenshots/admin-staff.png) | **Add Staff** ![Add Staff](screenshots/add-staff.png) |
@@ -310,3 +311,10 @@ staff, classes, subjects, exams, grades, attendance, class fees, leave requests,
 with email-based OTP password reset. The project is modular (`module-info.java`) with a consistent set of DAOs, models, and utilities used across all three roles.
 
 ---
+---
+
+## License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+Copyright (c) 2026 KaungMinKhant
