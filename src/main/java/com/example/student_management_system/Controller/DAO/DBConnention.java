@@ -21,16 +21,16 @@ import java.sql.SQLException;
  */
 public class DBConnention {
 
-    private static final String HOST = "dotenv.mysql_username";
-    private static final String PORT = "dotenv.mysql_password";
-    private static final String DATABASE = "dotenv.mysql_user_database";
+    private static final String HOST = "localhost";
+    private static final String PORT = "3306";
+    private static final String DATABASE = "student_management";
 
     private static final String URL =
             "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE
                     + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
     private static final String USER = "root";
-    private static final String PASSWORD = "kk2386mm";   // <-- put your MySQL root password here
+    private static final String PASSWORD = "your password";   // <-- put your MySQL root password here
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
