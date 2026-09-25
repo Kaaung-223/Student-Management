@@ -1014,7 +1014,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-09-23.08:37:20</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-09-25.09:38:17</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="294" parent="1" name="sys">
@@ -1210,7 +1210,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <UnderlyingIndexName>academic_year</UnderlyingIndexName>
     </key>
     <column id="334" parent="300" name="announcement_id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>4</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
@@ -2050,687 +2050,667 @@ installment_no</ColNames>
     <key id="505" parent="311" name="email">
       <UnderlyingIndexName>email</UnderlyingIndexName>
     </key>
-    <trigger id="506" parent="311" name="trg_staff_email_ins">
-      <Definer>root@localhost</Definer>
-      <Events>I</Events>
-      <SourceTextLength>147</SourceTextLength>
-    </trigger>
-    <trigger id="507" parent="311" name="trg_staff_email_upd">
-      <Definer>root@localhost</Definer>
-      <Events>U</Events>
-      <SourceTextLength>147</SourceTextLength>
-    </trigger>
-    <column id="508" parent="312" name="enrollment_id">
+    <column id="506" parent="312" name="enrollment_id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="509" parent="312" name="student_id">
+    <column id="507" parent="312" name="student_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="510" parent="312" name="class_id">
+    <column id="508" parent="312" name="class_id">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="511" parent="312" name="enrollment_date">
+    <column id="509" parent="312" name="enrollment_date">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="512" parent="312" name="course_start_date">
+    <column id="510" parent="312" name="course_start_date">
       <Position>5</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="513" parent="312" name="course_end_date">
+    <column id="511" parent="312" name="course_end_date">
       <Position>6</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="514" parent="312" name="course_fee">
+    <column id="512" parent="312" name="course_fee">
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>decimal(10,2 digit)|0s</StoredType>
     </column>
-    <column id="515" parent="312" name="enrollment_status">
+    <column id="513" parent="312" name="enrollment_status">
       <DefaultExpression>&apos;ACTIVE&apos;</DefaultExpression>
       <Position>8</Position>
       <StoredType>enum(&apos;ACTIVE&apos;, &apos;COMPLETED&apos;, &apos;CANCELLED&apos;)|0e</StoredType>
     </column>
-    <foreign-key id="516" parent="312" name="student_enrollments_ibfk_1">
+    <foreign-key id="514" parent="312" name="student_enrollments_ibfk_1">
       <ColNames>student_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>student_id</RefColNames>
       <RefTableName>students</RefTableName>
     </foreign-key>
-    <foreign-key id="517" parent="312" name="student_enrollments_ibfk_2">
+    <foreign-key id="515" parent="312" name="student_enrollments_ibfk_2">
       <ColNames>class_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>class_id</RefColNames>
       <RefTableName>classes</RefTableName>
     </foreign-key>
-    <index id="518" parent="312" name="PRIMARY">
+    <index id="516" parent="312" name="PRIMARY">
       <ColNames>enrollment_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="519" parent="312" name="student_id">
+    <index id="517" parent="312" name="student_id">
       <ColNames>student_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="520" parent="312" name="class_id">
+    <index id="518" parent="312" name="class_id">
       <ColNames>class_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="521" parent="312" name="PRIMARY">
+    <key id="519" parent="312" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="522" parent="313" name="payment_id">
+    <column id="520" parent="313" name="payment_id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="523" parent="313" name="student_id">
+    <column id="521" parent="313" name="student_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="524" parent="313" name="fee_id">
+    <column id="522" parent="313" name="fee_id">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="525" parent="313" name="payment_period">
+    <column id="523" parent="313" name="payment_period">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>enum(&apos;FIRST_6_MONTHS&apos;, &apos;SECOND_6_MONTHS&apos;)|0e</StoredType>
     </column>
-    <column id="526" parent="313" name="amount">
+    <column id="524" parent="313" name="amount">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>decimal(12,2 digit)|0s</StoredType>
     </column>
-    <column id="527" parent="313" name="payment_date">
+    <column id="525" parent="313" name="payment_date">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="528" parent="313" name="payment_method">
+    <column id="526" parent="313" name="payment_method">
       <DefaultExpression>&apos;CASH&apos;</DefaultExpression>
       <Position>7</Position>
       <StoredType>enum(&apos;CASH&apos;, &apos;CREDIT_CARD&apos;, &apos;BANK&apos;, &apos;AYA_PAY&apos;, &apos;KBZ_PAY&apos;, &apos;WAVE_PAY&apos;, &apos;OTHER&apos;)|0e</StoredType>
     </column>
-    <column id="529" parent="313" name="receipt_no">
+    <column id="527" parent="313" name="receipt_no">
       <Position>8</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="530" parent="313" name="note">
+    <column id="528" parent="313" name="note">
       <Position>9</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="531" parent="313" name="created_by">
+    <column id="529" parent="313" name="created_by">
       <Position>10</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="532" parent="313" name="created_at">
+    <column id="530" parent="313" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>11</Position>
       <StoredType>timestamp|0s</StoredType>
     </column>
-    <foreign-key id="533" parent="313" name="fk_payment_student">
+    <foreign-key id="531" parent="313" name="fk_payment_student">
       <ColNames>student_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>student_id</RefColNames>
       <RefTableName>students</RefTableName>
     </foreign-key>
-    <foreign-key id="534" parent="313" name="fk_payment_fee">
+    <foreign-key id="532" parent="313" name="fk_payment_fee">
       <ColNames>fee_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>fee_id</RefColNames>
       <RefTableName>class_fees</RefTableName>
     </foreign-key>
-    <foreign-key id="535" parent="313" name="fk_payment_user">
+    <foreign-key id="533" parent="313" name="fk_payment_user">
       <ColNames>created_by</ColNames>
       <OnDelete>set-null</OnDelete>
       <RefColNames>user_id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <index id="536" parent="313" name="PRIMARY">
+    <index id="534" parent="313" name="PRIMARY">
       <ColNames>payment_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="537" parent="313" name="receipt_no">
+    <index id="535" parent="313" name="receipt_no">
       <ColNames>receipt_no</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="538" parent="313" name="fk_payment_student">
+    <index id="536" parent="313" name="fk_payment_student">
       <ColNames>student_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="539" parent="313" name="fk_payment_fee">
+    <index id="537" parent="313" name="fk_payment_fee">
       <ColNames>fee_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="540" parent="313" name="fk_payment_user">
+    <index id="538" parent="313" name="fk_payment_user">
       <ColNames>created_by</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="541" parent="313" name="PRIMARY">
+    <key id="539" parent="313" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="542" parent="313" name="receipt_no">
+    <key id="540" parent="313" name="receipt_no">
       <UnderlyingIndexName>receipt_no</UnderlyingIndexName>
     </key>
-    <column id="543" parent="314" name="student_id">
+    <column id="541" parent="314" name="student_id">
       <AutoIncrement>13</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="544" parent="314" name="student_code">
+    <column id="542" parent="314" name="student_code">
       <Position>2</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="545" parent="314" name="student_name">
+    <column id="543" parent="314" name="student_name">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="546" parent="314" name="email">
+    <column id="544" parent="314" name="email">
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="547" parent="314" name="phone">
+    <column id="545" parent="314" name="phone">
       <Position>5</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="548" parent="314" name="age">
+    <column id="546" parent="314" name="age">
       <Position>6</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="549" parent="314" name="gender">
+    <column id="547" parent="314" name="gender">
       <Position>7</Position>
       <StoredType>enum(&apos;Male&apos;, &apos;Female&apos;)|0e</StoredType>
     </column>
-    <column id="550" parent="314" name="address">
+    <column id="548" parent="314" name="address">
       <Position>8</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="551" parent="314" name="class_id">
+    <column id="549" parent="314" name="class_id">
       <Position>9</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="552" parent="314" name="admission_date">
+    <column id="550" parent="314" name="admission_date">
       <Position>10</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="553" parent="314" name="status">
+    <column id="551" parent="314" name="status">
       <DefaultExpression>&apos;ACTIVE&apos;</DefaultExpression>
       <Position>11</Position>
       <StoredType>enum(&apos;ACTIVE&apos;, &apos;INACTIVE&apos;)|0e</StoredType>
     </column>
-    <column id="554" parent="314" name="photo_url">
+    <column id="552" parent="314" name="photo_url">
       <Position>12</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="555" parent="314" name="created_at">
+    <column id="553" parent="314" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>13</Position>
       <StoredType>timestamp|0s</StoredType>
     </column>
-    <foreign-key id="556" parent="314" name="students_ibfk_1">
+    <foreign-key id="554" parent="314" name="students_ibfk_1">
       <ColNames>class_id</ColNames>
       <OnDelete>set-null</OnDelete>
       <RefColNames>class_id</RefColNames>
       <RefTableName>classes</RefTableName>
     </foreign-key>
-    <index id="557" parent="314" name="PRIMARY">
+    <index id="555" parent="314" name="PRIMARY">
       <ColNames>student_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="558" parent="314" name="student_code">
+    <index id="556" parent="314" name="student_code">
       <ColNames>student_code</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="559" parent="314" name="class_id">
+    <index id="557" parent="314" name="class_id">
       <ColNames>class_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="560" parent="314" name="PRIMARY">
+    <key id="558" parent="314" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="561" parent="314" name="student_code">
+    <key id="559" parent="314" name="student_code">
       <UnderlyingIndexName>student_code</UnderlyingIndexName>
     </key>
-    <column id="562" parent="315" name="subject_id">
+    <column id="560" parent="315" name="subject_id">
       <AutoIncrement>5</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="563" parent="315" name="subject_name">
+    <column id="561" parent="315" name="subject_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="564" parent="315" name="subject_code">
+    <column id="562" parent="315" name="subject_code">
       <Position>3</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <index id="565" parent="315" name="PRIMARY">
+    <index id="563" parent="315" name="PRIMARY">
       <ColNames>subject_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="566" parent="315" name="subject_name">
+    <index id="564" parent="315" name="subject_name">
       <ColNames>subject_name</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="567" parent="315" name="subject_code">
+    <index id="565" parent="315" name="subject_code">
       <ColNames>subject_code</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="568" parent="315" name="PRIMARY">
+    <key id="566" parent="315" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="569" parent="315" name="subject_name">
+    <key id="567" parent="315" name="subject_name">
       <UnderlyingIndexName>subject_name</UnderlyingIndexName>
     </key>
-    <key id="570" parent="315" name="subject_code">
+    <key id="568" parent="315" name="subject_code">
       <UnderlyingIndexName>subject_code</UnderlyingIndexName>
     </key>
-    <column id="571" parent="316" name="teacher_id">
+    <column id="569" parent="316" name="teacher_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="572" parent="316" name="subject_id">
+    <column id="570" parent="316" name="subject_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <foreign-key id="573" parent="316" name="teacher_subjects_ibfk_1">
+    <foreign-key id="571" parent="316" name="teacher_subjects_ibfk_1">
       <ColNames>teacher_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>teacher_id</RefColNames>
       <RefTableName>teachers</RefTableName>
     </foreign-key>
-    <foreign-key id="574" parent="316" name="teacher_subjects_ibfk_2">
+    <foreign-key id="572" parent="316" name="teacher_subjects_ibfk_2">
       <ColNames>subject_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>subject_id</RefColNames>
       <RefTableName>subjects</RefTableName>
     </foreign-key>
-    <index id="575" parent="316" name="PRIMARY">
+    <index id="573" parent="316" name="PRIMARY">
       <ColNames>teacher_id
 subject_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="576" parent="316" name="subject_id">
+    <index id="574" parent="316" name="subject_id">
       <ColNames>subject_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="577" parent="316" name="PRIMARY">
+    <key id="575" parent="316" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="578" parent="317" name="teacher_id">
+    <column id="576" parent="317" name="teacher_id">
       <AutoIncrement>4</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="579" parent="317" name="user_id">
+    <column id="577" parent="317" name="user_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="580" parent="317" name="teacher_code">
+    <column id="578" parent="317" name="teacher_code">
       <Position>3</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="581" parent="317" name="teacher_name">
+    <column id="579" parent="317" name="teacher_name">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="582" parent="317" name="email">
+    <column id="580" parent="317" name="email">
       <Position>5</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="583" parent="317" name="phone">
+    <column id="581" parent="317" name="phone">
       <Position>6</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="584" parent="317" name="gender">
+    <column id="582" parent="317" name="gender">
       <Position>7</Position>
       <StoredType>enum(&apos;Male&apos;, &apos;Female&apos;)|0e</StoredType>
     </column>
-    <column id="585" parent="317" name="address">
+    <column id="583" parent="317" name="address">
       <Position>8</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="586" parent="317" name="photo_path">
+    <column id="584" parent="317" name="photo_path">
       <Position>9</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="587" parent="317" name="salary">
+    <column id="585" parent="317" name="salary">
       <Position>10</Position>
       <StoredType>decimal(10,2 digit)|0s</StoredType>
     </column>
-    <column id="588" parent="317" name="hire_date">
+    <column id="586" parent="317" name="hire_date">
       <Position>11</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="589" parent="317" name="created_at">
+    <column id="587" parent="317" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>12</Position>
       <StoredType>timestamp|0s</StoredType>
     </column>
-    <foreign-key id="590" parent="317" name="teachers_ibfk_1">
+    <foreign-key id="588" parent="317" name="teachers_ibfk_1">
       <ColNames>user_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>user_id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <index id="591" parent="317" name="PRIMARY">
+    <index id="589" parent="317" name="PRIMARY">
       <ColNames>teacher_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="592" parent="317" name="user_id">
+    <index id="590" parent="317" name="user_id">
       <ColNames>user_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="593" parent="317" name="teacher_code">
+    <index id="591" parent="317" name="teacher_code">
       <ColNames>teacher_code</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="594" parent="317" name="email">
+    <index id="592" parent="317" name="email">
       <ColNames>email</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="595" parent="317" name="PRIMARY">
+    <key id="593" parent="317" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="596" parent="317" name="user_id">
+    <key id="594" parent="317" name="user_id">
       <UnderlyingIndexName>user_id</UnderlyingIndexName>
     </key>
-    <key id="597" parent="317" name="teacher_code">
+    <key id="595" parent="317" name="teacher_code">
       <UnderlyingIndexName>teacher_code</UnderlyingIndexName>
     </key>
-    <key id="598" parent="317" name="email">
+    <key id="596" parent="317" name="email">
       <UnderlyingIndexName>email</UnderlyingIndexName>
     </key>
-    <trigger id="599" parent="317" name="trg_teacher_email_ins">
-      <Definer>root@localhost</Definer>
-      <Events>I</Events>
-      <SourceTextLength>147</SourceTextLength>
-    </trigger>
-    <trigger id="600" parent="317" name="trg_teacher_email_upd">
-      <Definer>root@localhost</Definer>
-      <Events>U</Events>
-      <SourceTextLength>147</SourceTextLength>
-    </trigger>
-    <column id="601" parent="318" name="user_id">
+    <column id="597" parent="318" name="user_id">
       <AutoIncrement>5</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="602" parent="318" name="full_name">
+    <column id="598" parent="318" name="full_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="603" parent="318" name="username">
+    <column id="599" parent="318" name="username">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="604" parent="318" name="email">
+    <column id="600" parent="318" name="email">
       <Position>4</Position>
       <StoredType>varchar(150)|0s</StoredType>
     </column>
-    <column id="605" parent="318" name="password">
+    <column id="601" parent="318" name="password">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="606" parent="318" name="role">
+    <column id="602" parent="318" name="role">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>enum(&apos;ADMIN&apos;, &apos;TEACHER&apos;, &apos;STAFF&apos;)|0e</StoredType>
     </column>
-    <column id="607" parent="318" name="photo_path">
+    <column id="603" parent="318" name="photo_path">
       <Position>7</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="608" parent="318" name="status">
+    <column id="604" parent="318" name="status">
       <DefaultExpression>&apos;ACTIVE&apos;</DefaultExpression>
       <Position>8</Position>
       <StoredType>enum(&apos;ACTIVE&apos;, &apos;INACTIVE&apos;)|0e</StoredType>
     </column>
-    <column id="609" parent="318" name="created_at">
-      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
-      <Position>9</Position>
-      <StoredType>timestamp|0s</StoredType>
-    </column>
-    <column id="610" parent="318" name="last_seen_announcement_id">
+    <column id="605" parent="318" name="last_seen_announcement_id">
       <DefaultExpression>0</DefaultExpression>
-      <Position>10</Position>
+      <Position>9</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <index id="611" parent="318" name="PRIMARY">
+    <column id="606" parent="318" name="created_at">
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>10</Position>
+      <StoredType>timestamp|0s</StoredType>
+    </column>
+    <index id="607" parent="318" name="PRIMARY">
       <ColNames>user_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="612" parent="318" name="username">
+    <index id="608" parent="318" name="username">
       <ColNames>username</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="613" parent="318" name="uk_users_email">
+    <index id="609" parent="318" name="uk_users_email">
       <ColNames>email</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="614" parent="318" name="PRIMARY">
+    <key id="610" parent="318" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="615" parent="318" name="username">
+    <key id="611" parent="318" name="username">
       <UnderlyingIndexName>username</UnderlyingIndexName>
     </key>
-    <key id="616" parent="318" name="uk_users_email">
+    <key id="612" parent="318" name="uk_users_email">
       <UnderlyingIndexName>uk_users_email</UnderlyingIndexName>
     </key>
-    <column id="617" parent="319" name="exam_id">
+    <column id="613" parent="319" name="exam_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="618" parent="319" name="exam_name">
+    <column id="614" parent="319" name="exam_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="619" parent="319" name="class_id">
+    <column id="615" parent="319" name="class_id">
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="620" parent="319" name="class_name">
+    <column id="616" parent="319" name="class_name">
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="621" parent="319" name="exam_date">
+    <column id="617" parent="319" name="exam_date">
       <Position>5</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="622" parent="319" name="total_marks">
+    <column id="618" parent="319" name="total_marks">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="623" parent="319" name="grades_recorded">
+    <column id="619" parent="319" name="grades_recorded">
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="624" parent="320" name="student_id">
+    <column id="620" parent="320" name="student_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="625" parent="320" name="student_name">
+    <column id="621" parent="320" name="student_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="626" parent="320" name="student_code">
+    <column id="622" parent="320" name="student_code">
       <Position>3</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="627" parent="320" name="class_name">
+    <column id="623" parent="320" name="class_name">
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="628" parent="320" name="start_academic_year">
+    <column id="624" parent="320" name="start_academic_year">
       <Position>5</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="629" parent="320" name="academic_year_range">
+    <column id="625" parent="320" name="academic_year_range">
       <Position>6</Position>
       <StoredType>varchar(45)|0s</StoredType>
     </column>
-    <column id="630" parent="321" name="student_id">
+    <column id="626" parent="321" name="student_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="631" parent="321" name="student_name">
+    <column id="627" parent="321" name="student_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="632" parent="321" name="class_id">
+    <column id="628" parent="321" name="class_id">
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="633" parent="321" name="class_name">
+    <column id="629" parent="321" name="class_name">
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="634" parent="321" name="total_days">
+    <column id="630" parent="321" name="total_days">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="635" parent="321" name="present_count">
+    <column id="631" parent="321" name="present_count">
       <Position>6</Position>
       <StoredType>decimal(23)|0s</StoredType>
     </column>
-    <column id="636" parent="321" name="absent_count">
+    <column id="632" parent="321" name="absent_count">
       <Position>7</Position>
       <StoredType>decimal(23)|0s</StoredType>
     </column>
-    <column id="637" parent="321" name="late_count">
+    <column id="633" parent="321" name="late_count">
       <Position>8</Position>
       <StoredType>decimal(23)|0s</StoredType>
     </column>
-    <column id="638" parent="321" name="attendance_percentage">
+    <column id="634" parent="321" name="attendance_percentage">
       <NotNull>1</NotNull>
       <Position>9</Position>
       <StoredType>decimal(29,2 digit)|0s</StoredType>
     </column>
-    <column id="639" parent="322" name="student_id">
+    <column id="635" parent="322" name="student_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="640" parent="322" name="student_name">
+    <column id="636" parent="322" name="student_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="641" parent="322" name="class_id">
+    <column id="637" parent="322" name="class_id">
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="642" parent="322" name="class_name">
+    <column id="638" parent="322" name="class_name">
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="643" parent="322" name="gpa">
+    <column id="639" parent="322" name="gpa">
       <Position>5</Position>
       <StoredType>decimal(6,2 digit)|0s</StoredType>
     </column>
-    <column id="644" parent="322" name="total_exams_taken">
+    <column id="640" parent="322" name="total_exams_taken">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="645" parent="323" name="teacher_id">
+    <column id="641" parent="323" name="teacher_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="646" parent="323" name="teacher_code">
+    <column id="642" parent="323" name="teacher_code">
       <Position>2</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="647" parent="323" name="teacher_name">
+    <column id="643" parent="323" name="teacher_name">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="648" parent="323" name="email">
+    <column id="644" parent="323" name="email">
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="649" parent="323" name="phone">
+    <column id="645" parent="323" name="phone">
       <Position>5</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="650" parent="323" name="salary">
+    <column id="646" parent="323" name="salary">
       <Position>6</Position>
       <StoredType>decimal(10,2 digit)|0s</StoredType>
     </column>
-    <column id="651" parent="323" name="status">
+    <column id="647" parent="323" name="status">
       <Position>7</Position>
       <StoredType>enum(&apos;ACTIVE&apos;, &apos;INACTIVE&apos;)|0e</StoredType>
     </column>
-    <column id="652" parent="323" name="subjects_taught">
+    <column id="648" parent="323" name="subjects_taught">
       <Position>8</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <column id="653" parent="323" name="class_leader_of">
+    <column id="649" parent="323" name="class_leader_of">
       <Position>9</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
