@@ -18,41 +18,47 @@ and email-based password recovery with BCrypt-hashed credentials.
 
 ## Preview
 
+### Login
+
+
+|---|---|
+| **Login** ![Login](screenshots/login.png) | |
+
 ### Admin
 
 | | |
 |---|---|
-| **Login** ![Login](screenshots/auth-form.png) | **Admin Dashboard** ![Admin Dashboard](Screenshots/admin-dashboard.png) 
-| **Admin Dashboard** ![Admin Dashboard](Screenshots/admin-dashboard1.png) |
-| **Financial Statement** ![Financial Statement](screenshots/admin-financial-statement.png) | **Students** ![Students](screenshots/admin-students.png) |
-| **Teachers** ![Teachers](screenshots/admin-teachers.png) | **Add Teacher** ![Add Teacher](screenshots/add-teacher.png) |
-| **Staff** ![Staff](screenshots/admin-staff.png) | **Add Staff** ![Add Staff](screenshots/add-staff.png) |
-| **Class Management** ![Class Management](screenshots/class-management.png) | **Class Fees** ![Class Fees](screenshots/class-fees.png) |
-| **Subjects** ![Subjects](screenshots/subjects.png) | **Exams** ![Exams](screenshots/exams.png) |
-| **Grades / Results** ![Grades](screenshots/grades-results.png) | **Attendance** ![Attendance](screenshots/attendance.png) |
-| **Leave Requests** ![Leave Requests](screenshots/leave-requests.png) | **Announcement Management** ![Announcements](screenshots/announcements.png) |
-| **My Profile** ![Profile](screenshots/profile.png) | |
+| **Dashboard** ![Dashboard](screenshots/admin-dashboard.png) | **Financial Statement** ![Financial Statement](screenshots/admin-dashboard1.png) |
+| **Students** ![Students](screenshots/admin-students.png) | **Teachers** ![Teachers](screenshots/admin-teachers.png) |
+| **Add Teacher (Top)** ![Add Teacher Top](screenshots/admin-add-teachers.png) | **Add Teacher (Bottom)** ![Add Teacher Bottom](screenshots/admin-add-teachers1.png) |
+| **Staff** ![Staff](screenshots/admin-staff.png) | **Add Staff (Top)** ![Add Staff Top](screenshots/admin-add-staff.png) |
+| **Add Staff (Bottom)** ![Add Staff Bottom](screenshots/admin-add-staff1.png) | **Class Management** ![Class Management](screenshots/admin-classes.png) |
+| **Class Fees** ![Class Fees](screenshots/admin-class-fees.png) | **Subjects** ![Subjects](screenshots/admin-subjects.png) |
+| **Exams** ![Exams](screenshots/admin-exams.png) | **Grades / Results** ![Grades](screenshots/admin-grade-result.png) |
+| **Attendance** ![Attendance](screenshots/admin-attendance.png) | **Announcement Management** ![Announcements](screenshots/admin-announcements.png) |
+| **My Profile** ![Profile](screenshots/admin-profile.png) | |
 
 ### Teacher
 
 | | |
 |---|---|
-| **Teacher Dashboard** ![Teacher Dashboard](screenshots/teacher-dashboard.png) | **Class Performance** ![Class Performance](screenshots/teacher-class-performance.png) |
+| **Dashboard** ![Teacher Dashboard](screenshots/teacher-dashboard.png) | **Class Performance** ![Class Performance](screenshots/teacher-dashboard1.png) |
 | **My Students** ![My Students](screenshots/teacher-students.png) | **Attendance** ![Attendance](screenshots/teacher-attendance.png) |
-| **Exams** ![Exams](screenshots/teacher-exams.png) | **Results & Reports** ![Results](screenshots/teacher-results.png) |
-| **My Subjects** ![My Subjects](screenshots/teacher-subjects.png) | **My Classes** ![My Classes](screenshots/teacher-classes.png) |
-| **Leave Requests** ![Leave Requests](screenshots/teacher-leave-requests.png) | **Announcements** ![Announcements](screenshots/teacher-announcements.png) |
+| **Exams** ![Exams](screenshots/teacher-exam.png) | **Results & Reports** ![Results](screenshots/teacher-result.png) |
+| **My Subjects** ![My Subjects](screenshots/teacher-subject.png) | **My Classes** ![My Classes](screenshots/teacher-classes.png) |
+| **Leave Requests** ![Leave Requests](screenshots/teacher-leave-request.png) | **Announcements** ![Announcements](screenshots/teacher-announcement.png) |
 | **My Profile** ![Profile](screenshots/teacher-profile.png) | |
 
 ### Staff
 
 | | |
 |---|---|
-| **Staff Dashboard** ![Staff Dashboard](screenshots/staff-dashboard.png) | **Students** ![Students](screenshots/staff-students.png) |
-| **Add Student** ![Add Student](screenshots/staff-add-student.png) | **Payments** ![Payments](screenshots/staff-payments.png) |
-| **Payment Receipt** ![Receipt](screenshots/staff-receipt.png) | **Leave Requests** ![Leave Requests](screenshots/staff-leave-requests.png) |
-| **New Leave Request** ![New Leave Request](screenshots/staff-new-leave.png) | **Announcements** ![Announcements](screenshots/staff-announcements.png) |
+| **Dashboard** ![Staff Dashboard](screenshots/staff-dashboard.png) | **Students** ![Students](screenshots/staff-student.png) |
+| **Add Student** ![Add Student](screenshots/Staff-add-student.png) | **Payments** ![Payments](screenshots/staff-payment.png) |
+| **Payment Receipt** ![Receipt](screenshots/staff-payment-part.png) | **Leave Requests** ![Leave Requests](screenshots/staff-leave-request.png) |
+| **New Leave Request** ![New Leave Request](screenshots/staff-add-leave.png) | **Announcements** ![Announcements](screenshots/staff-announcement.png) |
 | **My Profile** ![Profile](screenshots/staff-profile.png) | |
+
 
 ---
 
