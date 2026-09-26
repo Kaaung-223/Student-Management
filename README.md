@@ -35,7 +35,7 @@ and email-based password recovery with BCrypt-hashed credentials.
 | **Add Staff (Bottom)** ![Add Staff Bottom](Screenshots/admin-add-staff1.png) | **Class Management** ![Class Management](Screenshots/admin-classes.png) |
 | **Class Fees** ![Class Fees](Screenshots/admin-class-fees.png) | **Subjects** ![Subjects](Screenshots/admin-subjects.png) |
 | **Exams** ![Exams](Screenshots/admin-exams.png) | **Grades / Results** ![Grades](Screenshots/admin-grade-result.png) |
-| **Attendance** ![Attendance](Screenshots/admin-attendance.png) | **Announcement Management** ![Announcements](Screenshots/admin-announcements.png) |
+| **Attendance** ![Attendance](Screenshots/admin-attendence.png) | **Announcement Management** ![Announcements](Screenshots/admin-announcements.png) |
 | **My Profile** ![Profile](Screenshots/admin-profile.png) | |
 
 ### Teacher
@@ -43,7 +43,7 @@ and email-based password recovery with BCrypt-hashed credentials.
 | | |
 |---|---|
 | **Dashboard** ![Teacher Dashboard](Screenshots/teacher-dashboard.png) | **Class Performance** ![Class Performance](Screenshots/teacher-dashboard1.png) |
-| **My Students** ![My Students](Screenshots/teacher-students.png) | **Attendance** ![Attendance](Screenshots/teacher-attendance.png) |
+| **My Students** ![My Students](Screenshots/teacher-students.png) | **Attendance** ![Attendance](Screenshots/teacher-attendence.png) |
 | **Exams** ![Exams](Screenshots/teacher-exam.png) | **Results & Reports** ![Results](Screenshots/teacher-result.png) |
 | **My Subjects** ![My Subjects](Screenshots/teacher-subject.png) | **My Classes** ![My Classes](Screenshots/teacher-classes.png) |
 | **Leave Requests** ![Leave Requests](Screenshots/teacher-leave-request.png) | **Announcements** ![Announcements](Screenshots/teacher-announcement.png) |
